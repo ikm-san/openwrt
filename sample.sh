@@ -25,7 +25,7 @@ extract_psid() {
     local segment_length=${#ipv6_segment}
     if (( segment_length < 4 )); then
         # 16ビット値が省略形で表現されている場合、ゼロ埋めを行う
-        local padded_segment=$(printf '%04x' $((16#$ipv6_segment)))
+    local padded_segment=$(printf '%04x' "$((16#$ipv6_segment))")
         ipv6_segment=$padded_segment
     fi
     # ゼロ埋め後の値から前半8ビットを抽出
@@ -38,7 +38,3 @@ extract_psid() {
 
 # PSIDを抽出して出力
 extract_psid "$NET_ADDR6"
-
-
-extract_psid() {
-    local ipv6_segment=$(echo $ipv6_PSIDcalc | cut -d':' -f4)

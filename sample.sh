@@ -18,7 +18,7 @@ ip6prefix=$(echo $NET_ADDR6 | awk -F: '{print $1 ":" $2 "::"}')
 echo $ip6mape_prefix
 
 # IPv6アドレスを引数から受け取る
-ipv6_PSIDcalc= $NET_ADDR6
+ipv6_PSIDcalc=$NET_ADDR6
 
 # IPv6アドレスからPSIDを抽出する関数
 extract_psid() {

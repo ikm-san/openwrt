@@ -10,13 +10,13 @@ new_ip6_prefix=${NET_ADDR6}
 echo $NET_IF6
 echo $NET_ADDR6
 
-# AWKを使用して最初の2つのセグメントを取得し、"::/32"を付加
+# AWKを使用して最初の2つのセグメントを取得し、"::/32"を付加 V6プラスの場合のみ
 ip6mape_prefix=$(echo $NET_ADDR6 | awk -F: '{print $1 ":" $2 "::/32"}')
 ip6prefix=$(echo $NET_ADDR6 | awk -F: '{print $1 ":" $2 "::"}')
 
 echo $ip6mape_prefix
 
-# IPv6アドレスからPSIDを抽出する関数
+# IPv6アドレスからPSIDを抽出する関数　prefixが32ビット前提
 extract_psid() {
     local ipv6_address=$1
     local ipv6_segment=$(echo "$ipv6_address" | cut -d':' -f4)

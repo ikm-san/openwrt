@@ -8,3 +8,4 @@ new_ip6_prefix=${NET_ADDR6}
 
 echo $NET_IF6
 echo $new_ip6_prefix
+

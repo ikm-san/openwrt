@@ -11,3 +11,4 @@ else
     # 特定のインターフェースのIPv6アドレスを表示
     ip -6 addr show dev $INTERFACE
 fi
+

@@ -17,27 +17,20 @@ ip6prefix=$(echo $NET_ADDR6 | awk -F: '{print $1 ":" $2 "::"}')
 
 echo $ip6mape_prefix
 
-# プレフィックスの長さ (例: 32ビット)
-prefix_length=32
+# IPv6アドレスを引数から受け取る
+ipv6_PSIDcalc= $NET_ADDR6
 
 # IPv6アドレスからPSIDを抽出する関数
 extract_psid() {
-    local ipv6=$NET_ADDR6
-
-    # IPv6アドレスをコロンで分割し、IPv4のサフィックスの部分を取得
-    local suffix=$(echo $ipv6 | cut -d':' -f3)
-
-    # PSIDの部分を取得 (次の16ビットのセグメントの前半8ビット)
-    local psid_hex=$(echo $ipv6 | cut -d':' -f4 | cut -c1-2)
-    
-    echo $psid_hex
-    
+    # IPv6アドレスを':'で分割し、第4セグメント（IPv4変換サフィックスとPSIDを含む）を取得
+    local segment=$(echo $ipv6_PSIDcalc | cut -d':' -f4)
+    # 第4セグメントから先頭2文字（16ビットのうちPSIDを含む前半8ビット）を取得
+    local psid_hex=${segment:0:2}
     # 16進数を10進数に変換
     local psid_dec=$((16#$psid_hex))
-
+    # PSIDを出力
     echo $psid_dec
 }
 
-# 関数を呼び出してPSIDを算出
-psid=$(extract_psid $ipv6_addr)
-echo "PSID: $psid"
+# PSIDを抽出して出力
+extract_psid $ipv6_PSIDcalc

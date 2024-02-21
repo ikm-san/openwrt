@@ -12,10 +12,10 @@ echo $NET_IF6
 echo $NET_ADDR6
 
 # AWKを使用して最初の2つのセグメントを取得し、"::/32"を付加
-prefix=$(echo $NET_ADDR6 | awk -F: '{print $1 ":" $2 "::/32"}')
+ip6mape_prefix=$(echo $NET_ADDR6 | awk -F: '{print $1 ":" $2 "::/32"}')
 ip6prefix=$(echo $NET_ADDR6 | awk -F: '{print $1 ":" $2 "::"}')
 
-echo $prefix
+echo $ip6mape_prefix
 
 # プレフィックスの長さ (例: 32ビット)
 prefix_length=32

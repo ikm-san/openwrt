@@ -36,5 +36,5 @@ extract_psid() {
     echo $front_half_decimal
 }
 
-# PSIDを抽出して出力
+# PSIDを抽出して出　力
 extract_psid "$NET_ADDR6"

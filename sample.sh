@@ -22,7 +22,7 @@ prefix_length=32
 
 # IPv6アドレスからPSIDを抽出する関数
 extract_psid() {
-    local ipv6=NET_ADD6
+    local ipv6=$NET_ADDR6
     local prefix_len=prefix_length
 
     # プレフィックス以外のビット数を計算

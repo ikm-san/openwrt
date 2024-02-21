@@ -1,6 +1,5 @@
-#!/bin/sh
+#!/bin/bash
 # wan6
-# 
 
 . /lib/functions/network.sh
 network_flush_cache
@@ -17,11 +16,9 @@ ip6prefix=$(echo $NET_ADDR6 | awk -F: '{print $1 ":" $2 "::"}')
 
 echo $ip6mape_prefix
 
-# IPv6アドレスを引数から受け取る
-ipv6_PSIDcalc=$NET_ADDR6
-
 # IPv6アドレスからPSIDを抽出する関数
 extract_psid() {
+    local ipv6_PSIDcalc=$1  # 引数からIPv6アドレスを受け取る場合
     # IPv6アドレスを':'で分割し、第4セグメント（IPv4変換サフィックスとPSIDを含む）を取得
     local segment=$(echo $ipv6_PSIDcalc | cut -d':' -f4)
     # 第4セグメントから先頭2文字（16ビットのうちPSIDを含む前半8ビット）を取得
@@ -32,5 +29,5 @@ extract_psid() {
     echo $psid_dec
 }
 
-# PSIDを抽出して出　力
-extract_psid $ipv6_PSIDcalc
+# PSIDを抽出して出力
+extract_psid "$NET_ADDR6"

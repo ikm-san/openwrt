@@ -38,4 +38,5 @@ extract_psid() {
 
 # PSIDを抽出して出力
 extract_psid "$NET_ADDR6"
-
+mape_PSID=$decimal_value
+echo $mape_PSID

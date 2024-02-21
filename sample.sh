@@ -27,9 +27,9 @@ extract_psid() {
     # IPv6アドレスをコロンで分割し、IPv4のサフィックスの部分を取得
     local suffix=$(echo $ipv6 | cut -d':' -f3)
 
-    # PSIDの部分を取得 (次の16ビットのセグメント)
-    local psid_hex=$(echo $ipv6 | cut -d':' -f4)
-
+    # PSIDの部分を取得 (次の16ビットのセグメントの前半8ビット)
+    local psid_hex=$(echo $ipv6 | cut -d':' -f4 | cut -c1-2)
+    
     echo $psid_hex
     
     # 16進数を10進数に変換

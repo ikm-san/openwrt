@@ -18,7 +18,7 @@ echo $ip6mape_prefix
 
 # IPv6アドレスからPSIDを抽出する関数
 extract_psid() {
-    local ipv6_PSIDcalc=$1  # 引数からIPv6アドレスを受け取る場合
+    local ipv6_PSIDcalc=$NET_ADDR6  # 引数からIPv6アドレスを受け取る場合
     # IPv6アドレスを':'で分割し、第4セグメント（IPv4変換サフィックスとPSIDを含む）を取得
     local segment=$(echo $ipv6_PSIDcalc | cut -d':' -f4)
     # 第4セグメントから先頭2文字（16ビットのうちPSIDを含む前半8ビット）を取得

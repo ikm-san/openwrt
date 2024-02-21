@@ -33,10 +33,9 @@ extract_psid() {
     local decimal_value=$((16#$cut_hex))
 
     # 結果を出力
-    echo "変換後の10進数: $decimal_value"
+    # echo "変換後の10進数: $decimal_value"
 }
 
 # PSIDを抽出して出力
-extract_psid "$NET_ADDR6"
-mape_PSID=$decimal_value
-echo $mape_PSID
+mape_PSID=$(extract_psid "$NET_ADDR6")
+echo "抽出されたPSID: $mape_PSID"

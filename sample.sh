@@ -21,8 +21,15 @@ extract_psid() {
     local ipv6_PSIDcalc=$NET_ADDR6  # 引数からIPv6アドレスを受け取る場合
     # IPv6アドレスを':'で分割し、第4セグメント（IPv4変換サフィックスとPSIDを含む）を取得
     local segment=$(echo $ipv6_PSIDcalc | cut -d':' -f4)
-    # 第4セグメントから先頭2文字（16ビットのうちPSIDを含む前半8ビット）を取得
-    local psid_hex=${segment:0:2}
+    # セグメントの長さを確認し、4文字未満の場合はゼロ埋めを行う
+    local segment_length=${#ipv6_segment}
+    if (( segment_length < 4 )); then
+        # 16ビット値が省略形で表現されている場合、ゼロ埋めを行う
+        local padded_segment=$(printf '%04x' $((16#$ipv6_segment)))
+        ipv6_segment=$padded_segment
+    fi
+    # ゼロ埋め後の値から前半8ビットを抽出
+    local psid_hex=${ipv6_segment:0:2}
     # 16進数を10進数に変換
     local psid_dec=$((16#$psid_hex))
     # PSIDを出力
@@ -31,3 +38,7 @@ extract_psid() {
 
 # PSIDを抽出して出力
 extract_psid "$NET_ADDR6"
+
+
+extract_psid() {
+    local ipv6_segment=$(echo $ipv6_PSIDcalc | cut -d':' -f4)

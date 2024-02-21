@@ -32,5 +32,5 @@ extract_psid() {
     echo $psid_dec
 }
 
-# PSIDを抽出して出力
+# PSIDを抽出して出　力
 extract_psid $ipv6_PSIDcalc

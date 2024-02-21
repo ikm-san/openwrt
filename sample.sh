@@ -23,32 +23,15 @@ prefix_length=32
 # IPv6アドレスからPSIDを抽出する関数
 extract_psid() {
     local ipv6=$NET_ADDR6
-    local prefix_len=prefix_length
 
-    # プレフィックス以外のビット数を計算
-    local suffix_bits=$((128 - prefix_len))
+    # IPv6アドレスをコロンで分割し、IPv4のサフィックスの部分を取得
+    local suffix=$(echo $ipv6 | cut -d':' -f3)
 
-    # IPv6アドレスを16進数のブロックに分割
-    IFS=':' read -ra ADDR <<< "$ipv6"
-
-    # プレフィックス以外の部分を取得
-    local non_prefix_part=""
-    for (( i=0; i<${#ADDR[@]}; i++ )); do
-        if (( i >= prefix_len / 16 )); then
-            non_prefix_part+="${ADDR[i]}"
-        fi
-    done
-
-
-    echo $non_prefix_part
-
-    # PSIDの位置を計算 (ここではプレフィックスが32ビットの場合の例を基にしています)
-    # これをダイナミックに変更するためには、プレフィックスの長さに応じて調整する
-    local psid_hex=${non_prefix_part:4:4} # af40の次のセグメント
+    # PSIDの部分を取得 (次の16ビットのセグメント)
+    local psid_hex=$(echo $ipv6 | cut -d':' -f4)
 
     echo $psid_hex
-
-
+    
     # 16進数を10進数に変換
     local psid_dec=$((16#$psid_hex))
 
@@ -56,5 +39,5 @@ extract_psid() {
 }
 
 # 関数を呼び出してPSIDを算出
-psid=$(extract_psid "$ipv6_addr" $prefix_length)
+psid=$(extract_psid $ipv6_addr)
 echo "PSID: $psid"

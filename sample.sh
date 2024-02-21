@@ -18,23 +18,23 @@ echo $ip6mape_prefix
 
 # IPv6アドレスからPSIDを抽出する関数
 extract_psid() {
-    local ipv6_PSIDcalc=$NET_ADDR6  # 引数からIPv6アドレスを受け取る場合
-    # IPv6アドレスを':'で分割し、第4セグメント（IPv4変換サフィックスとPSIDを含む）を取得
-    local segment=$(echo $ipv6_PSIDcalc | cut -d':' -f4)
-    # セグメントの長さを確認し、4文字未満の場合はゼロ埋めを行う
-    local segment_length=${#ipv6_segment}
-    if (( segment_length < 4 )); then
-        # 16ビット値が省略形で表現されている場合、ゼロ埋めを行う
-    local padded_segment=$(printf '%04x' "$((16#$ipv6_segment))")
-        ipv6_segment=$padded_segment
-    fi
-    # ゼロ埋め後の値から前半8ビットを抽出
-    local psid_hex=${ipv6_segment:0:2}
-    # 16進数を10進数に変換
-    local psid_dec=$((16#$psid_hex))
-    # PSIDを出力
-    echo $psid_dec
+    local ipv6_segment=$(echo $ipv6_PSIDcalc | cut -d':' -f4)
+    # IPv6セグメント（16ビット）を2進数に変換
+    local binary_segment=$(echo "obase=2; ibase=16; ${ipv6_segment^^}" | bc)
+    
+    # 2進数の値が16ビット未満の場合、前に0を追加して16ビットにする
+    while [ ${#binary_segment} -lt 16 ]; do
+        binary_segment="0$binary_segment"
+    done
+    
+    # 2進数の値から後半8ビットを削除（前半8ビットを取得）
+    local front_half_binary=${binary_segment:0:8}
+    
+    # 前半8ビットを10進数に変換
+    local front_half_decimal=$(echo "obase=10; ibase=2; ${front_half_binary}" | bc)
+    
+    echo $front_half_decimal
 }
 
-# PSIDを抽出して出　力
+# PSIDを抽出して出力
 extract_psid "$NET_ADDR6"

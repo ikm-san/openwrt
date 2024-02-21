@@ -19,22 +19,22 @@ echo $ip6mape_prefix
 # IPv6アドレスからPSIDを抽出する関数
 extract_psid() {
     local ipv6_segment=$(echo $ipv6_PSIDcalc | cut -d':' -f4)
-    # IPv6セグメント（16ビット）を2進数に変換
-    local binary_segment=$(echo "obase=2; ibase=16; ${ipv6_segment^^}" | bc)
-    
-    # 2進数の値が16ビット未満の場合、前に0を追加して16ビットにする
-    while [ ${#binary_segment} -lt 16 ]; do
-        binary_segment="0$binary_segment"
-    done
-    
-    # 2進数の値から後半8ビットを削除（前半8ビットを取得）
-    local front_half_binary=${binary_segment:0:8}
-    
-    # 前半8ビットを10進数に変換
-    local front_half_decimal=$(echo "obase=10; ibase=2; ${front_half_binary}" | bc)
-    
-    echo $front_half_decimal
+    # 16進数の数字を定義
+    hex_num=$ipv6_segment
+
+    # 4桁の16進数表記に変換（この場合は既に100なので、先頭に0を追加して0100とする）
+    formatted_hex=$(printf "%04s" $hex_num)
+
+    # 後ろ2桁をカット（先頭2桁を抽出）
+    cut_hex=${formatted_hex:0:2}
+
+    # 残った2桁を10進数に変換
+    decimal_value=$((16#$cut_hex))
+
+    # 結果を出力
+    echo "変換後の10進数: $decimal_value"
 }
 
-# PSIDを抽出して出　力
+# PSIDを抽出して出力
 extract_psid "$NET_ADDR6"
+

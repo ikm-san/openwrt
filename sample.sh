@@ -39,6 +39,7 @@ extract_psid() {
         fi
     done
 
+
     echo $non_prefix_part
 
     # PSIDの位置を計算 (ここではプレフィックスが32ビットの場合の例を基にしています)

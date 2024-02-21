@@ -11,8 +11,7 @@ new_ip6_prefix=${NET_ADDR6}
 echo $NET_IF6
 echo $NET_ADDR6
 
-# IPv6アドレスから最初の32ビット（最初の2つのセグメント）を抜き出し
-prefix=$(echo $NET_ADDR6 | cut -d':' -f1,2)
+# AWKを使用して最初の2つのセグメントを取得し、"::/32"を付加
+prefix=$(echo $NET_ADDR6 | awk -F: '{print $1 ":" $2 "::/32"}')
 
-# /32を付加して結果を表示
-echo "${prefix}::/32"
+echo $prefix

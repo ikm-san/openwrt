@@ -36,6 +36,6 @@ extract_psid() {
     echo "$decimal_value"
 }
 
-# PSIDを抽出して 出力
+# PSIDを抽出して出力
 mape_PSID=$(extract_psid "$NET_ADDR6")
 echo "mape_PSID: $mape_PSID"

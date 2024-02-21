@@ -39,9 +39,14 @@ extract_psid() {
         fi
     done
 
+    echo $non_prefix_part
+
     # PSIDの位置を計算 (ここではプレフィックスが32ビットの場合の例を基にしています)
     # これをダイナミックに変更するためには、プレフィックスの長さに応じて調整する
     local psid_hex=${non_prefix_part:4:4} # af40の次のセグメント
+
+    echo $psid_hex
+
 
     # 16進数を10進数に変換
     local psid_dec=$((16#$psid_hex))

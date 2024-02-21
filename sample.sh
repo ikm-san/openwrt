@@ -33,7 +33,7 @@ extract_psid() {
     local decimal_value=$((16#$cut_hex))
 
     # 結果を出力
-    # echo "変換後の10進数: $decimal_value"
+    echo "変換後の10進数: $decimal_value"
 }
 
 # PSIDを抽出して出力

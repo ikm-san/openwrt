@@ -71,10 +71,10 @@ prefix=$(echo $ipv6_address | cut -d: -f1)
 # VNEを判別
 case $prefix in
     240b)
-        echo "日本ネットワークイネイブラー（v6プラス）"
+        echo "JPIX（v6プラス）"
         ;;
     2404)
-        echo "Biglobe（IPv6オプション・IPv6オプションライト）"
+        echo "Biglobe（IPv6オプション）"
         ;;
     2400)
         echo "NTTコミュニケーションズ（OCNバーチャルコネクト）"

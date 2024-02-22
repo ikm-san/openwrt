@@ -63,7 +63,7 @@ echo "mape_offset: $mape_offset"
 echo "mape_PSID: $mape_PSID"
 
 # IPv6アドレスを引数として受け取る
-ipv6_address=$1
+ipv6_address=$NET_ADDR6
 
 # IPv6アドレスの先頭16ビットを取得
 prefix=$(echo $ipv6_address | cut -d: -f1)

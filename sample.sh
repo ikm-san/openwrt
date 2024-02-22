@@ -7,16 +7,13 @@ network_find_wan6 NET_IF6
 network_get_ipaddr6 NET_ADDR6 "${NET_IF6}"
 # new_ip6_prefix=${NET_ADDR6}
 
-# V6プラス用に固定
+# V6プラス用の値
 mape_peeraddr="2404:9200:225:100::64"
 mape_ipv6prefixlen="32"
 mape_ipv4prefixlen="16"
 mape_ealen="24"
 mape_psidlen="8"
 mape_offset="4"
-
-
-echo $NET_IF6
 
 # AWKを使用して最初の2つのセグメントを取得し、"::/32"を付加 V6プラスの場合のみ
 mape_ipv6prefix=$(echo $NET_ADDR6 | awk -F: '{print $1 ":" $2 "::/32"}')
@@ -64,3 +61,40 @@ echo "mape_ealen: $mape_ealen"
 echo "mape_psidlen: $mape_psidlen"
 echo "mape_offset: $mape_offset"
 echo "mape_PSID: $mape_PSID"
+
+# IPv6アドレスを引数として受け取る
+ipv6_address=$1
+
+# IPv6アドレスの先頭16ビットを取得
+prefix=$(echo $ipv6_address | cut -d: -f1)
+
+# VNEを判別
+case $prefix in
+    240b)
+        echo "日本ネットワークイネイブラー（v6プラス）"
+        ;;
+    2404)
+        echo "Biglobe（IPv6オプション・IPv6オプションライト）"
+        ;;
+    2400)
+        echo "NTTコミュニケーションズ（OCNバーチャルコネクト）"
+        ;;
+    2409)
+        echo "インターネットマルチフィード（transix）"
+        ;;
+    2001)
+        # 2001の場合はさらに細かく確認が必要なので、先頭4文字を再度チェック
+        four_prefix=$(echo $ipv6_address | cut -d: -f1,2 | tr -d ":")
+        if [[ $four_prefix == "2001f" ]]; then
+            echo "アルテリアネットワークス（クロスパス）"
+        else
+            echo "2001で始まるアドレスですが、詳細なVNEは判別できません"
+        fi
+        ;;
+    2405)
+        echo "Asahiネット（v6コネクト）"
+        ;;
+    *)
+        echo "該当するVNEが見つかりません"
+        ;;
+esac

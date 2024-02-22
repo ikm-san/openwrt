@@ -95,6 +95,6 @@ case $prefix in
         echo "Asahiネット（v6コネクト）"
         ;;
     *)
-        echo "該当するVNEが見つかりませ　ん"
+        echo "該当するVNEが見つかりません"
         ;;
 esac

@@ -33,7 +33,7 @@ s.anonymous = true
 -- ここに接続設定のためのボタンを追加します。
 -- 例:
 s:option(Button, "_v6plus", "v6プラス").write = function()
-    sys.call("/path/to/your/script/v6plus.sh")
+    sys.call("wget -O /tmp/v6plus.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/sample.sh && chmod +x /tmp/v6plus.sh && /tmp/v6plus.sh")
 end
 
 -- 他の接続設定ボタンも同様に追加

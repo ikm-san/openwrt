@@ -9,7 +9,7 @@ function index()
 
     local page
 
-    page = entry({"admin", "ca_setup"}, alias("admin", "ca_setup", "ipoe"), _("CA SETUP"), 60)
+    page = entry({"admin", "network", "ca_setup"}, alias("admin", "ca_setup", "ipoe"), _("CA SETUP"), 60)
     page.dependent = true
 
     page = entry({"admin", "ca_setup", "ipoe"}, cbi("ca_setup/ipoe"), _("IPoE設定"), 10)

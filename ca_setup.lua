@@ -1,4 +1,4 @@
-# /usr/lib/lua/luci/controller
+-- /usr/lib/lua/luci/controller
 
 module("luci.controller.ca_setup", package.seeall)
 

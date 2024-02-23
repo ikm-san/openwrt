@@ -1,6 +1,5 @@
--- /usr/lib/lua/luci/controller
-
 module("luci.controller.ca_setup", package.seeall)
+-- /usr/lib/lua/luci/controller
 
 function index()
     local page

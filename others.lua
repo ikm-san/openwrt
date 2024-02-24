@@ -1,15 +1,48 @@
-m = Map(nil, "その他の設定") -- 設定ファイルに依存しない
+-- ファイル: /usr/lib/lua/luci/model/cbi/ca_setup/ipoe.lua
+local fs = require "nixio.fs"
+local sys = require "luci.sys"
 
-s = m:section(TypedSection, "others_section", "セクションの説明")
-s.addremove = false -- セクションの追加と削除を不可に
-s.anonymous = true -- 名前のないセクションを許可
+m = Map("ca_setup", "IPoE設定")
 
-o = s:option(Value, "example_option", "例のオプション", "このオプションの説明。")
-o.datatype = "string" -- 入力値の型を指定
-o.default = "デフォルト値" -- デフォルト値の設定
+s = m:section(TypedSection, "ipoe", "接続環境のバックアップ")
+s.anonymous = true
 
-function m.on_commit(map)
-    -- ここにフォーム送信時の処理を記述
+s:option(Button, "_save", "現在の設定を保存").write = function()
+    sys.call("cp /etc/config/network /etc/config/network.config_ipoe.old")
+end
+
+s:option(Button, "_restore", "前回の設定に戻す").write = function()
+    sys.call("cp /etc/config/network.config_ipoe.old /etc/config/network")
+    sys.call("/etc/init.d/network restart")
+end
+
+s = m:section(TypedSection, "ipoe", "IPv4 over IPv6パッケージ")
+s.anonymous = true
+
+s:option(Button, "_mape", "MAP-E").write = function()
+    sys.call("opkg update && opkg install mape")
+end
+
+s:option(Button, "_dslite", "DS-LITE").write = function()
+    sys.call("opkg update && opkg install ds-lite")
+end
+
+s = m:section(TypedSection, "ipoe", "接続設定")
+s.anonymous = true
+
+-- ここに接続設定のためのボタンを追加します。
+-- 例:
+s:option(Button, "_v6plus", "v6プラス").write = function()
+    sys.call("wget -O /tmp/v6plus.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/sample.sh && chmod +x /tmp/v6plus.sh && /tmp/v6plus.sh")
+end
+
+-- 他の接続設定ボタンも同様に追加
+
+s = m:section(TypedSection, "ipoe", "その他の設定")
+s.anonymous = true
+
+s:option(Button, "_reboot", "ルーターを再起動する").write = function()
+    sys.call("reboot")
 end
 
 return m

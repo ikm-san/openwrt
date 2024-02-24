@@ -4,23 +4,22 @@ module("luci.controller.ca_setup", package.seeall)
 function index()
     local page
 
-    -- CA SETUP メニューの追加
-    page = entry({"admin", "network", "ca_setup"}, alias("admin", "ca_setup", "ipoe"), _("CA SETUP"), 60)
-    page.dependent = true
+    -- CA SETUP メニューの追加 (カテゴリとして定義)
+    page = node("admin", "network", "ca_setup")
+    page.title = _("CA SETUP")
+    page.order = 60
 
     -- IPoE設定ページの追加
-    page = entry({"admin", "ca_setup", "ipoe"}, cbi("ca_setup/ipoe"), _("IPoE設定"), 10)
-    page.dependent = true
+    entry({"admin", "network", "ca_setup", "ipoe"}, cbi("ca_setup/ipoe"), _("IPoE設定"), 10)
 
     -- その他接続設定ページの追加
-    page = entry({"admin", "ca_setup", "others"}, cbi("ca_setup/others"), _("その他接続設定"), 20)
-    page.dependent = true
+    entry({"admin", "network", "ca_setup", "others"}, cbi("ca_setup/others"), _("その他接続設定"), 20)
 
     -- IPoE設定のアクション（動作）
-    entry({"admin", "ca_setup", "ipoe", "action"}, call("action_ipoe"), nil).leaf = true
+    entry({"admin", "network", "ca_setup", "ipoe", "action"}, call("action_ipoe"), nil).leaf = true
 
     -- その他の接続設定のアクション（動作）
-    entry({"admin", "ca_setup", "others", "action"}, call("action_others"), nil).leaf = true
+    entry({"admin", "network", "ca_setup", "others", "action"}, call("action_others"), nil).leaf = true
 end
 
 function action_ipoe()

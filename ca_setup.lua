@@ -4,8 +4,9 @@ module("luci.controller.ca_setup", package.seeall)
 function index()
     local page
 
-    -- CA SETUP メニューの追加 (カテゴリとして定義)
+    -- CA SETUP メニューの追加 (カテゴリとして定義し、デフォルトでIPoEページを表示)
     page = node("admin", "network", "ca_setup")
+    page.target = alias("admin", "network", "ca_setup", "ipoe")
     page.title = _("CA SETUP")
     page.order = 60
 

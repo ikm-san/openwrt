@@ -3,12 +3,12 @@ local sys = require "luci.sys"
 m = Map("network", "WAN接続設定の保存復元", "以下のボタンをクリックして設定を保存または復元")
 
 -- ボタン用のセクションを定義
-s = m:section(TypedSection, "interface", "")
+s = m:section(TypedSection, "network", "")
 
 -- 保存ボタン
 local save = s:option(Button, "_save", "設定を保存")
 function save.write()
-    io.popen("cp /etc/config/network /etc/config/network.old")
+    sys.call("cp /etc/config/network /etc/config/network.old")
 end
 
 -- 復元ボタン

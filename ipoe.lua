@@ -1,7 +1,7 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 
-m = Map("ca_setup", "IPoE設定")
+m = Map("network", "IPoE設定")
 
 -- Dummy Section for Connection Settings
 s = m:section(TypedSection, "connection", "接続設定")

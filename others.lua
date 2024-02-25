@@ -1,6 +1,6 @@
 local sys = require "luci.sys"
 
-m = Map("network", "WAN接続設定の保存復元")
+m = Map("ca_setup", "WAN接続設定の保存復元")
 s = m:section(SimpleSection, nil, "設定を以下から選んでください")
 
 local op = s:option(ListValue, "_operation", "操作")

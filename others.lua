@@ -15,8 +15,8 @@ end
 -- 復元ボタン
 local restore = s:option(Button, "_restore", "設定を復元")
 function restore.write()
-    os.execute("cp /etc/config/network.old /etc/config/network")
-    os.execute("/etc/init.d/network restart")
+    sys.call("cp /etc/config/network.old /etc/config/network")
+    sys.call("/etc/init.d/network restart")
 end
 
 return m

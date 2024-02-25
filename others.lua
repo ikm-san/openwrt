@@ -15,10 +15,10 @@ choice:value("restore", "設定を復元")
 function m.on_commit(map)
     local choice_val = choice:formvalue(s.section)
     if choice_val == "save" then
-        sys.exec("cp /etc/config/network /etc/config/network.old")
+        luci.sys.exec("cp /etc/config/network /etc/config/network.old")
     elseif choice_val == "restore" then
-        sys.exec("cp /etc/config/network.old /etc/config/network")
-        sys.exec("/etc/init.d/network restart")
+        luci.sys.exec("cp /etc/config/network.old /etc/config/network")
+        luci.sys.exec("/etc/init.d/network restart")
     end
 end
 

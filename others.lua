@@ -4,7 +4,7 @@ local sys = require "luci.sys"
 m = Map("network", "WAN接続設定の保存復元", "以下の選択肢を選んで設定を保存または復元")
 
 -- SimpleSectionを使用してセクションを定義
-s = m:section(TypedSection, "WAN6")
+s = m:section(SimpleSection)
 
 -- ラジオボタンのような選択肢
 local choice = s:option(ListValue, "_choice", "操作を選択")

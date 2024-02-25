@@ -4,11 +4,8 @@ local sys = require "luci.sys"
 
 m = Map("network", "IPoE設定")
 
--- ここではTypedSectionの種類や名前が特に関係ないため、'ipoe'としていますが、
--- 実際にはnetwork設定に合わせて適切なセクションを選択する必要があります。
--- ただし、このスクリプトの主目的はボタンによるアクションなので問題ありません。
-s = m:section(TypedSection, "ipoe", "接続環境のバックアップ")
-s.anonymous = true
+-- SimpleSectionを使用して、ボタンを表示するセクションを作成
+s = m:section(SimpleSection, "backup", "接続環境のバックアップ")
 
 local save_btn = s:option(Button, "_save", "現在の設定を保存")
 function save_btn.write(self, section)

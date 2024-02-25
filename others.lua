@@ -2,19 +2,26 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 
-m = Map("ca_setup", "IPoE設定")
+m = Map("network", "IPoE設定")
 
+-- ここではTypedSectionの種類や名前が特に関係ないため、'ipoe'としていますが、
+-- 実際にはnetwork設定に合わせて適切なセクションを選択する必要があります。
+-- ただし、このスクリプトの主目的はボタンによるアクションなので問題ありません。
 s = m:section(TypedSection, "ipoe", "接続環境のバックアップ")
 s.anonymous = true
 
-s:option(Button, "_save", "現在の設定を保存").write = function()
+local save_btn = s:option(Button, "_save", "現在の設定を保存")
+function save_btn.write(self, section)
     sys.call("cp /etc/config/network /etc/config/network.config_ipoe.old")
 end
 
-s:option(Button, "_restore", "前回の設定に戻す").write = function()
+local restore_btn = s:option(Button, "_restore", "前回の設定に戻す")
+function restore_btn.write(self, section)
     sys.call("cp /etc/config/network.config_ipoe.old /etc/config/network")
     sys.call("/etc/init.d/network restart")
 end
+
+return m
 
 s = m:section(TypedSection, "ipoe", "IPv4 over IPv6パッケージ")
 s.anonymous = true

@@ -1,7 +1,7 @@
 local sys = require "luci.sys"
 
 -- Mapの定義
-m = Map("network", "WAN接続設定の保存復元", "以下の選択肢を選んで設定を保存または復元")
+m = Map("network",, "以下の選択肢を選んで設定を保存または復元")
 
 -- SimpleSectionを使用してセクションを定義
 s = m:section(SimpleSection)

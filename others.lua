@@ -8,7 +8,7 @@ s = m:section(SimpleSection)
 
 -- 保存ボタン
 local save = s:option(Button, "_save", "設定を保存")
-function save.write()
+function save.write(self.SimpleSection)
     sys.call("cp /etc/config/network /etc/config/network.old")
 end
 

@@ -1,10 +1,10 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 
-m = Map("network", "IPoE設定", "設定の保存と復元")
+m = Map("network", "WAN接続設定")
 
 -- SimpleSectionを使用して接続設定を表示
-s = m:section(SimpleSection, nil, "Internet接続設定を以下から選んでください")
+s = m:section(SimpleSection, nil, "設定を以下から選んでください")
 
 -- 接続設定をラジオボタンで選択
 local conn = s:option(ListValue, "connection_type", "接続タイプ")

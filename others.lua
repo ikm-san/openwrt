@@ -4,18 +4,18 @@ local sys = require "luci.sys"
 
 m = Map("network", "IPoE設定")
 
--- SimpleSectionを使用して、ボタンを表示するセクションを作成
 s = m:section(SimpleSection, "backup", "接続環境のバックアップ")
 
 local save_btn = s:option(Button, "_save", "現在の設定を保存")
-function save_btn.write(self, section)
+function save_btn.write()
     sys.call("cp /etc/config/network /etc/config/network.config_ipoe.old")
 end
 
 local restore_btn = s:option(Button, "_restore", "前回の設定に戻す")
-function restore_btn.write(self, section)
+function restore_btn.write()
     sys.call("cp /etc/config/network.config_ipoe.old /etc/config/network")
     sys.call("/etc/init.d/network restart")
 end
 
 return m
+

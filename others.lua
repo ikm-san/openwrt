@@ -1,8 +1,8 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 
-m = Map("network", "WAN設定バックアップ", "ここでは、設定の保存と復元を行うことができます。")
-s = m:section(SimpleSection, nil, "接続環境のバックアップと復元を以下から選択してください。")
+m = Map("network", "WAN設定バックアップ", "設定の保存と復元")
+s = m:section(SimpleSection, nil, "WAN接続環境のバックアップと復元を以下から選択してください。")
 
 local op = s:option(ListValue, "_operation", "操作")
 op:value("", "-")

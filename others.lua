@@ -17,7 +17,7 @@ function m.on_commit(map)
             m.message = "設定の保存に失敗しました。"
         end
     elseif selected_op == "restore" then
-        local res = sys.call("cp /etc/config/network.config_ipoe.old /etc/config/network")
+        local res = sys.call("cp /etc/config/network.old /etc/config/network")
         if res == 0 then
             sys.call("/etc/init.d/network restart")
         else

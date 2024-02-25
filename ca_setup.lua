@@ -8,5 +8,5 @@ function index()
     entry({"admin", "ca_setup", "ipoe"}, cbi("ca_setup/ipoe"), _("IPoE設定"), 10)
     
     -- その他接続設定タブ
-    entry({"admin", "ca_setup", "other"}, cbi("ca_setup/other"), _("その他接続設定"), 20)
+    entry({"admin", "ca_setup", "other"}, cbi("ca_setup/others"), _("設定の復元保存"), 60)
 end

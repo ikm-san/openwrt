@@ -11,18 +11,21 @@ op:value("restore", "前回の設定に戻す")
 function m.on_commit(map)
     local selected_op = m:formvalue(op:cbid())
     if selected_op == "save" then
-        local res = sys.call("cp /etc/config/network /etc/config/network.old")
-        if res ~= 0 then
-            -- コピーに失敗した場合の処理
-            m.message = "設定の保存に失敗しました。"
+        if fs.copy("/etc/config/network", "/etc/config/network.old") then
+            -- コピーに成功した場合の処理（省略）
+        else
+            -- コピーに失敗した場合の処理（省略）
         end
     elseif selected_op == "restore" then
-        local res = sys.call("cp /etc/config/network.old /etc/config/network")
-        if res == 0 then
-            sys.call("/etc/init.d/network restart")
+        if fs.exists("/etc/config/network.old") then
+            if fs.copy("/etc/config/network.old", "/etc/config/network") then
+                sys.call("/etc/init.d/network restart")
+                -- 復元に成功した場合の処理（省略）
+            else
+                -- コピーに失敗した場合の処理（省略）
+            end
         else
-            -- コピーに失敗した場合の処理
-            m.message = "設定の復元に失敗しました。"
+            -- バックアップファイルが存在しない場合の処理（省略）
         end
     end
 end

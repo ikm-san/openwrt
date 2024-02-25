@@ -14,16 +14,22 @@ conn:value("v6plus", "v6プラス")
 conn:value("ds-liteA", "ds-liteA")
 conn:value("bridge", "ブリッジモード")
 
-function m.on_commit(map)
-    local connection_type = m:formvalue(conn:cbid())
+-- 選択された接続タイプを取得するためのキーを保存するフィールド
+local key = conn:cbid()
 
-    -- ここで、選択された接続タイプに基づいて、/etc/config/networkの設定を更新します
-    -- 例えば:
+function m.on_after_commit(map)
+    local connection_type = m:formvalue(key)
+
     if connection_type == "dhcp" then
         -- DHCP接続に関する設定を更新
     elseif connection_type == "pppoe" then
         -- PPPoE接続に関する設定を更新
-    -- その他の条件分岐
+    elseif connection_type == "v6plus" then
+        sys.call("opkg update && opkg install mape")
+    elseif connection_type == "ds-liteA" then
+        sys.call("opkg update && opkg install ds-lite")
+    elseif connection_type == "bridge" then
+        -- ブリッジモードに関する設定を更新
     end
 
     -- 変更を適用するためにネットワークサービスを再起動

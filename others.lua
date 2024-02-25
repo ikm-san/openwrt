@@ -9,13 +9,21 @@ op:value("save", "現在の設定を保存")
 op:value("restore", "前回の設定に戻す")
 
 function m.on_commit(map)
-    -- `op:cbid()`の代わりに直接`_operation`を使用します。
-    local selected_op = m:formvalue("_operation")
+    local selected_op = m:formvalue(op:cbid())
     if selected_op == "save" then
-        sys.call("cp /etc/config/network /etc/config/network.config_ipoe.old")
+        local res = sys.call("cp /etc/config/network /etc/config/network.config_ipoe.old")
+        if res ~= 0 then
+            -- コピーに失敗した場合の処理
+            m.message = "設定の保存に失敗しました。"
+        end
     elseif selected_op == "restore" then
-        sys.call("cp /etc/config/network.config_ipoe.old /etc/config/network")
-        sys.call("/etc/init.d/network restart")
+        local res = sys.call("cp /etc/config/network.config_ipoe.old /etc/config/network")
+        if res == 0 then
+            sys.call("/etc/init.d/network restart")
+        else
+            -- コピーに失敗した場合の処理
+            m.message = "設定の復元に失敗しました。"
+        end
     end
 end
 

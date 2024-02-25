@@ -11,7 +11,7 @@ op:value("restore", "前回の設定に戻す")
 function m.on_commit(map)
     local selected_op = m:formvalue(op:cbid())
     if selected_op == "save" then
-        local res = sys.call("cp /etc/config/network /etc/config/network.config_ipoe.old")
+        local res = sys.call("cp /etc/config/network /etc/config/network.old")
         if res ~= 0 then
             -- コピーに失敗した場合の処理
             m.message = "設定の保存に失敗しました。"

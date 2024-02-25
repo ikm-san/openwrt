@@ -1,12 +1,10 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 
-m = Map("network", "IPoE設定")
+m = Map("network", "IPoE設定", "設定の保存と復元")
 
--- Dummy Section for Connection Settings
-s = m:section(TypedSection, "connection", "接続設定")
-s.anonymous = true
-s.addremove = false
+-- SimpleSectionを使用して接続設定を表示
+s = m:section(SimpleSection, nil, "Internet接続設定を以下から選んでください")
 
 -- 接続設定をラジオボタンで選択
 local conn = s:option(ListValue, "connection_type", "接続タイプ")
@@ -15,22 +13,21 @@ conn:value("pppoe", "PPPoE接続")
 conn:value("v6plus", "v6プラス")
 conn:value("ds-liteA", "ds-liteA")
 conn:value("bridge", "ブリッジモード")
-conn.rmempty = false
 
 function m.on_commit(map)
-    local connection_type = conn:formvalue(s.section)
+    local connection_type = m:formvalue(conn:cbid())
 
-    if connection_type == "v6plus" then
-        sys.call("opkg update && opkg install mape")
-    elseif connection_type == "ds-liteA" then
-        sys.call("opkg update && opkg install ds-lite")
-    elseif connection_type == "dhcp" then
-        -- DHCP自動に関連するコマンドを実行
-    elseif connection_type == "bridge" then
-        -- ブリッジモードに関連するコマンドを実行
+    -- ここで、選択された接続タイプに基づいて、/etc/config/networkの設定を更新します
+    -- 例えば:
+    if connection_type == "dhcp" then
+        -- DHCP接続に関する設定を更新
     elseif connection_type == "pppoe" then
-        -- PPPoEに関連するコマンドを実行
+        -- PPPoE接続に関する設定を更新
+    -- その他の条件分岐
     end
+
+    -- 変更を適用するためにネットワークサービスを再起動
+    sys.call("/etc/init.d/network restart")
 end
 
 return m

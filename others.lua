@@ -1,9 +1,10 @@
 local sys = require "luci.sys"
 
+-- Mapの定義
 m = Map("network", "WAN接続設定の保存復元", "以下のボタンをクリックして設定を保存または復元")
 
--- ボタン用のセクションを定義
-s = m:section(TypedSection, "network", "")
+-- SimpleSectionを使用してセクションを定義
+s = m:section(SimpleSection)
 
 -- 保存ボタン
 local save = s:option(Button, "_save", "設定を保存")

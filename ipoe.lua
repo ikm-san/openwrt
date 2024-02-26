@@ -38,11 +38,11 @@ aftr:depends("wan_setup", "ipoe_v6connect")
 function aftr.cfgvalue(self, section)
     local wan_setup = m.uci:get("ca_setup", "ipoe", "wan_setup")
     if wan_setup == "ipoe_transix" then
-        return m.uci:get("ca_setup", "ipoe_transix", "gw_aftr") or ""
+        return m.uci:get("ca_setup", "ipoe_transix", "gw_aftr") 
     elseif wan_setup == "ipoe_xpass" then
-        return m.uci:get("ca_setup", "ipoe_xpass", "gw_aftr") or ""
+        return m.uci:get("ca_setup", "ipoe_xpass", "gw_aftr") 
     elseif wan_setup == "ipoe_v6connect" then
-        return m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr") or ""
+        return m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr") 
     end
 end
 

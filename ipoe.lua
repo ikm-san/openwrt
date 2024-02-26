@@ -46,25 +46,36 @@ function m.on_commit(map)
         luci.sys.exec("/etc/init.d/network restart")
 
     elseif choice_val == "ipoe_v6plus" then
-        -- 実行内容を追加
+        -- v6プラス
         luci.sys.exec("opkg update && opkg install mape")
     elseif choice_val == "ipoe_ocnvirtualconnect" then
-        -- 実行内容を追加
+        -- OCNバーチャルコネクト
         luci.sys.exec("opkg update && opkg install mape")
 
     elseif choice_val == "ipoe_ipv6option" then
-        -- 実行内容を追加
+        -- BIGLOBE IPv6オプション
         luci.sys.exec("opkg update && opkg install mape")
 
     elseif choice_val == "ipoe_transix" then
-        -- 実行内容を追加
-        luci.sys.exec("opkg update && opkg install ds-lite")
+        -- transix (ds-lite)
+           local gw_aftr = uci:get("ca_setup", "ipoe_transix", "gw_aftr")
+        -- sys.exec("/path/to/your/script.sh '" .. gw_aftr .. "'")
+        -- luci.sys.exec("opkg update && opkg install ds-lite")
+    
     elseif choice_val == "ipoe_xpass" then
-        -- 実行内容を追加
-        luci.sys.exec("opkg update && opkg install ds-lite")
+        -- クロスパス (ds-lite)
+           local gw_aftr = uci:get("ca_setup", "ipoe_xpass", "gw_aftr")
+        -- sys.exec("/path/to/your/script.sh '" .. gw_aftr .. "'")
+        -- luci.sys.exec("opkg update && opkg install ds-lite")   
+    
     elseif choice_val == "ipoe_v6connect" then
-        -- 実行内容を追加
-        luci.sys.exec("opkg update && opkg install ds-lite")
+        -- v6コネクト
+           local gw_aftr = uci:get("ca_setup", "ipoe_v6connect", "gw_aftr")
+        -- sys.exec("/path/to/your/script.sh '" .. gw_aftr .. "'")
+        -- luci.sys.exec("opkg update && opkg install ds-lite")   
+
+
+        
     elseif choice_val == "bridge_mode" then
         -- ブリッジモード設定の適用
         uci:set("network", "lan", "type", "bridge")

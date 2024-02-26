@@ -1,9 +1,9 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 
-m = Map("ca_setup", "WAN接続設定", "WAN接続の設定をおこないます。")
+m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。")
 
-s = m:section(TypedSection, "ipoe", "WAN設定")
+s = m:section(TypedSection, "ipoe", "")
 s.addremove = false
 s.anonymous = true
 

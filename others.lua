@@ -11,7 +11,7 @@ s.addremove = false
 s.anonymous = true
 
 -- 'network_config'選択肢の追加 
-choice = s:option(ListValue, "network_config", "操作") -- オプション名を明確化
+choice = s:option(ListValue, "network_config", "操作") 
 choice:value("save", "設定を保存")
 choice:value("restore", "設定を復元")
 

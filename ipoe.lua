@@ -28,8 +28,29 @@ password.password = true
 username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
+-- AFTRアドレスのフォームを追加
+aftr = s:option(Value, "AFTR", "AFTRアドレス")
+aftr:depends("wan_setup", "ipoe_transix")  -- ipoe_transixが選択されたときのみ表示
+aftr:depends("wan_setup", "ipoe_xpass")   
+aftr:depends("wan_setup", "ipoe_v6connect")   
+
+-- ipoe_transixまたはipoe_xpassが選択された場合に、対応するgw_aftrの値を取得してデフォルト値として設定
+function aftr.cfgvalue(self, section)
+    local wan_setup = m.uci:get("ca_setup", "ipoe", "wan_setup")
+    if wan_setup == "ipoe_transix" then
+        return m.uci:get("ca_setup", "ipoe_transix", "gw_aftr") or ""
+    elseif wan_setup == "ipoe_xpass" then
+        return m.uci:get("ca_setup", "ipoe_xpass", "gw_aftr") or ""
+    elseif wan_setup == "ipoe_v6connect" then
+        return m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr") or ""
+    end
+end
+
 function m.on_commit(map)
     local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
+    local gw_aftr = aftr:formvalue(s.section) or ""
+
+    
     if choice_val == "dhcp_auto" then
         luci.sys.exec("cp /etc/config/network /etc/config/network.old")
         -- luci.sys.exec("/etc/init.d/network restart")

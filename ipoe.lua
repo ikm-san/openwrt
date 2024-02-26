@@ -19,10 +19,14 @@ choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジモード")
 
--- PPPoE接続用のユーザー名とパスワード入力フォーム
+-- PPPoEユーザー名とパスワード入力フォームの追加
 username = s:option(Value, "username", "PPPoE ユーザー名")
 password = s:option(Value, "password", "PPPoE パスワード")
-password.password = true  -- パスワードを隠す
+password.password = true
+
+-- PPPoE接続が選択された場合のみ、ユーザー名とパスワードを表示
+username:depends("wan_setup", "pppoe_ipv4")
+password:depends("wan_setup", "pppoe_ipv4")
 
 function m.on_commit(map)
     local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")

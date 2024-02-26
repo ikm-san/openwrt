@@ -1,5 +1,6 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
+local uci = require "luci.model.uci".cursor()
 
 m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。")
 
@@ -7,7 +8,7 @@ s = m:section(TypedSection, "ipoe", "")
 s.addremove = false
 s.anonymous = true
 
-choice = s:option(ListValue, "wan_setup", "操作") 
+choice = s:option(ListValue, "wan_setup", "操作")
 choice:value("dhcp_auto", "DHCP自動")
 choice:value("pppoe_ipv4", "PPPoE接続")
 choice:value("ipoe_v6plus", "v6プラス")
@@ -18,13 +19,28 @@ choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジモード")
 
+-- PPPoE接続用のユーザー名とパスワード入力フォーム
+username = s:option(Value, "username", "PPPoE ユーザー名")
+password = s:option(Value, "password", "PPPoE パスワード")
+password.password = true  -- パスワードを隠す
+
 function m.on_commit(map)
     local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
     if choice_val == "dhcp_auto" then
         luci.sys.exec("cp /etc/config/network /etc/config/network.old")
-       -- luci.sys.exec("/etc/init.d/network restart")
+        -- luci.sys.exec("/etc/init.d/network restart")
     elseif choice_val == "pppoe_ipv4" then
-        -- 実行内容を追加
+        -- PPPoE設定を適用
+        local user = m.uci:get("ca_setup", "ipoe", "username")
+        local pass = m.uci:get("ca_setup", "ipoe", "password")
+        uci:set("network", "pppoe_wan", "interface")
+        uci:set("network", "pppoe_wan", "proto", "pppoe")
+        uci:set("network", "pppoe_wan", "username", user)
+        uci:set("network", "pppoe_wan", "password", pass)
+        uci:set("network", "pppoe_wan", "ifname", "eth0.2")
+        uci:commit("network")
+        luci.sys.exec("/etc/init.d/network restart")
+
     elseif choice_val == "ipoe_v6plus" then
         -- 実行内容を追加
         luci.sys.exec("opkg update && opkg install mape")

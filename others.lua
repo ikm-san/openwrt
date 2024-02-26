@@ -3,15 +3,15 @@ local fs = require "nixio.fs"
 
 -- Mapの初期化、'ca_setup' configファイルを使用
 m = Map("ca_setup", "ネットワーク設定のバックアップ",
-        "ネットワーク設定を保存または復元できます。") 
+        "下記のリストより選んで実行してください。") 
 
 -- 'backup'セクションの追加
-s = m:section(TypedSection, "backup", "バックアップオプション")
+s = m:section(TypedSection, "backup")
 s.addremove = false
 s.anonymous = true
 
 -- 'network_config'選択肢の追加 
-choice = s:option(ListValue, "network_config", "操作") 
+choice = s:option(ListValue, "network_config") 
 choice:value("save", "設定を保存")
 choice:value("restore", "設定を復元")
 

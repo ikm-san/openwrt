@@ -6,3 +6,5 @@ chmod +x /usr/lib/lua/luci/controller/ca_setup.lua
 chmod +x /usr/lib/lua/luci/model/cbi/ca_setup/*.lua
 rm -rf /tmp/luci-*
 /etc/init.d/uhttpd restart
+
+wget -O /etc/config/ca_setup https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup.config

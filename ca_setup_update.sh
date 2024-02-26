@@ -1,5 +1,5 @@
 #!/bin/bash
-#network configファイルのバックアップ
+#network configファイルのバックアップを取る
 cp /etc/config/network /etc/config/network.old
 
 #不足している場合に備え、必要なソフトウェアのインストール

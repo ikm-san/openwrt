@@ -1,36 +1,53 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 
-m = Map("network", "WAN接続設定", "WAN接続の設定を保存または復元します。")
+m = Map("ca_setup", "WAN接続設定", "WAN接続の設定をおこないます。")
 
--- SimpleSectionを使用して接続設定を表示
-s = m:section(SimpleSection, nil, "設定を以下から選んでください。")
+s = m:section(TypedSection, "ipoe", "WAN設定")
+s.addremove = false
+s.anonymous = true
 
--- 接続設定をラジオボタンで選択
-local conn = s:option(ListValue, "connection_type", "接続タイプ")
-conn:value("dhcp", "DHCP自動")
-conn:value("pppoe", "PPPoE接続")
-conn:value("v6plus", "v6プラス")
-conn:value("ds-liteA", "ds-liteA")
-conn:value("bridge", "ブリッジモード")
+choice = s:option(ListValue, "wan_setup", "操作") 
+choice:value("dhcp_auto", "DHCP自動")
+choice:value("pppoe_ipv4", "PPPoE接続")
+choice:value("ipoe_v6plus", "mape v6プラス")
+choice:value("ipoe_ocnvirtualconnect", "map-e OCNバーチャルコネクト")
+choice:value("ipoe_ipv6option", "map-e IPv6オプション")
+choice:value("ipoe_transix", "ds-lite transix")
+choice:value("ipoe_xpass", "ds-lite クロスパス")
+choice:value("ipoe_v6connect", "ds-lite v6コネクト")
+choice:value("bridge_mode", "ブリッジモード")
 
 function m.on_commit(map)
-    local connection_type = map:formvalue(conn:cbid())
+    local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
+    if choice_val == "dhcp_auto" then
+        luci.sys.exec("cp /etc/config/network /etc/config/network.old")
+       -- luci.sys.exec("/etc/init.d/network restart")
+    elseif choice_val == "pppoe_ipv4" then
+        -- 実行内容を追加
+    elseif choice_val == "ipoe_v6plus" then
+        -- 実行内容を追加
+        luci.sys.exec("opkg update && opkg install mape")
+    elseif choice_val == "ipoe_ocnvirtualconnect" then
+        -- 実行内容を追加
+        luci.sys.exec("opkg update && opkg install mape")
 
-    if connection_type == "dhcp" then
-        -- DHCP接続に関する設定を更新
-    elseif connection_type == "pppoe" then
-        -- PPPoE接続に関する設定を更新
-    elseif connection_type == "v6plus" then
-        sys.call("opkg update && opkg install mape")
-    elseif connection_type == "ds-liteA" then
-        sys.call("opkg update && opkg install ds-lite")
-    elseif connection_type == "bridge" then
-        -- ブリッジモードに関する設定を更新
+    elseif choice_val == "ipoe_ipv6option" then
+        -- 実行内容を追加
+        luci.sys.exec("opkg update && opkg install mape")
+
+    elseif choice_val == "ipoe_transix" then
+        -- 実行内容を追加
+        luci.sys.exec("opkg update && opkg install ds-lite")
+    elseif choice_val == "ipoe_xpass" then
+        -- 実行内容を追加
+        luci.sys.exec("opkg update && opkg install ds-lite")
+    elseif choice_val == "ipoe_v6connect" then
+        -- 実行内容を追加
+        luci.sys.exec("opkg update && opkg install ds-lite")
+    elseif choice_val == "bridge_mode" then
+        -- 実行内容を追加
     end
-
-    -- 変更を適用するためにネットワークサービスを再起動
-    sys.call("/etc/init.d/network restart")
 end
 
 return m

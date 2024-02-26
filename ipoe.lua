@@ -78,12 +78,11 @@ function m.on_commit(map)
         
     elseif choice_val == "bridge_mode" then
         -- ブリッジモード設定の適用
-        uci:set("network", "lan", "type", "bridge")
-        uci:set("network", "lan", "ifname", "eth0.1 eth0.2")  -- 例としてeth0.1とeth0.2をブリッジ
-        uci:delete("network", "lan", "proto")  -- DHCPなどの既存設定を削除
-        uci:commit("network")
-        luci.sys.exec("/etc/init.d/network restart")
-    -- その他のオプションの処理をここに追加...
+        -- uci:set("network", "lan", "type", "bridge")
+        -- uci:set("network", "lan", "ifname", "eth0.1 eth0.2")  -- 例としてeth0.1とeth0.2をブリッジ
+        -- uci:delete("network", "lan", "proto")  -- DHCPなどの既存設定を削除
+        -- uci:commit("network")
+        -- luci.sys.exec("/etc/init.d/network restart")
     end
 end
 

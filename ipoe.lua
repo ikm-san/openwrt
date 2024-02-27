@@ -150,47 +150,46 @@ end
 
 
 -- IPv6アドレスを取得する関数
-local function get_ipv6_address(interface)
-    local ipv6_info = sys.exec("ip -6 addr show dev " .. interface .. " | grep 'global' | head -n 1 | awk '{print $2}' | cut -d/ -f1")
-    return ipv6_info:match("(.+)")
+local ipv6_info = s:option(DummyValue, "ipv6addr", translate("IPv6 Address"))
+ipv6_info.cfgvalue = function(self, section)
+    local interface = uci:get("network", section, "ifname") or "wan6" -- Default to wan6 if not specified
+    local ipv6_address = sys.exec("ip -6 addr show dev " .. interface .. " | grep 'global' | head -n 1 | awk '{print $2}' | cut -d/ -f1"):match("(.+)")
+    return ipv6_address or translate("No IPv6 address found")
 end
 
--- IPv6アドレスのプレフィックスを判定する関数
-local function check_ipv6_prefix(ipv6_address)
-    local prefix = ipv6_address:sub(1, 4)
-
-    if prefix == "240b" then
-        return "JPIX（v6プラス）"
-    elseif prefix == "2404" then
-        return "Biglobe（IPv6オプション）"
-    elseif prefix == "2400" then
-        return "NTTコミュニケーションズ（OCNバーチャルコネクト）"
-    elseif prefix == "2409" then
-        return "インターネットマルチフィード（transix）"
-    elseif prefix == "2001" then
-        -- 2001の場合はさらに細かく確認が必要
-        local four_prefix = ipv6_address:sub(1, 5)
-        if four_prefix == "2001f" then
-            return "アルテリアネットワークス（クロスパス）"
+local vne_result = s:option(DummyValue, "vne", translate("VNE Result"))
+vne_result.cfgvalue = function(self, section)
+    local interface = uci:get("network", section, "ifname") or "wan6"
+    local ipv6_address = sys.exec("ip -6 addr show dev " .. interface .. " | grep 'global' | head -n 1 | awk '{print $2}' | cut -d/ -f1"):match("(.+)")
+    if ipv6_address then
+        local prefix = ipv6_address:sub(1, 4)
+        local result = "Unknown"
+        if prefix == "240b" then
+            result = "JPIX (v6 Plus)"
+        elseif prefix == "2404" then
+            result = "Biglobe (IPv6 Option)"
+        elseif prefix == "2400" then
+            result = "NTT Communications (OCN Virtual Connect)"
+        elseif prefix == "2409" then
+            result = "Internet Multifeed (transix)"
+        elseif prefix == "2001" then
+            local four_prefix = ipv6_address:sub(1, 5)
+            if four_prefix == "2001f" then
+                result = "Arteria Networks (Crosspath)"
+            else
+                result = "2001 prefix, detailed VNE is indeterminable"
+            end
+        elseif prefix == "2405" then
+            result = "Asahi Net (v6 Connect)"
         else
-            return "2001で始まるアドレスですが、詳細なVNEは判別できません"
+            result = "VNE not found"
         end
-    elseif prefix == "2405" then
-        return "Asahiネット（v6コネクト）"
+        return translate(result)
     else
-        return "該当するVNEが見つかりません"
+        return translate("No IPv6 address found")
     end
 end
 
--- 主要な実行部分
-local wan6_interface = "wan6" -- 例としてwan6インターフェースを使用
-local ipv6_address = get_ipv6_address(wan6_interface)
-if ipv6_address then
-    local vne = check_ipv6_prefix(ipv6_address)
-    print(vne) -- 結果を出力
-else
-    print("IPv6アドレスが見つかりませんでした。")
-end
 
 
 return m

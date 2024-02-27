@@ -49,7 +49,7 @@ local function configure_dslite_connection(gw_aftr)
     -- DS-Liteインターフェースの設定
     uci:section("network", "interface", "dslite", {
         proto = 'dslite',
-        peeraddr = gw_aftr, -- 引数から受け取ったAFTRのIPv6アドレスを設定
+        peeraddr = gw_aftr, 
         tunlink = 'wan6',
         mtu = '1460'
     })
@@ -125,16 +125,16 @@ function m.on_commit(map)
 
     elseif choice_val == "ipoe_transix" then
         -- transix (ds-lite)
-           configure_dslite_connection(gw_aftr) -- DS-Lite接続設定の呼び出し
+           configure_dslite_connection(gw_aftr)
     
     elseif choice_val == "ipoe_xpass" then
         -- クロスパス (ds-lite)
-           configure_dslite_connection(gw_aftr) -- DS-Lite接続設定の呼び出し
-    
+           configure_dslite_connection(gw_aftr)
+        
     elseif choice_val == "ipoe_v6connect" then
         -- v6コネクト
-           configure_dslite_connection(gw_aftr) -- DS-Lite接続設定の呼び出し
-      
+           configure_dslite_connection(gw_aftr)
+        
     elseif choice_val == "bridge_mode" then
         -- ブリッジモード設定の適用
         -- uci:set("network", "lan", "type", "bridge")

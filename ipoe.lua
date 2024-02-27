@@ -26,6 +26,14 @@ password.password = true
 username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
+-- インターフェース設定を削除する関数
+local function deleteInterfaces()
+    local interfaces = {"wan", "wan6", "wanmap", "ds-lite", "map-e"}
+    for _, interface in ipairs(interfaces) do
+        uci:delete("network", interface)
+    end
+end
+
 -- ds-lite接続設定関数
 local function configure_dslite_connection(gw_aftr)
     -- DHCP LAN設定
@@ -73,12 +81,22 @@ end
 function m.on_commit(map)
     local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
     local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
-
+    deleteInterfaces()　--既存のWAN設定を削除
     
     if choice_val == "dhcp_auto" then
-        luci.sys.exec("cp /etc/config/network /etc/config/network.old")
-        -- luci.sys.exec("/etc/init.d/network restart")
+
+        -- DHCP自動設定を適用
+        uci:set("network", "wan", "interface")
+        uci:set("network", "wan", "proto", "dhcp")
+        uci:set("network", "wan6", "interface")
+        uci:set("network", "wan6", "proto", "dhcpv6")
+        uci:set("network", "wan6", "reqaddress", "try")
+        uci:set("network", "wan6", "reqprefix", "auto")
+        uci:commit("network")
+        luci.sys.exec("/etc/init.d/network restart")
+        
     elseif choice_val == "pppoe_ipv4" then
+        
         -- PPPoE設定を適用
         local user = m.uci:get("ca_setup", "ipoe", "username")
         local pass = m.uci:get("ca_setup", "ipoe", "password")
@@ -91,34 +109,32 @@ function m.on_commit(map)
         luci.sys.exec("/etc/init.d/network restart")
 
     elseif choice_val == "ipoe_v6plus" then
+       
         -- v6プラス
-        luci.sys.exec("opkg update && opkg install mape")
+        -- ここにいれる
+    
     elseif choice_val == "ipoe_ocnvirtualconnect" then
+        
         -- OCNバーチャルコネクト
-        luci.sys.exec("opkg update && opkg install mape")
+        -- ここにいれる
 
     elseif choice_val == "ipoe_ipv6option" then
+        
         -- BIGLOBE IPv6オプション
-        luci.sys.exec("opkg update && opkg install mape")
+        -- ここにいれる
 
     elseif choice_val == "ipoe_transix" then
         -- transix (ds-lite)
-        -- DS-Lite接続設定の呼び出し
-            configure_dslite_connection(gw_aftr)
-        -- luci.sys.exec("opkg update && opkg install ds-lite")
+           configure_dslite_connection(gw_aftr) -- DS-Lite接続設定の呼び出し
     
     elseif choice_val == "ipoe_xpass" then
         -- クロスパス (ds-lite)
-        -- sys.exec("/path/to/your/script.sh '" .. gw_aftr .. "'")
-        -- luci.sys.exec("opkg update && opkg install ds-lite")   
+           configure_dslite_connection(gw_aftr) -- DS-Lite接続設定の呼び出し
     
     elseif choice_val == "ipoe_v6connect" then
         -- v6コネクト
-        -- sys.exec("/path/to/your/script.sh '" .. gw_aftr .. "'")
-        -- luci.sys.exec("opkg update && opkg install ds-lite")   
-
-
-        
+           configure_dslite_connection(gw_aftr) -- DS-Lite接続設定の呼び出し
+      
     elseif choice_val == "bridge_mode" then
         -- ブリッジモード設定の適用
         -- uci:set("network", "lan", "type", "bridge")

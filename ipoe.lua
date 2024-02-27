@@ -152,15 +152,22 @@ end
 -- IPv6アドレスを取得する関数
 local ipv6_info = s:option(DummyValue, "ipv6addr", translate("IPv6 Address"))
 ipv6_info.cfgvalue = function(self, section)
-    local interface = uci:get("network", section, "ifname") or "wan6" -- Default to wan6 if not specified
-    local ipv6_address = luci.sys.exec("ip -6 addr show dev " .. interface .. " | grep 'global' | head -n 1 | awk '{print $2}' | cut -d/ -f1"):match("(.+)")
-    return ipv6_address or translate("No IPv6 address found")
+    local interface = uci:get("network", section, "ifname") or "wan6"
+    local command_output = luci.sys.exec("ip -6 addr show dev " .. interface)
+    local ipv6_address = command_output:match("inet6 ([a-f0-9:]+)/%d+ scope global")
+    if ipv6_address then
+        return ipv6_address
+    else
+        return translate("No IPv6 address found")
+    end
 end
 
 local vne_result = s:option(DummyValue, "vne", translate("VNE Result"))
 vne_result.cfgvalue = function(self, section)
     local interface = uci:get("network", section, "ifname") or "wan6"
-    local ipv6_address = luci.sys.exec("ip -6 addr show dev " .. interface .. " | grep 'global' | head -n 1 | awk '{print $2}' | cut -d/ -f1"):match("(.+)")
+    local command_output = luci.sys.exec("ip -6 addr show dev " .. interface)
+    local ipv6_address = command_output:match("inet6 ([a-f0-9:]+)/%d+ scope global")
+
     if ipv6_address then
         local prefix = ipv6_address:sub(1, 4)
         local result = "Unknown"
@@ -189,7 +196,6 @@ vne_result.cfgvalue = function(self, section)
         return translate("No IPv6 address found")
     end
 end
-
 
 
 return m

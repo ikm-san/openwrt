@@ -30,19 +30,20 @@ password:depends("wan_setup", "pppoe_ipv4")
 
 -- AFTRアドレスのフォームを追加
 aftr = s:option(Value, "AFTR", "AFTRアドレス")
-aftr:depends("wan_setup", "ipoe_transix")  -- ipoe_transixが選択されたときのみ表示
-aftr:depends("wan_setup", "ipoe_xpass")   
-aftr:depends("wan_setup", "ipoe_v6connect")   
+aftr:depends("wan_setup", "ipoe_transix")
+aftr:depends("wan_setup", "ipoe_xpass")
+aftr:depends("wan_setup", "ipoe_v6connect")
 
--- ipoe_transixまたはipoe_xpassが選択された場合に、対応するgw_aftrの値を取得してデフォルト値として設定
+-- ipoe_transix、ipoe_xpass、ipoe_v6connectが選択された場合に、
+-- 対応するgw_aftrの値を取得してデフォルト値として設定
 function aftr.cfgvalue(self, section)
-    local wan_setup = m.uci:get("ca_setup", "ipoe", "wan_setup")
+    local wan_setup = m.uci:get("ca_setup", section, "wan_setup")
     if wan_setup == "ipoe_transix" then
-        return m.uci:get("ca_setup", "ipoe_transix", "gw_aftr") 
+        return m.uci:get("ca_setup", "ipoe_transix", "gw_aftr")
     elseif wan_setup == "ipoe_xpass" then
-        return m.uci:get("ca_setup", "ipoe_xpass", "gw_aftr") 
+        return m.uci:get("ca_setup", "ipoe_xpass", "gw_aftr")
     elseif wan_setup == "ipoe_v6connect" then
-        return m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr") 
+        return m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr")
     end
 end
 

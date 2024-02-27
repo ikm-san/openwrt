@@ -146,24 +146,4 @@ function m.on_commit(map)
     end
 end
 
-
-
-
--- IPv6アドレスを取得する関数
-function get_ipv6_address(interface)
-    -- IPv6アドレスを取得するコマンドを実行
-    local ipv6_address = sys.exec(string.format("ip -6 addr show dev %s | grep global | awk '{print $2}' | cut -d/ -f1", interface))
-    return ipv6_address:match("(.+)")
-end
-
--- IPv6アドレス表示用のダミーフィールド
-ipv6_info = s:option(DummyValue, "_ipv6addr", translate("IPv6 Address"))
-ipv6_info.cfgvalue = function(self, section)
-    local interface = m.uci:get("network", section, "ifname") or "wan6"
-    local ipv6_address = get_ipv6_address(interface)
-    return ipv6_address or translate("No IPv6 address found")
-end
-
-
-
 return m

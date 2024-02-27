@@ -19,33 +19,12 @@ choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジモード")
 
--- PPPoEユーザー名とパスワード入力フォームの追加
+-- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
 username = s:option(Value, "username", "PPPoE ユーザー名")
 password = s:option(Value, "password", "PPPoE パスワード")
 password.password = true
-
--- PPPoE接続が選択された場合のみ、ユーザー名とパスワードを表示
 username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
-
--- AFTRアドレスのフォームを追加
-aftr = s:option(Value, "AFTR", "AFTRアドレス")
-aftr:depends("wan_setup", "ipoe_transix")
-aftr:depends("wan_setup", "ipoe_xpass")
-aftr:depends("wan_setup", "ipoe_v6connect")
-
--- ipoe_transix、ipoe_xpass、ipoe_v6connectが選択された場合に、
--- 対応するgw_aftrの値を取得してデフォルト値として設定
-function aftr.cfgvalue(self, section)
-    local wan_setup = m.uci:get("ca_setup", section, "wan_setup")
-    if wan_setup == "ipoe_transix" then
-        return m.uci:get("ca_setup", "ipoe_transix", "gw_aftr")
-    elseif wan_setup == "ipoe_xpass" then
-        return m.uci:get("ca_setup", "ipoe_xpass", "gw_aftr")
-    elseif wan_setup == "ipoe_v6connect" then
-        return m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr")
-    end
-end
 
 -- ds-lite接続設定関数
 local function configure_dslite_connection(gw_aftr)
@@ -93,7 +72,7 @@ end
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function m.on_commit(map)
     local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
-    local gw_aftr = aftr:formvalue(s.section) or ""
+    local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
 
     
     if choice_val == "dhcp_auto" then
@@ -124,20 +103,17 @@ function m.on_commit(map)
 
     elseif choice_val == "ipoe_transix" then
         -- transix (ds-lite)
-           local gw_aftr = uci:get("ca_setup", "ipoe_transix", "gw_aftr")
         -- DS-Lite接続設定の呼び出し
             configure_dslite_connection(gw_aftr)
         -- luci.sys.exec("opkg update && opkg install ds-lite")
     
     elseif choice_val == "ipoe_xpass" then
         -- クロスパス (ds-lite)
-           local gw_aftr = uci:get("ca_setup", "ipoe_xpass", "gw_aftr")
         -- sys.exec("/path/to/your/script.sh '" .. gw_aftr .. "'")
         -- luci.sys.exec("opkg update && opkg install ds-lite")   
     
     elseif choice_val == "ipoe_v6connect" then
         -- v6コネクト
-           local gw_aftr = uci:get("ca_setup", "ipoe_v6connect", "gw_aftr")
         -- sys.exec("/path/to/your/script.sh '" .. gw_aftr .. "'")
         -- luci.sys.exec("opkg update && opkg install ds-lite")   
 

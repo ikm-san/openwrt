@@ -150,52 +150,20 @@ end
 
 
 -- IPv6アドレスを取得する関数
-local ipv6_info = s:option(DummyValue, "ipv6addr", translate("IPv6 Address"))
+function get_ipv6_address(interface)
+    -- IPv6アドレスを取得するコマンドを実行
+    local ipv6_address = sys.exec(string.format("ip -6 addr show dev %s | grep global | awk '{print $2}' | cut -d/ -f1", interface))
+    return ipv6_address:match("(.+)")
+end
+
+-- IPv6アドレス表示用のダミーフィールド
+ipv6_info = s:option(DummyValue, "_ipv6addr", translate("IPv6 Address"))
 ipv6_info.cfgvalue = function(self, section)
-    local interface = uci:get("network", "interface", "wan6")
-    local command_output = luci.sys.exec("ip -6 addr show dev " .. interface)
-    local ipv6_address = command_output:match("inet6 ([a-f0-9:]+)/%d+ scope global")
-    if ipv6_address then
-        return ipv6_address
-    else
-        return translate("No IPv6 address found")
-    end
+    local interface = m.uci:get("network", section, "ifname") or "wan6"
+    local ipv6_address = get_ipv6_address(interface)
+    return ipv6_address or translate("No IPv6 address found")
 end
 
-local vne_result = s:option(DummyValue, "vne", translate("VNE Result"))
-vne_result.cfgvalue = function(self, section)
-    local interface = uci:get("network", "interface", "wan6") 
-    local command_output = luci.sys.exec("ip -6 addr show dev " .. interface)
-    local ipv6_address = command_output:match("inet6 ([a-f0-9:]+)/%d+ scope global")
-
-    if ipv6_address then
-        local prefix = ipv6_address:sub(1, 4)
-        local result = "Unknown"
-        if prefix == "240b" then
-            result = "JPIX (v6 Plus)"
-        elseif prefix == "2404" then
-            result = "Biglobe (IPv6 Option)"
-        elseif prefix == "2400" then
-            result = "NTT Communications (OCN Virtual Connect)"
-        elseif prefix == "2409" then
-            result = "Internet Multifeed (transix)"
-        elseif prefix == "2001" then
-            local four_prefix = ipv6_address:sub(1, 5)
-            if four_prefix == "2001f" then
-                result = "Arteria Networks (Crosspath)"
-            else
-                result = "2001 prefix, detailed VNE is indeterminable"
-            end
-        elseif prefix == "2405" then
-            result = "Asahi Net (v6 Connect)"
-        else
-            result = "VNE not found"
-        end
-        return translate(result)
-    else
-        return translate("No IPv6 address found")
-    end
-end
 
 
 return m

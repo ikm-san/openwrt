@@ -81,7 +81,8 @@ end
 function m.on_commit(map)
     local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
     local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
-    deleteInterfaces()　--既存のWAN設定を削除
+    --既存のWAN設定を削除
+    deleteInterfaces()
     
     if choice_val == "dhcp_auto" then
 

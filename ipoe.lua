@@ -47,6 +47,50 @@ function aftr.cfgvalue(self, section)
     end
 end
 
+-- ds-lite接続設定関数
+local function configure_dslite_connection(gw_aftr)
+    -- DHCP LAN設定
+    uci:set("dhcp", "lan", "dhcp")
+    uci:set("dhcp", "lan", "ra", "relay")
+    uci:set("dhcp", "lan", "dhcpv6", "server")
+    uci:set("dhcp", "lan", "ndp", "relay")
+    uci:set("dhcp", "lan", "force", "1")
+
+    -- WAN設定の無効化
+    uci:set("network", "wan", "auto", "0")
+
+    -- DS-Liteインターフェースの設定
+    uci:section("network", "interface", "dslite", {
+        proto = 'dslite',
+        peeraddr = gw_aftr, -- 引数から受け取ったAFTRのIPv6アドレスを設定
+        tunlink = 'wan6',
+        mtu = '1460'
+    })
+
+    -- DHCP関連設定
+    uci:set("dhcp", "wan6", "dhcp")
+    uci:set("dhcp", "wan6", "interface", "wan6")
+    uci:set("dhcp", "wan6", "master", "1")
+    uci:set("dhcp", "wan6", "ignore", "1")
+    uci:set("dhcp", "wan6", "dhcpv6", "relay")
+    uci:set("dhcp", "wan6", "ra", "relay")
+    uci:set("dhcp", "wan6", "ndp", "relay")
+
+    -- DS-LiteインターフェースをWANゾーンに追加
+    uci:add_list("firewall", "@zone[1]", "network", "dslite")
+
+    -- 設定のコミット
+    uci:commit("dhcp")
+    uci:commit("network")
+    uci:commit("firewall")
+
+    -- ネットワークサービス、DHCPサービス、ファイアウォールの再起動
+    os.execute("/etc/init.d/network restart")
+    os.execute("/etc/init.d/dnsmasq restart")
+    os.execute("/etc/init.d/firewall restart")
+end
+
+-- LuciのSAVE＆APPLYボタンが押された時の動作
 function m.on_commit(map)
     local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
     local gw_aftr = aftr:formvalue(s.section) or ""
@@ -81,7 +125,8 @@ function m.on_commit(map)
     elseif choice_val == "ipoe_transix" then
         -- transix (ds-lite)
            local gw_aftr = uci:get("ca_setup", "ipoe_transix", "gw_aftr")
-        -- sys.exec("/path/to/your/script.sh '" .. gw_aftr .. "'")
+        -- DS-Lite接続設定の呼び出し
+            configure_dslite_connection(gw_aftr)
         -- luci.sys.exec("opkg update && opkg install ds-lite")
     
     elseif choice_val == "ipoe_xpass" then

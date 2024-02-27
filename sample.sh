@@ -25,6 +25,8 @@ declare -A map_conversion_table=(
     ["240b:12::"]="14.8.0.0"
     ["240b:250::"]="14.10.0.0"
     ["240b:252::"]="14.12.0.0"
+    ["2404:7a80::"]="133.200.0.0"
+    ["2404:7a84::"]="133.206.0.0"
 )
 # 簡易変換テーブルからmap-e用のIPv4アドレスを抽出
 mape_ipv4address="${map_conversion_table[$mape_ipv6prefix_conversion]}"

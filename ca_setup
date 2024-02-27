@@ -35,7 +35,7 @@ config map-e 'ipoe_ocnvirtualconnect'
     option mape_peeraddr '2001:380:a120::9'
     option mape_ipv6prefixlen '40'
     option mape_ipv4prefixlen '24'
-    option mape_ealen '24'
+    option mape_ealen '16'
     option mape_psidlen '8'
     option mape_offset '4'
 

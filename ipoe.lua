@@ -146,4 +146,51 @@ function m.on_commit(map)
     end
 end
 
+
+
+
+-- IPv6アドレスを取得する関数
+local function get_ipv6_address(interface)
+    local ipv6_info = sys.exec("ip -6 addr show dev " .. interface .. " | grep 'global' | head -n 1 | awk '{print $2}' | cut -d/ -f1")
+    return ipv6_info:match("(.+)")
+end
+
+-- IPv6アドレスのプレフィックスを判定する関数
+local function check_ipv6_prefix(ipv6_address)
+    local prefix = ipv6_address:sub(1, 4)
+
+    if prefix == "240b" then
+        return "JPIX（v6プラス）"
+    elseif prefix == "2404" then
+        return "Biglobe（IPv6オプション）"
+    elseif prefix == "2400" then
+        return "NTTコミュニケーションズ（OCNバーチャルコネクト）"
+    elseif prefix == "2409" then
+        return "インターネットマルチフィード（transix）"
+    elseif prefix == "2001" then
+        -- 2001の場合はさらに細かく確認が必要
+        local four_prefix = ipv6_address:sub(1, 5)
+        if four_prefix == "2001f" then
+            return "アルテリアネットワークス（クロスパス）"
+        else
+            return "2001で始まるアドレスですが、詳細なVNEは判別できません"
+        end
+    elseif prefix == "2405" then
+        return "Asahiネット（v6コネクト）"
+    else
+        return "該当するVNEが見つかりません"
+    end
+end
+
+-- 主要な実行部分
+local wan6_interface = "wan6" -- 例としてwan6インターフェースを使用
+local ipv6_address = get_ipv6_address(wan6_interface)
+if ipv6_address then
+    local vne = check_ipv6_prefix(ipv6_address)
+    print(vne) -- 結果を出力
+else
+    print("IPv6アドレスが見つかりませんでした。")
+end
+
+
 return m

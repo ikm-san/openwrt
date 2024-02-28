@@ -54,3 +54,6 @@ config map-e 'ipoe_biglobe_w'
     option mape_ealen '24'
     option mape_psidlen '8'
     option mape_offset '4'
+
+config mape_test
+    option ipv4_prefix 'none'

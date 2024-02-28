@@ -30,17 +30,14 @@ end
 
 -- IPv4プレフィックスから完全なIPv4アドレスを生成する関数
 local function complete_ipv4_address(ipv4_prefix)
-    -- IPv4アドレスのセグメントをカウント
-    local _, segment_count = ipv4_prefix:gsub("%.", "")
-    segment_count = segment_count + 1  -- セグメントの数はドットの数よりも1多い
-
-    -- セグメントが4に満たない場合、不足分の0を追加
-    while segment_count < 4 do
-        ipv4_prefix = ipv4_prefix .. ".0"
-        segment_count = segment_count + 1
+    local segments = {ipv4_prefix:match("^(%d+)%.(%d*)%.?(%d*)%.?(%d*)$")} 
+    if #segments == 0 then
+        return nil, "Invalid IPv4 prefix format"
     end
-
-    return ipv4_prefix
+    for i = #segments + 1, 4 do
+        segments[i] = "0"
+    end
+    return table.concat(segments, ".")
 end
 
 m = Map("ca_setup", translate("MAPE Configuration"),

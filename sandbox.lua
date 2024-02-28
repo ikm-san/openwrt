@@ -19,7 +19,7 @@ local function get_wan_ipv6_global()
 end
 
 -- IPv6アドレスから対応するIPv4プレフィックスを取得
-local function ipv6_to_ipv4_prefix(ipv6_addr)
+local function find_ipv4_prefix(ipv6_addr)
     -- IPv6アドレスから最初の32ビットを抽出する正規表現
     local hex_prefix = ipv6_addr:match("^([a-fA-F0-9]{1,4}):([a-fA-F0-9]{1,4})")
     if not hex_prefix then

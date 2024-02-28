@@ -22,12 +22,14 @@ local wan_ipv6 = get_wan_ipv6_global()
 
 -- IPv6アドレスから対応するIPv4プレフィックスを取得
 local function find_ipv4_prefix(wan_ipv6)
-    
-        -- IPv6アドレスを正規化して、省略された0を補う
+    -- IPv6アドレスを正規化して、省略された0を補う
     local full_ipv6 = wan_ipv6:gsub("::", function(s)
-        return ":" .. string.rep("0000:", 8 - select(2, ipv6_addr:gsub(":", "")) - 1)
-    end)
-    full_ipv6 = full_ipv6:gsub(":(%x):", ":0%1:"):gsub(":(%x)$", ":0%1"):gsub("^:(%x):", "0%1:")
+        local colon_count = 8 - select(2, wan_ipv6:gsub("[^:]*", "")) -- 現在のコロンの数を数える
+        return ":" .. string.rep("0000:", colon_count) -- 足りない分の0を補う
+    end):gsub(":(%x):", ":0%1:"):gsub(":(%x)$", ":0%1"):gsub("^:(%x):", "0%1:") -- 単一セグメントの0埋め
+
+    -- 末尾の処理を修正し、全てのセグメントが存在することを保証
+    full_ipv6 = full_ipv6:gsub("::", ":0000"):gsub("^:", "0000:"):gsub("(:0%x)", function(s) return s:gsub("0", "000") end)
 
     -- 正規化されたIPv6アドレスから先頭の32ビットを取得
     local hex_prefix = full_ipv6:gsub(":", ""):sub(1, 8)
@@ -36,20 +38,19 @@ local function find_ipv4_prefix(wan_ipv6)
     -- 変換マップから対応するIPv4プレフィックスを探す
     local ipv4_prefix = ruleprefix31[ipv6_prefix_32bit]
     if ipv4_prefix then
-            local segments = {ipv4_prefix:match("^(%d+)%.(%d*)%.?(%d*)%.?(%d*)$")} 
-            if #segments == 0 then
-                return nil, "Invalid IPv4 prefix format"
-            end
-            for i = #segments + 1, 4 do
-                segments[i] = "0"
-            end
-            return table.concat(segments, ".")
-        return ipv4_prefix
+        local segments = {ipv4_prefix:match("^(%d+)%.(%d*)%.?(%d*)%.?(%d*)$")}
+        if #segments == 0 then
+            return nil, "Invalid IPv4 prefix format"
+        end
+        for i = #segments + 1, 4 do
+            segments[i] = "0"
+        end
+        return table.concat(segments, ".")
     else
         return nil, "No matching IPv4 prefix found."
     end
-
 end
+
 
 m = Map("ca_setup", translate("MAPE Configuration"),
         translate("Configure MAPE IPv4 prefix based on WAN IPv6 address."))

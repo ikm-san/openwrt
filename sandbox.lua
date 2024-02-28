@@ -23,7 +23,7 @@ local wan_ipv6 = get_wan_ipv6_global()
 -- IPv6アドレスから対応するIPv4プレフィックスを取得
 local function find_ipv4_prefix(wan_ipv6)
     
-        -- IPv6アドレスを正規化して、省略された0を補う
+        -- IPv6アドレスを正規化して、省略された0を補う　
     local full_ipv6 = wan_ipv6:gsub("::", function(s)
         return ":" .. string.rep("0000:", 8 - select(2, ipv6_addr:gsub(":", "")) - 1)
     end)

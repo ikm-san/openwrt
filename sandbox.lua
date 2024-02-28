@@ -12,7 +12,7 @@ local ipv6_prefix_map = {
     ["2404:7a84::"] = "133.206"
 }
 
--- WANインターフェースのIPv6アドレスを取得
+-- WANインターフェースのIPv6アドレスを取　得
 local function get_wan_ipv6()
     local wan_ipv6 = sys.exec("ubus call network.interface.wan status | jsonfilter -e '@[\"ipv6-address\"][0][\"address\"]'")
     return wan_ipv6:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化

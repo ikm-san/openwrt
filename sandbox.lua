@@ -18,6 +18,8 @@ local function get_wan_ipv6_global()
     return ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
 end
 
+local wan_ipv6 = get_wan_ipv6_global()
+
 -- IPv6アドレスから対応するIPv4プレフィックスを取得（修正版）
 local function find_ipv4_prefix(wan_ipv6)
     
@@ -34,23 +36,19 @@ local function find_ipv4_prefix(wan_ipv6)
     -- 変換マップから対応するIPv4プレフィックスを探す
     local ipv4_prefix = ruleprefix31[ipv6_prefix_32bit]
     if ipv4_prefix then
+            local segments = {ipv4_prefix:match("^(%d+)%.(%d*)%.?(%d*)%.?(%d*)$")} 
+            if #segments == 0 then
+                return nil, "Invalid IPv4 prefix format"
+            end
+            for i = #segments + 1, 4 do
+                segments[i] = "0"
+            end
+            return table.concat(segments, ".")
         return ipv4_prefix
     else
         return nil, "No matching IPv4 prefix found."
     end
-end
 
-
--- IPv4プレフィックスから完全なIPv4アドレスを生成する関数
-local function complete_ipv4_address(ipv4_prefix)
-    local segments = {ipv4_prefix:match("^(%d+)%.(%d*)%.?(%d*)%.?(%d*)$")} 
-    if #segments == 0 then
-        return nil, "Invalid IPv4 prefix format"
-    end
-    for i = #segments + 1, 4 do
-        segments[i] = "0"
-    end
-    return table.concat(segments, ".")
 end
 
 m = Map("ca_setup", translate("MAPE Configuration"),
@@ -60,8 +58,7 @@ s = m:section(TypedSection, "mape_test", translate("Settings"))
 s.anonymous = true
 s.addremove = false
 
-local wan_ipv6 = get_wan_ipv6_global()
-local ipv4_prefix = find_ipv4_prefix(wan_ipv6)
+
 
 o = s:option(DummyValue, "ipv6_prefix_32bit", translate("WAN IPv6 Prefix"))
 o.value = ipv6_prefix_32bit

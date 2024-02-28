@@ -22,10 +22,19 @@ local wan_ipv6 = get_wan_ipv6_global()
 
 -- IPv6アドレスから対応するIPv4プレフィックスを取得
 local function find_ipv4_prefix(wan_ipv6)
-    -- IPv6アドレスの正規化と省略された0の補完
-    local normalized_ipv6 = wan_ipv6:gsub("::", "0"):gsub(":(%x):", ":0%1:")
-    -- 先頭32ビットを取得し、対応するIPv4プレフィックスを検索
-    local hex_prefix = normalized_ipv6:gsub(":", ""):sub(1, 8)
+    -- IPv6アドレスをセグメントに分割
+    local segments = {}
+    for seg in wan_ipv6:gmatch("[a-fA-F0-9]+") do
+        table.insert(segments, string.format("%04x", tonumber(seg, 16)))
+    end
+
+    -- IPv6アドレスの正規化（省略されたセグメントの補完）
+    local full_ipv6 = table.concat(segments, ":"):gsub("::", function(s)
+        return ":" .. string.rep("0000:", 8 - #segments) -- 足りない分の0000を補う
+    end)
+
+    -- 正規化されたIPv6アドレスから先頭の32ビットを取得
+    local hex_prefix = full_ipv6:gsub(":", ""):sub(1, 8)
     local ipv4_prefix = ruleprefix31[hex_prefix]
     if ipv4_prefix then
         return ipv4_prefix
@@ -33,6 +42,7 @@ local function find_ipv4_prefix(wan_ipv6)
         return nil, "No matching IPv4 prefix found."
     end
 end
+
 
 -- Luaスクリプトでマップやルーチング設定を行う部分
 m = Map("ca_setup", translate("MAPE Configuration"),

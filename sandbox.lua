@@ -34,7 +34,6 @@ if ipv4_prefix then
     -- 計算されたIPv4プレフィックスをca_setupのmape_testセクションに保存
     uci:set("ca_setup", "mape_test", "ipv4_prefix", ipv4_prefix)
     uci:commit("ca_setup")
-    luci.sys.exec("/etc/init.d/network restart")  -- 必要に応じてネットワークを再起動
     print("IPv4 Prefix: " .. ipv4_prefix)
 else
     print("No valid IPv4 prefix found for the given IPv6 address.")

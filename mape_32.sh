@@ -17,7 +17,7 @@ NET_ADDR6=$(ip -6 addr show dev wan | grep 'inet6' | grep -v 'scope link' | awk 
 getIPv4Prefix() {
     local ipv6=$1
 
-    # IPv6アドレスの先頭32ビットを0x形式で取得
+    # IPv6アドレスの先頭32ビットを0x形式で　取得
     local prefix=$(echo $ipv6 | sed -E 's/([0-9a-fA-F]{1,4}):([0-9a-fA-F]{1,4}).*/0x\1\2/')
 
     # 対応するIPv4プレフィックスをルールから検索

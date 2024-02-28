@@ -19,14 +19,30 @@ local function get_wan_ipv6_global()
 end
 
 -- IPv6アドレスから対応するIPv4プレフィックスを取得
-local function find_ipv4_prefix(ipv6_addr)
+local function ipv6_to_ipv4_prefix(ipv6_addr)
+    -- IPv6アドレスから最初の32ビットを抽出する正規表現
+    local hex_prefix = ipv6_addr:match("^([a-fA-F0-9]{1,4}):([a-fA-F0-9]{1,4})")
+    if not hex_prefix then
+        return nil, "Invalid IPv6 address format"
+    end
+
+    -- 抽出した16進数のプレフィックスを32ビット整数に変換
+    local ipv6_prefix_32bit = tonumber(hex_prefix, 16)
+    if not ipv6_prefix_32bit then
+        return nil, "Failed to convert IPv6 prefix to 32-bit integer"
+    end
+
+    -- 32ビット整数のプレフィックスに基づいて対応するIPv4プレフィックスを探す
     for prefix, ipv4 in pairs(ipv6_prefix_map) do
-        if ipv6_addr:match("^" .. prefix) then
+        local prefix_32bit = tonumber(prefix:gsub(":", ""), 16)
+        if ipv6_prefix_32bit == prefix_32bit then
             return ipv4
         end
     end
+
     return nil
 end
+
 
 -- IPv4プレフィックスから完全なIPv4アドレスを生成する関数
 local function complete_ipv4_address(ipv4_prefix)

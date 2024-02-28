@@ -11,5 +11,5 @@ function index()
     entry({"admin", "ca_setup", "other"}, cbi("ca_setup/others"), _("設定バックアップ"), 50)
 
     -- デバッグ用
-    entry({"admin", "ca_setup", "other"}, cbi("ca_setup/sandbox"), _("テスト用"), 60)
+    entry({"admin", "ca_setup", "sandbox"}, cbi("ca_setup/sandbox"), _("テスト用"), 60)
 end

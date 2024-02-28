@@ -5,6 +5,17 @@ NET_ADDR6=$(ip -6 addr show dev wan | grep 'inet6' | grep -v 'scope link' | awk 
 PREFIX_HEX=$(echo $NET_ADDR6 | cut -d':' -f1,2 | sed -E 's/([0-9a-fA-F]+):([0-9a-fA-F]+).*/\1\2/' | tr 'a-f' 'A-F')
 PREFIX_HEX="0x$PREFIX_HEX"
 
+# ルールの定義をそのまま使用
+declare -A ruleprefix31=(
+  [0x240b0010]=106,72
+  [0x240b0012]=14,8
+  [0x240b0250]=14,10
+  [0x240b0252]=14,12
+  [0x24047a80]=133,200
+  [0x24047a84]=133,206
+)
+
+
 # IPv6アドレスの先頭32ビットを基に対応するIPv4プレフィックスを検索し、フォーマットして返す関数
 getIPv4Prefix() {
     local prefix=$1
@@ -22,12 +33,3 @@ getIPv4Prefix() {
 ipv4Prefix=$(getIPv4Prefix $PREFIX_HEX)
 echo "IPv4 Prefix: $ipv4Prefix"
 
-# ルールの定義をそのまま使用
-declare -A ruleprefix31=(
-  [0x240b0010]=106,72
-  [0x240b0012]=14,8
-  [0x240b0250]=14,10
-  [0x240b0252]=14,12
-  [0x24047a80]=133,200
-  [0x24047a84]=133,206
-)

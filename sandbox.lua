@@ -37,20 +37,18 @@ local function find_ipv4_prefix(wan_ipv6)
     local hex_prefix = full_ipv6:gsub(":", ""):sub(1, 8)
     local ipv4_prefix = ruleprefix31[hex_prefix]
 
-        if ipv4_prefix then
-        -- IPv4プレフィックスから完全なIPv4アドレスを生成
-        local ipv4_parts = {ipv4_prefix:match("^(%d+)%.(%d*)%.?(%d*)%.?(%d*)$")}
-        for i = #ipv4_parts + 1, 4 do
-            ipv4_parts[i] = "0" -- 足りないセクションを0で埋める
+    if ipv4_prefix then
+        -- IPv4プレフィックスをもとに完全なIPv4アドレスを生成
+        local ipv4_parts = {ipv4_prefix:match("^(%d+)%.(%d+)%.*(%d*)%.*(%d*)$")}
+        while #ipv4_parts < 4 do
+            table.insert(ipv4_parts, "0") -- 足りないセクションを0で埋める
         end
         local ipv4_full = table.concat(ipv4_parts, ".")
         return ipv4_full
     else
         return nil, "No matching IPv4 prefix found."
     end
-    
 end
-
 
 -- Luaスクリプトでマップやルーチング設定を行う部分
 m = Map("ca_setup", translate("MAPE Configuration"),

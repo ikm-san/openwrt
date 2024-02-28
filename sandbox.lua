@@ -1,7 +1,7 @@
 local uci = require "luci.model.uci".cursor()
 local sys = require "luci.sys"
 
--- IPv6からIPv4プレフィックスへの変換マップ（修正版）
+-- IPv6からIPv4プレフィックスへの変換マップ
 local ruleprefix31 = {
     [0x240b0010] = "106.72",
     [0x240b0012] = "14.8",
@@ -20,7 +20,7 @@ end
 
 local wan_ipv6 = get_wan_ipv6_global()
 
--- IPv6アドレスから対応するIPv4プレフィックスを取得（修正版）
+-- IPv6アドレスから対応するIPv4プレフィックスを取得
 local function find_ipv4_prefix(wan_ipv6)
     
         -- IPv6アドレスを正規化して、省略された0を補う

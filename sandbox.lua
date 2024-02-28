@@ -14,15 +14,15 @@ local ruleprefix31 = {
 -- WANインターフェースのIPv6アドレス（scope global）を取得
 local function get_wan_ipv6_global()
     local command = "ip -6 addr show dev wan | awk '/inet6/ && /scope global/ {print $2}' | cut -d'/' -f1 | head -n 1"
-    local ipv6_addr = sys.exec(command)
-    return ipv6_addr:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
+    local ipv6_global = sys.exec(command)
+    return ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
 end
 
 -- IPv6アドレスから対応するIPv4プレフィックスを取得（修正版）
-local function find_ipv4_prefix(ipv6_addr)
+local function find_ipv4_prefix(wan_ipv6)
     
         -- IPv6アドレスを正規化して、省略された0を補う
-    local full_ipv6 = ipv6_addr:gsub("::", function(s)
+    local full_ipv6 = wan_ipv6:gsub("::", function(s)
         return ":" .. string.rep("0000:", 8 - select(2, ipv6_addr:gsub(":", "")) - 1)
     end)
     full_ipv6 = full_ipv6:gsub(":(%x):", ":0%1:"):gsub(":(%x)$", ":0%1"):gsub("^:(%x):", "0%1:")
@@ -69,8 +69,8 @@ o.value = ipv6_prefix_32bit
 o = s:option(DummyValue, "hex_prefix", translate("hex_prefix"))
 o.value = hex_prefix or translate("No matching IPv4 prefix found.")
 
-o = s:option(DummyValue, "ipv6_addr", translate("ipv6 addr"))
-o.value = ipv6_addr or translate("No matching IPv4 prefix found.")
+o = s:option(DummyValue, "wan_ipv6", translate("ipv6 addr"))
+o.value = wan_ipv6 or translate("No matching IPv4 prefix found.")
 
 o = s:option(DummyValue, "ipv4_prefix", translate("Map-E IPv4 Prefix"))
 o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")

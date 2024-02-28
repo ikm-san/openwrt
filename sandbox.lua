@@ -1,14 +1,14 @@
 local uci = require "luci.model.uci".cursor()
 local sys = require "luci.sys"
 
--- MAPE IPv6からIPv4プレフィックスへの変換マップ
-local ipv6_prefix_map = {
-    ["240b:10::"] = "106.72",
-    ["240b:12::"] = "14.8",
-    ["240b:250::"] = "14.10",
-    ["240b:252::"] = "14.12",
-    ["2404:7a80::"] = "133.200",
-    ["2404:7a84::"] = "133.206"
+-- IPv6からIPv4プレフィックスへの変換マップ（修正版）
+local ruleprefix31 = {
+    [0x240b0010] = "106.72",
+    [0x240b0012] = "14.8",
+    [0x240b0250] = "14.10",
+    [0x240b0252] = "14.12",
+    [0x24047a80] = "133.200",
+    [0x24047a84] = "133.206"
 }
 
 -- WANインターフェースのIPv6アドレス（scope global）を取得
@@ -18,17 +18,19 @@ local function get_wan_ipv6_global()
     return ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
 end
 
--- IPv6アドレスから対応するIPv4プレフィックスを取得
+-- IPv6アドレスから対応するIPv4プレフィックスを取得（修正版）
 local function find_ipv4_prefix(ipv6_addr)
-    for prefix, ipv4 in pairs(ipv6_prefix_map) do
-        if ipv6_addr:match("^" .. prefix) then
-            return ipv4
-        end
+    local hex_prefix = ipv6_addr:gsub(":", ""):sub(1, 8) -- IPv6アドレスから先頭8文字（32ビット）を取得
+    local ipv6_prefix_32bit = tonumber(hex_prefix, 16) -- 16進数を数値に変換
+
+    -- 変換マップから対応するIPv4プレフィックスを探す
+    local ipv4_prefix = ruleprefix31[ipv6_prefix_32bit]
+    if ipv4_prefix then
+        return ipv4_prefix
+    else
+        return nil, "No matching IPv4 prefix found."
     end
-    return nil
 end
-
-
 
 
 -- IPv4プレフィックスから完全なIPv4アドレスを生成する関数

@@ -2,17 +2,8 @@ local uci = require "luci.model.uci".cursor()
 local ip = require "luci.ip"
 local sys = require "luci.sys"
 
--- MAPE IPv6からIPv4プレフィックスへの変換マップ
-local ipv6_prefix_map = {
-    ["240b:10::"] = "106.72",
-    ["240b:12::"] = "14.8",
-    ["240b:250::"] = "14.10",
-    ["240b:252::"] = "14.12",
-    ["2404:7a80::"] = "133.200",
-    ["2404:7a84::"] = "133.206"
-}
 
--- WANインターフェースのIPv6アドレスを取　得
+-- WANインターフェースのIPv6アドレスを取得
 local function get_wan_ipv6()
     local wan_ipv6 = sys.exec("ubus call network.interface.wan status | jsonfilter -e '@[\"ipv6-address\"][0][\"address\"]'")
     return wan_ipv6:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
@@ -51,5 +42,16 @@ function m.on_commit(map)
         uci:commit("ca_setup")
     end
 end
+
+-- MAPE IPv6からIPv4プレフィックスへの変換マップ
+local ipv6_prefix_map = {
+    ["240b:10::"] = "106.72",
+    ["240b:12::"] = "14.8",
+    ["240b:250::"] = "14.10",
+    ["240b:252::"] = "14.12",
+    ["2404:7a80::"] = "133.200",
+    ["2404:7a84::"] = "133.206"
+}
+
 
 return m

@@ -55,10 +55,10 @@ s.addremove = false
 local wan_ipv6 = get_wan_ipv6_global()
 local ipv4_prefix = find_ipv4_prefix(wan_ipv6)
 
-o = s:option(DummyValue, "ipv6_address", translate("WAN IPv6 Address"))
-o.value = wan_ipv6
+o = s:option(DummyValue, "ipv6_address", translate("WAN IPv6 Prefix"))
+o.value = ipv6_prefix_32bit
 
-o = s:option(DummyValue, "ipv4_prefix", translate("Calculated IPv4 Prefix"))
+o = s:option(DummyValue, "ipv4_prefix", translate("Map-E IPv4 Prefix"))
 o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
 
 function m.on_commit(map)

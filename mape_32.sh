@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # WANインターフェースのIPv6アドレスの先頭32ビットを0x形式で取得
-NET_ADDR6=$(ip -6 addr show dev wan | grep 'inet6' | grep -v 'scope link' | awk '{print $2}' | sed -E 's/\/.*$//' | head -n 1)
+NET_ADDR6=$(ip -6 addr show dev wan | grep 'inet6' | grep -v 'scope global' | awk '{print $2}' | sed -E 's/\/.*$//' | head -n 1)
 PREFIX_HEX=$(echo $NET_ADDR6 | cut -d':' -f1,2 | sed -E 's/([0-9a-fA-F]+):([0-9a-fA-F]+).*/\1\2/' | tr 'a-f' 'A-F')
 PREFIX_HEX="0x$PREFIX_HEX"
 

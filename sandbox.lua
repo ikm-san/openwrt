@@ -38,13 +38,16 @@ local function find_ipv4_prefix(wan_ipv6)
     local ipv4_prefix = ruleprefix31[hex_prefix]
 
     if ipv4_prefix then
-        -- IPv4プレフィックスをもとに完全なIPv4アドレスを生成
-        local ipv4_parts = {ipv4_prefix:match("^(%d+)%.(%d+)%.*(%d*)%.*(%d*)$")}
+        local ipv4_parts = {}
+        for part in ipv4_prefix:gmatch("(%d+)") do
+            table.insert(ipv4_parts, part)
+        end
+        -- 不足しているセクションを0で埋める
         while #ipv4_parts < 4 do
-            table.insert(ipv4_parts, "0") -- 足りないセクションを0で埋める
+            table.insert(ipv4_parts, "0")
         end
         local ipv4_full = table.concat(ipv4_parts, ".")
-        return ipv4_full
+        return ipv4_full -- 例: "106.72.0.0"
     else
         return nil, "No matching IPv4 prefix found."
     end

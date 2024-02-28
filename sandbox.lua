@@ -20,8 +20,16 @@ end
 
 -- IPv6アドレスから対応するIPv4プレフィックスを取得（修正版）
 local function find_ipv4_prefix(ipv6_addr)
-    local hex_prefix = ipv6_addr:gsub(":", ""):sub(1, 8) -- IPv6アドレスから先頭8文字（32ビット）を取得
-    local ipv6_prefix_32bit = tonumber(hex_prefix, 16) -- 16進数を数値に変換
+    
+        -- IPv6アドレスを正規化して、省略された0を補う
+    local full_ipv6 = ipv6_addr:gsub("::", function(s)
+        return ":" .. string.rep("0000:", 8 - select(2, ipv6_addr:gsub(":", "")) - 1)
+    end)
+    full_ipv6 = full_ipv6:gsub(":(%x):", ":0%1:"):gsub(":(%x)$", ":0%1"):gsub("^:(%x):", "0%1:")
+
+    -- 正規化されたIPv6アドレスから先頭の32ビットを取得
+    local hex_prefix = full_ipv6:gsub(":", ""):sub(1, 8)
+    local ipv6_prefix_32bit = tonumber(hex_prefix, 16)
 
     -- 変換マップから対応するIPv4プレフィックスを探す
     local ipv4_prefix = ruleprefix31[ipv6_prefix_32bit]

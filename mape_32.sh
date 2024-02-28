@@ -1,7 +1,5 @@
 #!/bin/bash
-
-# network.shの関数を利用するためにsourceする
-source ./lib/function/network.sh
+./lib/function/network.sh
 
 # IPv6アドレスの先頭32ビットを0x形式で取得し、対応するIPv4プレフィックスを返す関数
 getIPv4Prefix() {

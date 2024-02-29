@@ -742,6 +742,32 @@ local function find_ipv4_prefix(wan_ipv6)
     end
 end
 
+-- BIGLOBE専用 西か東かをチェックする関数
+local function set_peeraddr_biglobe(ipv6_global)
+    local peeraddr
+
+    -- IPv6アドレスを数値に変換する関数
+    local function ipv6_to_num(addr)
+        local num = 0
+        for part in addr:gmatch("[a-f0-9]+") do
+            num = num * 65536 + tonumber(part, 16)
+        end
+        return num
+    end
+
+    local ipv6_num = ipv6_to_num(ipv6_global)
+
+    -- 2404:7a80:: 以上かつ 2404:7a84:: 未満の場合
+    if ipv6_num >= ipv6_to_num("2404:7a80::") and ipv6_num < ipv6_to_num("2404:7a84::") then
+        peeraddr = "2001:260:700:1::1:275"
+    -- 2404:7a84:: 以上かつ 2404:7a88:: 未満の場合
+    elseif ipv6_num >= ipv6_to_num("2404:7a84::") and ipv6_num < ipv6_to_num("2404:7a88::") then
+        peeraddr = "2001:260:700:1::1:276"
+    end
+
+    return peeraddr
+end
+
 
 m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。")
 
@@ -825,6 +851,11 @@ end
             
             o = s:option(DummyValue, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
             o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
+
+local peeraddr = set_peeraddr_biglobe(ipv6_global)
+
+ o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
+            o.value = peeraddr or translate("No matching peeraddr.")
 --ここまで
 
 

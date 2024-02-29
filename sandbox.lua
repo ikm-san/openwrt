@@ -1,12 +1,13 @@
 local m, s, o
 
-local lib = require "luci.model.cbi.ca_setup.lib"
-
-m = Map("custom", translate("CA Status"), translate("Display WAN IPv6 to IPv4 Prefix Status."))
+m = Map("ca_setup", translate("CA Setup"), translate("Configure CA Settings."))
 
 s = m:section(TypedSection, "ca_status", translate("Status"))
 s.anonymous = true
 s.addremove = false
+
+-- 正しいパスを指定してlibモジュールを読み込む
+local lib = require "luci.model.cbi.ca_setup.lib"
 
 local wan_ipv6 = lib.get_wan_ipv6_global()
 local ipv4_prefix = lib.find_ipv4_prefix(wan_ipv6)
@@ -18,3 +19,4 @@ o = s:option(DummyValue, "ipv4_prefix", translate("IPv4 Prefix"))
 o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
 
 return m
+

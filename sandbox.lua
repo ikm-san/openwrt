@@ -1,6 +1,6 @@
 local m, s, o
 
-local ca_lib = require "lib"
+local lib = require "luci.model.cbi.ca_setup.lib"
 
 m = Map("custom", translate("CA Status"), translate("Display WAN IPv6 to IPv4 Prefix Status."))
 

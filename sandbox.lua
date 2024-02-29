@@ -6,9 +6,7 @@ s = m:section(TypedSection, "ca_status", translate("Status"))
 s.anonymous = true
 s.addremove = false
 
--- 正しいパスを指定してlibモジュールを読み込む
 local lib = require "luci.model.cbi.ca_setup.lib"
-
 local wan_ipv6 = lib.get_wan_ipv6_global()
 local ipv4_prefix = lib.find_ipv4_prefix(wan_ipv6)
 

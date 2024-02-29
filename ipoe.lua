@@ -748,13 +748,17 @@ local function set_peeraddr_biglobe(ipv6_global)
 
     -- IPv6アドレスを数値に変換する関数
     local function ipv6_to_num(addr)
+        if type(addr) ~= "string" then
+            error("addr must be a string")
+        end
+    
         local num = 0
         for part in addr:gmatch("[a-f0-9]+") do
             num = num * 65536 + tonumber(part, 16)
         end
         return num
     end
-
+    
     local ipv6_num = ipv6_to_num(ipv6_global)
 
     -- 2404:7a80:: 以上かつ 2404:7a84:: 未満の場合

@@ -145,6 +145,20 @@ local function configure_dslite_connection(gw_aftr)
     os.execute("/etc/init.d/firewall restart")
 end
 
+
+
+--デバッグ表示用
+        local ipv4_prefix = find_ipv4_prefix(wan_ipv6)
+
+            o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))
+            o.value = wan_ipv6 or translate("Not available")
+            
+            o = s:option(DummyValue, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
+            o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
+--ここまで
+
+
+
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function m.on_commit(map)
     local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
@@ -180,13 +194,7 @@ function m.on_commit(map)
     elseif choice_val == "ipoe_v6plus" then
        
         -- v6プラス
-        local ipv4_prefix = find_ipv4_prefix(wan_ipv6)
 
-            o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))
-            o.value = wan_ipv6 or translate("Not available")
-            
-            o = s:option(DummyValue, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
-            o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
         -- ここにいれる
     
     elseif choice_val == "ipoe_ocnvirtualconnect" then

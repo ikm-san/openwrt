@@ -1,7 +1,7 @@
 local uci = require "luci.model.uci".cursor()
 local sys = require "luci.sys"
 
--- IPv6からIPv4プレフィックスへの変換マップ
+-- IPv6からIPv4プレフックスへの変換マップ
 local ruleprefix31 = {
     ["240b0010"] = "106.72",
     ["240b0012"] = "14.8",
@@ -12,19 +12,19 @@ local ruleprefix31 = {
 }
 
 local ruleprefix38 = {
-  ["24047a8200"]= "125.196.208",
-  ["24047a8204"]= "125.196.212",
-  ["24047a8208"]= "125.198.140",
-  ["24047a820c"]= "125.198.144",
-  ["24047a8210"]= "125.198.212"
+    ["24047a8200"] = "125.196.208",
+    ["24047a8204"] = "125.196.212",
+    ["24047a8208"] = "125.198.140",
+    ["24047a820c"] = "125.198.144",
+    ["24047a8210"] = "125.198.212"
 }
 
 local ruleprefix38_20 = {
-  ["2400405000"]= "153.240.0",
-  ["2400405004"]= "153.240.16",
-  ["2400405008"]= "153.240.32",
-  ["240040500c"]= "153.240.48",
-  ["2400405010"]= "153.240.64"
+    ["2400405000"] = "153.240.0",
+    ["2400405004"] = "153.240.16",
+    ["2400405008"] = "153.240.32",
+    ["240040500c"] = "153.240.48",
+    ["2400405010"] = "153.240.64"
 }
 
 -- WANインターフェースのIPv6アドレス（scope global）を取得
@@ -38,32 +38,30 @@ local wan_ipv6 = get_wan_ipv6_global()
 
 -- IPv6アドレスから対応するIPv4プレフィックスを取得
 local function find_ipv4_prefix(wan_ipv6)
-    -- IPv6アドレスをセグメントに分割
     local segments = {}
     for seg in wan_ipv6:gmatch("[a-fA-F0-9]+") do
         table.insert(segments, string.format("%04x", tonumber(seg, 16)))
     end
 
-    -- IPv6アドレスの正規化（省略されたセグメントの補完）
     local full_ipv6 = table.concat(segments, ":"):gsub("::", function(s)
-        return ":" .. string.rep("0000:", 8 - #segments) -- 足りない分の0000を補う
+        return ":" .. string.rep("0000:", 8 - #segments)
     end)
 
-    -- 正規化されたIPv6アドレスから先頭の32ビットを取得
-    local hex_prefix = full_ipv6:gsub(":", ""):sub(1, 8)
-    local ipv4_prefix = ruleprefix31[hex_prefix]
+    -- 40ビットと32ビットのプレフィックスを取得
+    local hex_prefix_40 = full_ipv6:gsub(":", ""):sub(1, 10)
+    local hex_prefix_32 = full_ipv6:gsub(":", ""):sub(1, 8)
+
+    local ipv4_prefix = ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] or ruleprefix31[hex_prefix_32]
 
     if ipv4_prefix then
         local ipv4_parts = {}
         for part in ipv4_prefix:gmatch("(%d+)") do
             table.insert(ipv4_parts, part)
         end
-        -- 不足しているセクションを0で埋める
         while #ipv4_parts < 4 do
             table.insert(ipv4_parts, "0")
         end
-        local ipv4_full = table.concat(ipv4_parts, ".")
-        return ipv4_full -- 例: "106.72.0.0"
+        return table.concat(ipv4_parts, ".") -- 例: "106.72.0.0"
     else
         return nil, "No matching IPv4 prefix found."
     end

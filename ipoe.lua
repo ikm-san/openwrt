@@ -813,10 +813,7 @@ local function configure_dslite_connection(gw_aftr)
     uci:commit("network")
     uci:commit("firewall")
 
-    -- ネットワークサービス、DHCPサービス、ファイアウォールの再起動
-    os.execute("/etc/init.d/network restart")
-    os.execute("/etc/init.d/dnsmasq restart")
-    os.execute("/etc/init.d/firewall restart")
+
 end
 
 
@@ -850,8 +847,7 @@ function m.on_commit(map)
         uci:set("network", "wan6", "reqaddress", "try")
         uci:set("network", "wan6", "reqprefix", "auto")
         uci:commit("network")
-        luci.sys.exec("/etc/init.d/network restart")
-        
+                
     elseif choice_val == "pppoe_ipv4" then
         
         -- PPPoE設定を適用
@@ -862,9 +858,10 @@ function m.on_commit(map)
         uci:set("network", "pppoe_wan", "username", user)
         uci:set("network", "pppoe_wan", "password", pass)
         uci:set("network", "pppoe_wan", "ifname", "eth0.2")
+        uci:add_list("firewall", "@zone[1]", "network", "pppoe_wan")
         uci:commit("network")
-        luci.sys.exec("/etc/init.d/network restart")
-
+        uci:commit("firewall")
+        
     elseif choice_val == "ipoe_v6plus" then
        
         -- v6プラス
@@ -906,8 +903,13 @@ function m.on_commit(map)
         -- uci:set("network", "lan", "ifname", "eth0.1 eth0.2")  -- 例としてeth0.1とeth0.2をブリッジ
         -- uci:delete("network", "lan", "proto")  -- DHCPなどの既存設定を削除
         -- uci:commit("network")
-        -- luci.sys.exec("/etc/init.d/network restart")
     end
+
+    -- ネットワークサービス、DHCPサービス、ファイアウォールの再起動
+    os.execute("/etc/init.d/network restart")
+    os.execute("/etc/init.d/dnsmasq restart")
+    os.execute("/etc/init.d/firewall restart")
+
 end
 
 return m

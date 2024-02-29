@@ -754,8 +754,7 @@ choice:value("dhcp_auto", "DHCP自動")
 choice:value("pppoe_ipv4", "PPPoE接続")
 choice:value("ipoe_v6plus", "v6プラス")
 choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
-choice:value("ipoe_biglobe_e", "IPv6オプション EAST")
-choice:value("ipoe_biglobe_w", "IPv6オプション WEST")
+choice:value("ipoe_biglobe", "IPv6オプション")
 choice:value("ipoe_transix", "transix")
 choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
@@ -873,17 +872,10 @@ function m.on_commit(map)
         -- OCNバーチャルコネクト
         -- ここにいれる
 
-    elseif choice_val == "ipoe_biglobe_e" then
+    elseif choice_val == "ipoe_biglobe" then
         
         -- BIGLOBE IPv6オプション
         -- ここにいれる
-
-        
-    elseif choice_val == "ipoe_biglobe_w" then
-        
-        -- BIGLOBE IPv6オプション
-        -- ここにいれる
-
         
     elseif choice_val == "ipoe_transix" then
         -- transix (ds-lite)

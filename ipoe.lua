@@ -711,7 +711,7 @@ end
 
 local wan_ipv6 = get_wan_ipv6_global()
 
--- IPv6アドレスから対応するIPv4プレフィックスを取得
+-- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
 local function find_ipv4_prefix(wan_ipv6)
     local segments = {}
     for seg in wan_ipv6:gmatch("[a-fA-F0-9]+") do
@@ -727,6 +727,7 @@ local function find_ipv4_prefix(wan_ipv6)
     local hex_prefix_32 = full_ipv6:gsub(":", ""):sub(1, 8)
 
     local ipv4_prefix = ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] or ruleprefix31[hex_prefix_32]
+    local ipv6_prefixlen
 
     if ipv4_prefix then
         local ipv4_parts = {}
@@ -736,11 +737,27 @@ local function find_ipv4_prefix(wan_ipv6)
         while #ipv4_parts < 4 do
             table.insert(ipv4_parts, "0")
         end
-        return table.concat(ipv4_parts, ".") -- 例: "106.72.0.0"
+
+        -- 有効なプレフィックス長を判断
+        if ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] then
+            ipv6_prefixlen = '40'
+            ipv4_prefixlen = '24'
+        elseif ruleprefix31[hex_prefix_32] then
+            ipv6_prefixlen = '32'
+            ipv4_prefixlen = '16'
+        end
+
+        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefixlen
     else
         return nil, "No matching IPv4 prefix found."
     end
 end
+
+
+
+
+
+
 
 m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。")
 
@@ -889,10 +906,8 @@ local peeraddr = set_peeraddr(wan_ipv6)
             o.value = peeraddr or translate("No matching IPv4 prefix found.")
 
 -- 以下の変数は適切な値に置き換えてください
-local ipv4_prefix = find_ipv4_prefix(wan_ipv6)
-local ipv4_prefixlen = "IPv4プレフィックス長"
+local ipv4_prefix, ipv4_prefixlen, ipv6_prefixlen = find_ipv4_prefix()
 local ipv6_prefix = "IPv6プレフィックス"
-local ipv6_prefixlen = "IPv6プレフィックス長"
 local ealen = "EA長"
 local psidlen = "PSID長"
 local offset = "オフセット"

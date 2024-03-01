@@ -745,9 +745,10 @@ local function find_ipv4_prefix(wan_ipv6)
         elseif ruleprefix31[hex_prefix_32] then
             ipv6_prefixlen = '32'
             ipv4_prefixlen = '16'
+            ipv6_prefix = wan_ipv6:sub(1, 8) .. "::"
         end
 
-        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefixlen
+        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen
     else
         return nil, "No matching IPv4 prefix found."
     end
@@ -892,8 +893,7 @@ end
 
 
 --デバッグ表示用
-local ipv4_prefix, ipv4_prefixlen, ipv6_prefixlen = find_ipv4_prefix(wan_ipv6)
-local ipv6_prefix = "IPv6プレフィックス" -- この値は実際の処理に合わせて適切に取得する必要があります。
+local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen = find_ipv4_prefix(wan_ipv6)
 local ealen = "EA長" -- 実際のEA長を計算または取得する処理を追加
 local psidlen = "PSID長" -- 実際のPSID長を計算または取得する処理を追加
 local offset = "オフセット" -- 実際のオフセットを計算または取得する処理を追加

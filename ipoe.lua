@@ -813,6 +813,51 @@ local function configure_dslite_connection(gw_aftr)
 
 end
 
+-- map-e 接続設定関数
+function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
+    -- DHCP LAN settings
+    uci:set("dhcp", "lan", "dhcp")
+    uci:set("dhcp", "lan", "dhcpv6", "server")
+    uci:set("dhcp", "lan", "ra", "relay")
+    uci:set("dhcp", "lan", "ndp", "relay")
+    uci:set("dhcp", "lan", "force", "1")
+
+    -- WAN settings
+    uci:set("network", "wan", "auto", "0")
+
+    -- DHCP WAN6 settings
+    uci:set("dhcp", "wan6", "dhcp")
+    uci:set("dhcp", "wan6", "interface", "wan6")
+    uci:set("dhcp", "wan6", "ignore", "1")
+    uci:set("dhcp", "wan6", "master", "1")
+    uci:set("dhcp", "wan6", "ra", "relay")
+    uci:set("dhcp", "wan6", "dhcpv6", "relay")
+    uci:set("dhcp", "wan6", "ndp", "relay")
+
+    -- WANMAP settings
+    uci:set("network", "wanmap", "interface")
+    uci:set("network", "wanmap", "proto", "map")
+    uci:set("network", "wanmap", "maptype", "map-e")
+    uci:set("network", "wanmap", "peeraddr", peeraddr)
+    uci:set("network", "wanmap", "ipaddr", ipv4_prefix)
+    uci:set("network", "wanmap", "ip4prefixlen", ipv4_prefixlen)
+    uci:set("network", "wanmap", "ip6prefix", ipv6_prefix .. "::")
+    uci:set("network", "wanmap", "ip6prefixlen", ipv6_prefixlen)
+    uci:set("network", "wanmap", "ealen", ealen)
+    uci:set("network", "wanmap", "psidlen", psidlen)
+    uci:set("network", "wanmap", "offset", offset)
+    uci:set("network", "wanmap", "legacymap", "1")
+    uci:set("network", "wanmap", "mtu", "1460")
+
+    -- Firewall settings
+    local ZONE_NO = "1"
+    uci:delete("firewall", "@zone["..ZONE_NO.."]", "network", "wan")
+    uci:add_list("firewall", "@zone["..ZONE_NO.."]", "network", "wan6")
+    uci:add_list("firewall", "@zone["..ZONE_NO.."]", "network", "wanmap")
+
+    uci:commit()
+end
+
 -- Biglobe用の東西peeraddr切り分け関数
 local function set_peeraddr(wan_ipv6)
     local peeraddr
@@ -842,6 +887,15 @@ local wan_ipv6 = "2404:7a82:0000:"
 local peeraddr = set_peeraddr(wan_ipv6)
   o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
             o.value = peeraddr or translate("No matching IPv4 prefix found.")
+
+-- 以下の変数は適切な値に置き換えてください
+local ipv4_prefix = find_ipv4_prefix(wan_ipv6)
+local ipv4_prefixlen = "IPv4プレフィックス長"
+local ipv6_prefix = "IPv6プレフィックス"
+local ipv6_prefixlen = "IPv6プレフィックス長"
+local ealen = "EA長"
+local psidlen = "PSID長"
+local offset = "オフセット"
 
 --ここまで
 
@@ -883,7 +937,8 @@ function m.on_commit(map)
        
         -- v6プラス
         local peeraddr = "2404:9200:225:100::64"
-
+        -- 関数を呼び出して設定を適用
+        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
         -- ここにいれる
     
     elseif choice_val == "ipoe_ocnvirtualconnect" then

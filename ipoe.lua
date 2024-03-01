@@ -844,7 +844,7 @@ end
             o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
 
 
-local peeraddr = set_peeraddr(ipv6_global)
+local peeraddr = set_peeraddr(wan_ipv6)
   o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
             o.value = peeraddr or translate("No matching IPv4 prefix found.")
 

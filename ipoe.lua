@@ -2,7 +2,7 @@ local fs = require "nixio.fs"
 local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
 
--- IPv6からIPv4プレフックスへの変換マップ
+-- IPv6からIPv4プレフックスへの変換マップ based on http://ipv4.web.fc2.com/map-e.html
 local ruleprefix31 = {
     ["240b0010"] = "106.72",
     ["240b0012"] = "14.8",

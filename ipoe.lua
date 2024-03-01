@@ -814,7 +814,25 @@ local function configure_dslite_connection(gw_aftr)
 
 end
 
+-- Biglobe用の東西切り分け関数
+local function set_peeraddr(ipv6_global)
+    local peeraddr
+    -- IPv6アドレスから末尾2桁（16進数）を取得する
+    local hex_suffix = ipv6_global:match(":(%x%x)%x*::")
 
+    -- 16進数の末尾2桁を10進数に変換
+    local suffix_num = tonumber(hex_suffix, 16)
+
+    -- 80以上84未満の場合
+    if suffix_num >= 0x80 and suffix_num < 0x84 then
+        peeraddr = "2001:260:700:1::1:275"
+    -- 84以上88未満の場合
+    elseif suffix_num >= 0x84 and suffix_num < 0x88 then
+        peeraddr = "2001:260:700:1::1:276"
+    end
+
+    return peeraddr
+end
 
 --デバッグ表示用
         local ipv4_prefix = find_ipv4_prefix(wan_ipv6)
@@ -825,6 +843,10 @@ end
             o = s:option(DummyValue, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
             o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
 
+
+local peeraddr = set_peeraddr(ipv6_global)
+  o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
+            o.value = peeraddr or translate("No matching IPv4 prefix found.")
 
 --ここまで
 

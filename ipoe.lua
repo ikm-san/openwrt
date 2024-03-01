@@ -818,7 +818,7 @@ end
 local function set_peeraddr(wan_ipv6)
     local peeraddr
     -- IPv6アドレスから末尾2桁（16進数）を取得する
-    local hex_suffix = wan_ipv6:match(":(%x%x)%x*::")
+    local hex_suffix = wan_ipv6:match("^%x*:%x%x(%x%x):")
 
     -- 16進数の末尾2桁を10進数に変換
     local suffix_num = tonumber(hex_suffix, 16)

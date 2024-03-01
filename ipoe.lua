@@ -817,18 +817,16 @@ end
 -- Biglobe用の東西切り分け関数
 local function set_peeraddr(wan_ipv6)
     local peeraddr
-    -- IPv6アドレスから末尾2桁（16進数）を取得する
-    local hex_suffix = wan_ipv6:match("^%x*:%x%x(%x%x):")
+    -- IPv6アドレスから末尾1桁（16進数）を取得する
+    local suffix_num = wan_ipv6:match("(%x)$")
 
-    -- 16進数の末尾2桁を10進数に変換
-    local suffix_num = tonumber(hex_suffix, 16)
-
-    -- 80以上84未満の場合
-    if suffix_num >= 0x80 and suffix_num < 0x84 then
-        peeraddr = "2001:260:700:1::1:275"
-    -- 84以上88未満の場合
-    elseif suffix_num >= 0x84 and suffix_num < 0x88 then
-        peeraddr = "2001:260:700:1::1:276"
+    if suffix_num then
+        if suffix_num >= 0 and suffix_num < 4 then
+            peeraddr = "2001:260:700:1::1:275"
+        -- 4以上8未満の場合
+        elseif suffix_num >= 4 and suffix_num < 8 then
+            peeraddr = "2001:260:700:1::1:276"
+        end
     end
 
     return peeraddr

@@ -897,6 +897,8 @@ local ealen = "EA長"
 local psidlen = "PSID長"
 local offset = "オフセット"
 
+
+
 --ここまで
 
 

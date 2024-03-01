@@ -892,25 +892,42 @@ end
 
 
 --デバッグ表示用
-        local ipv4_prefix = find_ipv4_prefix(wan_ipv6)
+local ipv4_prefix, ipv4_prefixlen, ipv6_prefixlen = find_ipv4_prefix(wan_ipv6)
+local ipv6_prefix = "IPv6プレフィックス" -- この値は実際の処理に合わせて適切に取得する必要があります。
+local ealen = "EA長" -- 実際のEA長を計算または取得する処理を追加
+local psidlen = "PSID長" -- 実際のPSID長を計算または取得する処理を追加
+local offset = "オフセット" -- 実際のオフセットを計算または取得する処理を追加
 
-            o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))
-            o.value = wan_ipv6 or translate("Not available")
-            
-            o = s:option(DummyValue, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
-            o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
-
-local wan_ipv6 = "2404:7a82:0000:"
+local wan_ipv6 = "2404:7a82:0000:" -- これは例示的な値です。
 local peeraddr = set_peeraddr(wan_ipv6)
-  o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
-            o.value = peeraddr or translate("No matching IPv4 prefix found.")
 
--- 以下の変数は適切な値に置き換えてください
-local ipv4_prefix, ipv4_prefixlen, ipv6_prefixlen = find_ipv4_prefix()
-local ipv6_prefix = "IPv6プレフィックス"
-local ealen = "EA長"
-local psidlen = "PSID長"
-local offset = "オフセット"
+o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))
+o.value = wan_ipv6 or translate("Not available")
+
+o = s:option(DummyValue, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
+o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
+
+o = s:option(DummyValue, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
+o.value = ipv4_prefixlen or translate("Not available")
+
+o = s:option(DummyValue, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
+o.value = ipv6_prefixlen or translate("Not available")
+
+o = s:option(DummyValue, "ipv6_prefix", translate("IPv6 Prefix"))
+o.value = ipv6_prefix
+
+o = s:option(DummyValue, "ealen", translate("EA Length"))
+o.value = ealen
+
+o = s:option(DummyValue, "psidlen", translate("PSID Length"))
+o.value = psidlen
+
+o = s:option(DummyValue, "offset", translate("Offset"))
+o.value = offset
+
+o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
+o.value = peeraddr or translate("No matching IPv4 prefix found.")
+
 
 
 

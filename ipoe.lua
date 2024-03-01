@@ -811,27 +811,20 @@ local function configure_dslite_connection(gw_aftr)
     uci:commit("network")
     uci:commit("firewall")
 
-
 end
 
--- Biglobe用の東西切り分け関数
+-- Biglobe用の東西peeraddr切り分け関数
 local function set_peeraddr(wan_ipv6)
     local peeraddr
     local target_char = wan_ipv6:sub(9,9)
-
     if target_char then
-        -- 16進数の1桁を数値に変換
         local num = tonumber(target_char, 16)
-
-        -- 数値が0以上4未満の場合
         if num >= 0 and num < 4 then
             peeraddr = "2001:260:700:1::1:275"
-        -- 数値が4以上8未満の場合
         elseif num >= 4 and num < 8 then
             peeraddr = "2001:260:700:1::1:276"
         end
     end
-
     return peeraddr
 end
 
@@ -889,17 +882,20 @@ function m.on_commit(map)
     elseif choice_val == "ipoe_v6plus" then
        
         -- v6プラス
+        local peeraddr = "2404:9200:225:100::64"
 
         -- ここにいれる
     
     elseif choice_val == "ipoe_ocnvirtualconnect" then
         
         -- OCNバーチャルコネクト
+        local peeraddr = "2001:380:a120::9"
         -- ここにいれる
 
     elseif choice_val == "ipoe_biglobe" then
         
         -- BIGLOBE IPv6オプション
+        local peeraddr = set_peeraddr(wan_ipv6)
         -- ここにいれる
         
     elseif choice_val == "ipoe_transix" then

@@ -756,7 +756,7 @@ local function find_ipv4_prefix(wan_ipv6)
                                         -- 3セクション目が存在する場合、先頭2セクションをそのまま使用し、3セクション目の先頭2文字を使用して後ろに00を追加
                                         local third_section = string.sub(ipv6_sections[3], 1, 2) -- 3セクション目の２文字を取得
                                         prefix = prefix .. ":" .. ipv6_sections[2] .. ":" .. third_section .. "00"
-                                                function hex_to_binary(third_section)
+                                                function hex_to_binary(hex_string)
                                                     local binary_string = ""
                                                     local hex_to_bin_map = {
                                                         ["0"] = "0000", ["1"] = "0001", ["2"] = "0010", ["3"] = "0011",

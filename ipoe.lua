@@ -951,7 +951,6 @@ local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen = find_ipv4_prefi
 local ealen = "EA長" -- 実際のEA長を計算または取得する処理を追加
 local psidlen = "PSID長" -- 実際のPSID長を計算または取得する処理を追加
 local offset = "オフセット" -- 実際のオフセットを計算または取得する処理を追加
-
 local peeraddr = set_peeraddr(wan_ipv6)
 
 o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))
@@ -979,7 +978,7 @@ o = s:option(DummyValue, "offset", translate("Offset"))
 o.value = offset
 
 o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
-o.value = peeraddr or translate("No matching IPv4 prefix found.")
+o.value = peeraddr or translate("Not BIGLOBE")
 
 
 

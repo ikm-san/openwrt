@@ -753,8 +753,8 @@ local function find_ipv4_prefix(wan_ipv6)
                                     -- 先頭から48ビットを取り出し、最後の8ビットを00にする処理を正しく行う
                                     local prefix = ipv6_sections[1]
                                     if #ipv6_sections >= 3 then
-                                        -- 3セクション目が存在する場合、先頭2セクションをそのまま使用し、3セクション目の先頭4ビット(16進数で2桁)を使用して00を追加
-                                        local third_section = string.sub(ipv6_sections[3], 2, 1) -- 3セクション目の先頭4ビットを取得
+                                        -- 3セクション目が存在する場合、先頭2セクションをそのまま使用し、3セクション目の先頭2文字を使用して後ろに00を追加
+                                        local third_section = string.sub(ipv6_sections[3], 1, 2) -- 3セクション目の２文字を取得
                                         prefix = prefix .. ":" .. ipv6_sections[2] .. ":" .. third_section .. "00"
                                                     function hex_to_binary(hex_string)
                                                         local binary_string = ""
@@ -795,7 +795,7 @@ local function find_ipv4_prefix(wan_ipv6)
                 local binary_string = to_binary(third_octet)
                 ipv4_prefixlen = string.len(binary_string) + 16
                 ipv6_prefix , ipv6_prefixlen = extract_ipv6_prefix(wan_ipv6)
-                ipv6_prefixlen = 33 --デバッグ用
+                -- ipv6_prefixlen = 33 --デバッグ用
             
         elseif ruleprefix31[hex_prefix_32] then
             ipv6_prefixlen = 32

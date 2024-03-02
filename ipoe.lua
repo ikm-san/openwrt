@@ -931,7 +931,7 @@ local ealen = "EA長" -- 実際のEA長を計算または取得する処理を�
 local psidlen = "PSID長" -- 実際のPSID長を計算または取得する処理を追加
 local offset = "オフセット" -- 実際のオフセットを計算または取得する処理を追加
 
-local wan_ipv6 = "2404:7a85:2407:" -- これは例示的な値です。
+local wan_ipv6 = "2404:7a85:2407:" -- これはデバッグ用なので確認が済んだら消す必要があります。
 local peeraddr = set_peeraddr(wan_ipv6)
 
 o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))

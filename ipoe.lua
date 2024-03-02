@@ -740,7 +740,8 @@ local function find_ipv4_prefix(wan_ipv6)
 
         -- 有効なプレフィックス長を判断
         if ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] then
-            ipv6_prefixlen = '40'
+                local section3_hex = ipv6_prefix:sub(11, 12) -- 第3セクションの最初の2桁
+                local ipv6_prefixlen = string.len(string.format("%b", tonumber(section3_hex, 16))) +32
             ipv4_prefixlen = '24'
         elseif ruleprefix31[hex_prefix_32] then
             ipv6_prefixlen = '32'

@@ -781,13 +781,19 @@ local function find_ipv4_prefix(wan_ipv6)
                         -- 最後にプレフィックスの省略形を生成
                         return prefix .. "::", ipv6_prefixlen
                     end
-            
-                ipv6_prefix , ipv6_plefixlen = extract_ipv6_prefix(wan_ipv6)
+                            function to_binary(n)
+                                        if n == 0 then return "0" end
+                                        local bin = ""
+                                        while n > 0 do
+                                            bin = tostring(n % 2) .. bin
+                                            n = math.floor(n / 2)
+                                        end
+                                        return bin
+                            end
                 local third_octet = ipv4_prefix:match("^%d+%.%d+%.(%d+)") -- 第3セクションを抽出
-                local binary = string.format("%b", tonumber(third_octet)) -- 2進数に変換
-                ipv4_prefixlen = select(2, binary:gsub("0", "")):len() + 16 -- 1のビット数をカウントし、16を加える
-
-
+                local binary_string = to_binary(third_octet)
+                local ipv4_prefixlen = string.len(binary_string) + 16
+                ipv6_prefix , ipv6_plefixlen = extract_ipv6_prefix(wan_ipv6)
             
         elseif ruleprefix31[hex_prefix_32] then
             ipv6_prefixlen = '32'

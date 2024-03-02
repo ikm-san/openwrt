@@ -779,7 +779,7 @@ local function find_ipv4_prefix(wan_ipv6)
                                     end                
                                     
                         -- 最後にプレフィックスの省略形を生成
-                        return prefix .. "::", ipv6_prefixlen
+                        return prefix .. ":", ipv6_prefixlen
                     end
                             function to_binary(n)
                                         if n == 0 then return "0" end
@@ -798,7 +798,7 @@ local function find_ipv4_prefix(wan_ipv6)
         elseif ruleprefix31[hex_prefix_32] then
             ipv6_prefixlen = 32
             ipv4_prefixlen = 16
-            ipv6_prefix = wan_ipv6:sub(1, 8) .. "::"
+            ipv6_prefix = wan_ipv6:sub(1, 8) .. ":"
         end
 
         return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen

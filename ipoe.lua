@@ -951,7 +951,7 @@ end
 --デバッグ表示用
 -- local wan_ipv6 = "2400:4053:6407::" -- これはデバッグ用なので確認が済んだら消す必要があります。
 local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
-local offset = "オフセット" -- 実際のオフセットを計算または取得する処理を追加
+local offset = 4 -- 実際のオフセットを計算または取得する処理を追加
 local peeraddr = set_peeraddr(wan_ipv6)
 
 o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))
@@ -1023,7 +1023,8 @@ function m.on_commit(map)
     elseif choice_val == "ipoe_v6plus" then
        
         -- v6プラス
-          local peeraddr = "2404:9200:225:100::64"
+            local peeraddr = "2404:9200:225:100::64"
+            local offset = 4
         -- 関数を呼び出して設定を適用
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
         -- ここにいれる
@@ -1031,13 +1032,15 @@ function m.on_commit(map)
     elseif choice_val == "ipoe_ocnvirtualconnect" then
         
         -- OCNバーチャルコネクト
-           local peeraddr = "2001:380:a120::9"
+            local peeraddr = "2001:380:a120::9"
+            local offset = 6 -- OCN要確認
         -- ここにいれる
 
     elseif choice_val == "ipoe_biglobe" then
         
         -- BIGLOBE IPv6オプション
-           local peeraddr = set_peeraddr(wan_ipv6)
+            local peeraddr = set_peeraddr(wan_ipv6)
+            local offset = 4
         -- ここにいれる
         
     elseif choice_val == "ipoe_transix" then

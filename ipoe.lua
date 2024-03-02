@@ -740,7 +740,7 @@ local function find_ipv4_prefix(wan_ipv6)
 
         -- 有効なプレフィックス長を判断
         if ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] then
-                local section3_hex = ipv6_prefix:sub(11, 12) -- 第3セクションの最初の2桁
+                local section3_hex = wan_ipv6:sub(11, 12) -- 第3セクションの最初の2桁
                 ipv6_prefixlen = string.len(string.format("%b", tonumber(section3_hex, 16))) + 32
                 local third_octet = ipv4_prefix:match("^%d+%.%d+%.(%d+)") -- 第3セクションを抽出
                 local binary = string.format("%b", tonumber(third_octet)) -- 2進数に変換

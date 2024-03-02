@@ -802,8 +802,9 @@ local function find_ipv4_prefix(wan_ipv6)
         end
 
         ealen = 56 - ipv6_prefixlen
+        psidlen = 32 - ealen
         
-        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen
+        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen
     else
         return nil, "No matching IPv4 prefix found."
     end
@@ -949,8 +950,7 @@ end
 
 --デバッグ表示用
 -- local wan_ipv6 = "2400:4053:6407::" -- これはデバッグ用なので確認が済んだら消す必要があります。
-local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen = find_ipv4_prefix(wan_ipv6)
-local psidlen = "PSID長" -- 実際のPSID長を計算または取得する処理を追加
+local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
 local offset = "オフセット" -- 実際のオフセットを計算または取得する処理を追加
 local peeraddr = set_peeraddr(wan_ipv6)
 

@@ -790,7 +790,7 @@ local function find_ipv4_prefix(wan_ipv6)
                                         end
                                         return bin
                             end
-                local third_octet = ipv4_prefix:match("^%d+%.%d+%.(%d+)") -- 第3セクションを抽出
+                local third_octet = tonumber(ipv4_prefix:match("^%d+%.%d+%.(%d+)")) -- 第3セクションを数値として抽出
                 local binary_string = to_binary(third_octet)
                 local ipv4_prefixlen = string.len(binary_string) + 16
                 ipv6_prefix , ipv6_plefixlen = extract_ipv6_prefix(wan_ipv6)

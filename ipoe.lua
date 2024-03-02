@@ -949,7 +949,7 @@ end
 
 
 --デバッグ表示用
-local wan_ipv6 = "2400:4053:6407::" -- これはデバッグ用なので確認が済んだら消す必要があります。
+local wan_ipv6 = "2404:7a83:5800::" -- これはデバッグ用なので確認が済んだら消す必要があります。
 local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
 local offset = 4 -- 実際のオフセットを計算または取得する処理を追加
 local peeraddr = set_peeraddr(wan_ipv6)

@@ -769,7 +769,7 @@ local function find_ipv4_prefix(wan_ipv6)
                                     else
                                         -- 3セクション目が存在しない場合、先頭2セクションのみを使用
                                         prefix = prefix .. ":" .. ipv6_sections[2]
-                                        local ipv6_prefixlen = '32'
+                                        local ipv6_prefixlen = 32
                                     end
                                 
                                     -- 3セクション目が"00"になった場合の処理は、具体的な例に基づいて調整が必要
@@ -796,8 +796,8 @@ local function find_ipv4_prefix(wan_ipv6)
                 ipv6_prefix , ipv6_plefixlen = extract_ipv6_prefix(wan_ipv6)
             
         elseif ruleprefix31[hex_prefix_32] then
-            ipv6_prefixlen = '32'
-            ipv4_prefixlen = '16'
+            ipv6_prefixlen = 32
+            ipv4_prefixlen = 16
             ipv6_prefix = wan_ipv6:sub(1, 8) .. "::"
         end
 

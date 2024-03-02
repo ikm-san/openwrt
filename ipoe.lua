@@ -709,7 +709,7 @@ local function get_wan_ipv6_global()
     return ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
 end
 
--- local wan_ipv6 = get_wan_ipv6_global() -- WANに割り当てられているグローバルIPv6を取得
+-- local wan_ipv6 = get_wan_ipv6_global() -- WANのグローバルIPv6を取得
 local wan_ipv6 = "2404:7a83:5800:0000:0000:0000:0000:0000" -- これはデバッグ用なので確認が済んだら消す必要があります。
 
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得

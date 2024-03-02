@@ -802,7 +802,7 @@ local function find_ipv4_prefix(wan_ipv6)
         end
 
         ealen = 56 - ipv6_prefixlen
-        psidlen = 32 - ealen
+        psidlen = ealen - (32 - ipv4_prefixlen)
         
         return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen
     else

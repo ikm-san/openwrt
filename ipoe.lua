@@ -752,8 +752,8 @@ local function find_ipv4_prefix(wan_ipv6)
                                     -- 先頭から48ビットを取り出し、最後の8ビットを00にする処理を正しく行う
                                     local prefix = ipv6_sections[1]
                                     if #ipv6_sections >= 3 then
-                                        -- 3セクション目が存在する場合、先頭2セクションをそのまま使用し、3セクション目の先頭4ビット(16進数で1桁)を使用して00を追加
-                                        local third_section = string.sub(ipv6_sections[3], 1, 1) -- 3セクション目の先頭4ビットを取得
+                                        -- 3セクション目が存在する場合、先頭2セクションをそのまま使用し、3セクション目の先頭4ビット(16進数で2桁)を使用して00を追加
+                                        local third_section = string.sub(ipv6_sections[3], 2, 1) -- 3セクション目の先頭4ビットを取得
                                         prefix = prefix .. ":" .. ipv6_sections[2] .. ":" .. third_section .. "00"
                                     else
                                         -- 3セクション目が存在しない場合、先頭2セクションのみを使用
@@ -770,7 +770,7 @@ local function find_ipv4_prefix(wan_ipv6)
                     end
             
                 ipv6_prefix = extract_ipv6_prefix(wan_ipv6)
-                local section3_hex = ipv6_prefix:sub(11, 12) -- 第3セクションの最初の2桁
+                local section3_hex = wan_ipv6:sub(11, 12) -- 第3セクションの最初の2桁
                 ipv6_prefixlen = string.len(string.format("%b", tonumber(section3_hex, 16))) + 32
                 local third_octet = ipv4_prefix:match("^%d+%.%d+%.(%d+)") -- 第3セクションを抽出
                 local binary = string.format("%b", tonumber(third_octet)) -- 2進数に変換

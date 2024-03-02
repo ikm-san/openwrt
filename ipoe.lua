@@ -710,6 +710,8 @@ local function get_wan_ipv6_global()
 end
 
 -- local wan_ipv6 = get_wan_ipv6_global()
+local wan_ipv6 = "2404:7a85:2407:" -- これはデバッグ用なので確認が済んだら消す必要があります。
+
 
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
 local function find_ipv4_prefix(wan_ipv6)
@@ -926,8 +928,6 @@ end
 
 
 --デバッグ表示用
--- local wan_ipv6 = get_wan_ipv6_global()
-local wan_ipv6 = "2404:7a85:2407:" -- これはデバッグ用なので確認が済んだら消す必要があります。
 local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen = find_ipv4_prefix(wan_ipv6)
 local ealen = "EA長" -- 実際のEA長を計算または取得する処理を追加
 local psidlen = "PSID長" -- 実際のPSID長を計算または取得する処理を追加

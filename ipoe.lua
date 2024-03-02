@@ -745,6 +745,36 @@ local function find_ipv4_prefix(wan_ipv6)
                 local third_octet = ipv4_prefix:match("^%d+%.%d+%.(%d+)") -- 第3セクションを抽出
                 local binary = string.format("%b", tonumber(third_octet)) -- 2進数に変換
                 ipv4_prefixlen = select(2, binary:gsub("0", "")):len() + 16 -- 1のビット数をカウントし、16を加える
+
+                -- ipv6prefixを32ビットもしくは48ビットセクションまで抽出し48ビットフォーマットの場合は00で埋める
+                     local function extract_ipv6_prefix(wan_ipv6)
+                                    -- IPv6アドレスを":"で分割
+                                    local ipv6_sections = {}
+                                    for section in wan_ipv6:gmatch("[^:]+") do
+                                        table.insert(ipv6_sections, section)
+                                    end
+                                
+                                    -- 先頭から48ビットを取り出し、最後の8ビットを00にする処理を正しく行う
+                                    local prefix = ipv6_sections[1]
+                                    if #ipv6_sections >= 3 then
+                                        -- 3セクション目が存在する場合、先頭2セクションをそのまま使用し、3セクション目の先頭4ビット(16進数で1桁)を使用して00を追加
+                                        local third_section = string.sub(ipv6_sections[3], 1, 1) -- 3セクション目の先頭4ビットを取得
+                                        prefix = prefix .. ":" .. ipv6_sections[2] .. ":" .. third_section .. "00"
+                                    else
+                                        -- 3セクション目が存在しない場合、先頭2セクションのみを使用
+                                        prefix = prefix .. ":" .. ipv6_sections[2]
+                                    end
+                                
+                                    -- 3セクション目が"00"になった場合の処理は、具体的な例に基づいて調整が必要
+                                    if prefix:find(":00") then
+                                        -- 第3セクションが"00"の場合、省略可能なルールに従い調整
+                                        prefix = prefix:gsub(":00", "")
+                                    end                
+                        -- 最後にプレフィックスの省略形を生成
+                        return prefix .. "::"
+                    end
+                ipv6_prefix = extract_ipv6_prefix(wan_ipv6)
+            
         elseif ruleprefix31[hex_prefix_32] then
             ipv6_prefixlen = '32'
             ipv4_prefixlen = '16'

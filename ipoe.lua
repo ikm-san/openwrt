@@ -765,13 +765,12 @@ local function find_ipv4_prefix(wan_ipv6)
                                         -- 第3セクションが"00"の場合、省略可能なルールに従い調整
                                         prefix = prefix:gsub(":00", "")
                                     end                
+                                    local ipv6_prefixlen = string.len(string.format("%b", tonumber(thir_section, 16))) + 32
                         -- 最後にプレフィックスの省略形を生成
-                        return prefix .. "::"
+                        return prefix .. "::", ipv6_prefixlen
                     end
             
-                ipv6_prefix = extract_ipv6_prefix(wan_ipv6)
-                local section3_hex = wan_ipv6:sub(11, 12) -- 第3セクションの最初の2桁
-                ipv6_prefixlen = string.len(string.format("%b", tonumber(section3_hex, 16))) + 32
+                ipv6_prefix , ipv6_plefixlen = extract_ipv6_prefix(wan_ipv6)
                 local third_octet = ipv4_prefix:match("^%d+%.%d+%.(%d+)") -- 第3セクションを抽出
                 local binary = string.format("%b", tonumber(third_octet)) -- 2進数に変換
                 ipv4_prefixlen = select(2, binary:gsub("0", "")):len() + 16 -- 1のビット数をカウントし、16を加える

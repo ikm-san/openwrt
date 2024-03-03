@@ -702,6 +702,17 @@ local ruleprefix38_20 = {
     ["240041529c"] = "153.156.144"
 }
 
+-- 10進数を2進数に変換する関数
+local function dec_to_bin(dec)
+    local bin = ""
+    while dec > 0 do
+        local remainder = dec % 2
+        bin = tostring(remainder) .. bin
+        dec = math.floor(dec / 2)
+    end
+    return bin == "" and "0" or bin
+end
+
 -- WANインターフェースのIPv6アドレス（scope global）を取得
 local function get_wan_ipv6_global()
     local command = "ip -6 addr show dev wan | awk '/inet6/ && /scope global/ {print $2}' | cut -d'/' -f1 | head -n 1"
@@ -756,24 +767,11 @@ local function find_ipv4_prefix(wan_ipv6)
                                         -- 3セクション目が存在する場合、先頭2セクションをそのまま使用し、3セクション目の先頭2文字を使用して後ろに00を追加
                                         local third_section = string.sub(ipv6_sections[3], 1, 2) -- 3セクション目の２文字を取得
                                         prefix = prefix .. ":" .. ipv6_sections[2] .. ":" .. third_section .. "00"
-                                                function hex_to_binary(hex_string)
-                                                    local binary_string = ""
-                                                    local hex_to_bin_map = {
-                                                        ["0"] = "0000", ["1"] = "0001", ["2"] = "0010", ["3"] = "0011",
-                                                        ["4"] = "0100", ["5"] = "0101", ["6"] = "0110", ["7"] = "0111",
-                                                        ["8"] = "1000", ["9"] = "1001", ["A"] = "1010", ["B"] = "1011",
-                                                        ["C"] = "1100", ["D"] = "1101", ["E"] = "1110", ["F"] = "1111",
-                                                        ["a"] = "1010", ["b"] = "1011", ["c"] = "1100", ["d"] = "1101",
-                                                        ["e"] = "1110", ["f"] = "1111"
-                                                    }
-                                                    for i = 1, #hex_string do
-                                                        local hex_digit = hex_string:sub(i, i)
-                                                        binary_string = binary_string .. hex_to_bin_map[hex_digit]
-                                                    end
-                                                    return binary_string
-                                                end          
-                                        local binary_third_section = hex_to_binary(third_section)
-                                        local ipv6_prefixlen = string.len(binary_third_section) + 32
+                                        local dec_value = tonumber(third_section, 16)
+                                            -- 10進数値を関数で2進数に変換
+                                        local bin_value = dec_to_bin(dec_value)
+                                            -- ビット数を算出
+                                        local ipv6_prefixlen = #bin_value + 32
                                     else
                                         -- 3セクション目が存在しない場合、先頭2セクションのみを使用
                                         prefix = prefix .. ":" .. ipv6_sections[2]

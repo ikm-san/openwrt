@@ -20,7 +20,9 @@ function choice.write(self, section, value)
     if value == "save" then
         sys.call("cp /etc/config/network /etc/config/network_bk")
     elseif value == "restore" then
-        sys.call("cp /etc/config/network_bk /etc/config/network && /etc/init.d/network reload")
+        sys.call("chmod 600 /etc/config/network")
+        sys.call("cp /etc/config/network_bk /etc/config/network")
+        sys.call("/etc/init.d/network reload")
     end
 end
 

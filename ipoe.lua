@@ -768,7 +768,7 @@ local function find_ipv4_prefix(wan_ipv6)
                                         local full_third = string.format("%04x", tonumber(ipv6_sections[3], 16))
                                         local third_section = string.sub(full_third, 1, 2) -- 3セクション目の２文字を取得
 
-                                            if third_section > 0 then
+                                            if third_section ~= "00" then
                                                     prefix = prefix .. ":" .. ipv6_sections[2] .. ":" .. third_section .. "00"
                                                     local dec_value = tonumber(third_section, 16)
                                                         -- 10進数値を関数で2進数に変換

@@ -18,7 +18,7 @@ choice:value("restore", "設定を復元")
 
 function choice.write(self, section, value)
     if value == "save" then
-        luci.sys.exec("cp /etc/config/network /etc/config/network.old")
+        luci.sys.exec("cp /etc/config/network /etc/config/network.old2")
     elseif value == "restore" then
         if fs.stat("/etc/config/network.old") then
             luci.sys.exec("cp /etc/config/network.old /etc/config/network")

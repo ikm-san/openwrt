@@ -20,12 +20,7 @@ function choice.write(self, section, value)
     if value == "save" then
         sys.call("cp /etc/config/network /etc/config/network_bk")
     elseif value == "restore" then
-        if fs.stat("/etc/config/network_bk") then
         sys.call("cp /etc/config/network_bk /etc/config/network && /etc/init.d/network reload")
-        else
-            -- バックアップファイルが存在しない場合のエラーメッセージ
-            m.message = "バックアップファイルが見つかりません。"
-        end
     end
 end
 

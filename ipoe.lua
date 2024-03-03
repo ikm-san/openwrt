@@ -1,7 +1,6 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
--- local uci = require "luci.model.uci".cursor()
-local uci = require("uci").cursor()
+local uci = require "luci.model.uci".cursor()
 
 
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html

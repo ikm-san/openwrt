@@ -31,7 +31,7 @@ function choice.write(self, section, value)
 end
 
 function m.on_after_commit(self)
-    luci.http.redirect(luci.dispatcher.build_url("admin/network/others"))
+    luci.http.redirect(luci.dispatcher.build_url("admin/ca_setup/other"))
 end
 
 return m

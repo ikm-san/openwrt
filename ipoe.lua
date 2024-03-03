@@ -969,7 +969,7 @@ end
 
 local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
 local offset = 4 -- 実際のオフセットを計算または取得する処理を追加
-local peeraddr = set_peeraddr(wan_ipv6)
+-- local peeraddr = set_peeraddr(wan_ipv6)
 
 o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))
 o.value = wan_ipv6 or translate("Not available")

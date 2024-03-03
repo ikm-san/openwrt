@@ -767,12 +767,20 @@ local function find_ipv4_prefix(wan_ipv6)
                                         -- 3セクション目が存在する場合、先頭2セクションをそのまま使用し、3セクション目の先頭2文字を使用して後ろに00を追加
                                         local full_third = string.format("%04x", tonumber(ipv6_sections[3], 16))
                                         local third_section = string.sub(full_third, 1, 2) -- 3セクション目の２文字を取得
-                                        prefix = prefix .. ":" .. ipv6_sections[2] .. ":" .. third_section .. "00"
-                                        local dec_value = tonumber(third_section, 16)
-                                            -- 10進数値を関数で2進数に変換
-                                        local bin_value = dec_to_bin(dec_value)
-                                            -- ビット数を算出
-                                        ipv6_prefixlen = #bin_value + 32
+
+                                            if third_section > 0
+                                                    prefix = prefix .. ":" .. ipv6_sections[2] .. ":" .. third_section .. "00"
+                                                    local dec_value = tonumber(third_section, 16)
+                                                        -- 10進数値を関数で2進数に変換
+                                                    local bin_value = dec_to_bin(dec_value)
+                                                        -- ビット数を算出
+                                                    ipv6_prefixlen = #bin_value + 32
+                                            else
+                                                    -- 3セクション目が存在しない場合、先頭2セクションのみを使用
+                                                    prefix = prefix .. ":" .. ipv6_sections[2]
+                                                    ipv6_prefixlen = 32
+                                            end
+                
                                     else
                                         -- 3セクション目が存在しない場合、先頭2セクションのみを使用
                                         prefix = prefix .. ":" .. ipv6_sections[2]

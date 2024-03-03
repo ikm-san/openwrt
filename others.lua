@@ -1,5 +1,6 @@
 local sys = require "luci.sys"
 local fs = require "nixio.fs"
+local uci = require "luci.model.uci".cursor()
 
 -- Mapの初期化、'ca_setup' configファイルを使用
 m = Map("ca_setup", "ネットワーク設定のバックアップ",
@@ -11,18 +12,26 @@ s.addremove = false
 s.anonymous = true
 
 -- 'network_config'選択肢の追加 
-choice = s:option(ListValue, "network_config") 
+choice = s:option(ListValue, "network_config", "バックアップオプション")
 choice:value("save", "設定を保存")
 choice:value("restore", "設定を復元")
 
-function m.on_commit(map)
-    local choice_val = m.uci:get("ca_setup", "backup", "network_config")
-    if choice_val == "save" then
+function choice.write(self, section, value)
+    if value == "save" then
         luci.sys.exec("cp /etc/config/network /etc/config/network.old")
-    elseif choice_val == "restore" then
-        luci.sys.exec("cp /etc/config/network.old /etc/config/network")
-        luci.sys.exec("/etc/init.d/network restart")
+    elseif value == "restore" then
+        if fs.stat("/etc/config/network.old") then
+            luci.sys.exec("cp /etc/config/network.old /etc/config/network")
+            luci.sys.exec("/etc/init.d/network restart")
+        else
+            -- バックアップファイルが存在しない場合のエラーメッセージ
+            m.message = "バックアップファイルが見つかりません。"
+        end
     end
+end
+
+function m.on_after_commit(self)
+    luci.http.redirect(luci.dispatcher.build_url("admin/network/others"))
 end
 
 return m

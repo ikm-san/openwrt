@@ -886,7 +886,7 @@ local function configure_dslite_connection(gw_aftr)
         tunlink = 'wan6',
         mtu = '1460'
     })
-
+    uci:commit("network")
     -- DHCP関連設定
     uci:set("dhcp", "wan6", "dhcp")
     uci:set("dhcp", "wan6", "interface", "wan6")
@@ -895,13 +895,10 @@ local function configure_dslite_connection(gw_aftr)
     uci:set("dhcp", "wan6", "dhcpv6", "relay")
     uci:set("dhcp", "wan6", "ra", "relay")
     uci:set("dhcp", "wan6", "ndp", "relay")
+    uci:commit("dhcp")
 
     -- DS-LiteインターフェースをWANゾーンに追加
-    uci:add_list("firewall", "@zone[1]", "network", "dslite")
-
-    -- 設定のコミット
-    uci:commit("dhcp")
-    uci:commit("network")
+    uci:add_list("firewall", "@zone[1]", "network", "dslite")        
     uci:commit("firewall")
 
 end

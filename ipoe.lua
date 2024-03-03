@@ -1008,7 +1008,6 @@ o.value = peeraddr or translate("Not BIGLOBE")
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function m.on_commit(map)
     local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
-    local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
     --既存のWAN設定を削除
     deleteInterfaces()
     
@@ -1067,15 +1066,18 @@ function m.on_commit(map)
         
     elseif choice_val == "ipoe_transix" then
         -- transix (ds-lite)
-           configure_dslite_connection(gw_aftr)
+            local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
+            configure_dslite_connection(gw_aftr)
     
     elseif choice_val == "ipoe_xpass" then
         -- クロスパス (ds-lite)
-           configure_dslite_connection(gw_aftr)
+            local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
+            configure_dslite_connection(gw_aftr)
         
     elseif choice_val == "ipoe_v6connect" then
         -- v6コネクト
-           configure_dslite_connection(gw_aftr)
+            local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
+            configure_dslite_connection(gw_aftr)
         
     elseif choice_val == "bridge_mode" then
         -- ブリッジモード設定の適用

@@ -20,9 +20,9 @@ function choice.write(self, section, value)
     if value == "save" then
         fs.copy("/etc/config/network", "/etc/config/network.bk")
     elseif value == "restore" then
-        if fs.stat("/etc/config/network.old") then
+        if fs.stat("/etc/config/network.bk") then
             fs.copy("/etc/config/network.bk", "/etc/config/network")
-            luci.sys.exec("/etc/init.d/network restart")
+            os.execute("/etc/init.d/network restart")
         else
             -- バックアップファイルが存在しない場合のエラーメッセージ
             m.message = "バックアップファイルが見つかりません。"

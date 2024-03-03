@@ -19,7 +19,7 @@ choice:value("restore", "設定を復元")
 function choice.write(self, section, value)
     if value == "save" then
         -- fs.copy("/etc/config/network", "/etc/config/network.bk")
-        sys.call("cp /etc/config/network /etc/config/network.bk")
+        sys.call("cp /etc/config/network /etc/config/network_bk")
     elseif value == "restore" then
         if fs.stat("/etc/config/network_bk") then
         -- fs.copy("/etc/config/network.bk", "/etc/config/network")

@@ -928,19 +928,20 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     uci:set("dhcp", "wan6", "ndp", "relay")
 
     -- WANMAP settings
-    uci:set("network", "wanmap", "interface")
-    uci:set("network", "wanmap", "proto", "map")
-    uci:set("network", "wanmap", "maptype", "map-e")
-    uci:set("network", "wanmap", "peeraddr", peeraddr)
-    uci:set("network", "wanmap", "ipaddr", ipv4_prefix)
-    uci:set("network", "wanmap", "ip4prefixlen", ipv4_prefixlen)
-    uci:set("network", "wanmap", "ip6prefix", ipv6_prefix .. "::")
-    uci:set("network", "wanmap", "ip6prefixlen", ipv6_prefixlen)
-    uci:set("network", "wanmap", "ealen", ealen)
-    uci:set("network", "wanmap", "psidlen", psidlen)
-    uci:set("network", "wanmap", "offset", offset)
-    uci:set("network", "wanmap", "legacymap", "1")
-    uci:set("network", "wanmap", "mtu", "1460")
+uci:section("network", "interface", "wanmap", {
+    proto = "map",
+    maptype = "map-e",
+    peeraddr = peeraddr,
+    ipaddr = ipv4_prefix,
+    ip4prefixlen = ipv4_prefixlen,
+    ip6prefix = ipv6_prefix .. "::",
+    ip6prefixlen = ipv6_prefixlen,
+    ealen = ealen,
+    psidlen = psidlen,
+    offset = offset,
+    legacymap = "1",
+    mtu = "1460"
+})
 
     -- Firewall settings
     local ZONE_NO = "1"
@@ -1030,13 +1031,14 @@ function choice.write(self, section, value)
         -- PPPoE設定を適用
         local user = m.uci:get("ca_setup", "ipoe", "username")
         local pass = m.uci:get("ca_setup", "ipoe", "password")
-        uci:set("network", "pppoe_wan", "interface")
-        uci:set("network", "pppoe_wan", "proto", "pppoe")
-        uci:set("network", "pppoe_wan", "username", user)
-        uci:set("network", "pppoe_wan", "password", pass)
-        uci:set("network", "pppoe_wan", "ifname", "eth0.2")
-        uci:add_list("firewall", "@zone[1]", "network", "pppoe_wan")
-        uci:commit("network")
+         uci:section("network", "interface", "pppoe_wan", {
+            proto = "pppoe",
+            username = user,
+            password = pass,
+            ifname = "eth0.2"
+        })
+        uci:commit("network")        
+        uci:add_list("firewall", "@zone[1]", "network", "pppoe_wan")        
         uci:commit("firewall")
         
     elseif value == "ipoe_v6plus" then

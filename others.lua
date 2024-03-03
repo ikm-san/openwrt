@@ -18,15 +18,13 @@ choice:value("restore", "設定を復元")
 
 function choice.write(self, section, value)
     if value == "save" then
-        fs.copy("/etc/config/network", "/etc/config/network.bk")
-        fs.copy("/etc/config/dhcp", "/etc/config/dhcp.bk")
-        fs.copy("/etc/config/firewall", "/etc/config/firewall.bk")
+        -- fs.copy("/etc/config/network", "/etc/config/network.bk")
+        sys.call("cp /etc/config/network /etc/config/network.bk")
     elseif value == "restore" then
         if fs.stat("/etc/config/network.bk") then
-        fs.copy("/etc/config/network.bk", "/etc/config/network")
-        fs.copy("/etc/config/dhcp.bk", "/etc/config/dhcp")
-        fs.copy("/etc/config/firewall.bk", "/etc/config/firewall")
-            os.execute("/etc/init.d/network restart")
+        -- fs.copy("/etc/config/network.bk", "/etc/config/network")
+        sys.call("cp /etc/config/network.bk /etc/config/network && /etc/init.d/network reload")
+        --    os.execute("/etc/init.d/network restart")
         else
             -- バックアップファイルが存在しない場合のエラーメッセージ
             m.message = "バックアップファイルが見つかりません。"

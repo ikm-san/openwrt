@@ -1010,7 +1010,7 @@ o.value = peeraddr or translate("Not BIGLOBE")
 function choice.write(self, section, value)
     -- local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
     --既存のWAN設定を削除
-    deleteInterfaces()
+    --deleteInterfaces()
     
     if value == "dhcp_auto" then
 
@@ -1090,9 +1090,7 @@ function choice.write(self, section, value)
     end
 
     -- ネットワークサービス、DHCPサービス、ファイアウォールの再起動
-    os.execute("/etc/init.d/network restart")
-    os.execute("/etc/init.d/dnsmasq restart")
-    os.execute("/etc/init.d/firewall restart")
+    -- os.execute("/etc/init.d/network restart && /etc/init.d/dnsmasq restart && /etc/init.d/firewall restart")
 
 end
 

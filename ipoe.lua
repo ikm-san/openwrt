@@ -771,11 +771,11 @@ local function find_ipv4_prefix(wan_ipv6)
                                             -- 10進数値を関数で2進数に変換
                                         local bin_value = dec_to_bin(dec_value)
                                             -- ビット数を算出
-                                        local ipv6_prefixlen = #bin_value + 32
+                                        ipv6_prefixlen = #bin_value + 32
                                     else
                                         -- 3セクション目が存在しない場合、先頭2セクションのみを使用
                                         prefix = prefix .. ":" .. ipv6_sections[2]
-                                        local ipv6_prefixlen = 32
+                                        ipv6_prefixlen = 32
                                     end
                                 
                                     -- 3セクション目が"00"になった場合の処理は、具体的な例に基づいて調整が必要
@@ -784,9 +784,10 @@ local function find_ipv4_prefix(wan_ipv6)
                                         prefix = prefix:gsub(":00", "")
                                     end                
                                     
-                        -- 最後にプレフィックスの省略形を生成
-                        return prefix .. ":", ipv6_prefixlen
-                    end
+                            -- 最後にプレフィックスの省略形を生成
+                            return prefix .. ":", ipv6_prefixlen
+                        end
+            
                             function to_binary(n)
                                         if n == 0 then return "0" end
                                         local bin = ""

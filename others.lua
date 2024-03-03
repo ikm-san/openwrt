@@ -1,7 +1,6 @@
 local sys = require "luci.sys"
 local fs = require "nixio.fs"
 local uci = require "luci.model.uci".cursor()
-local sysinit = require "luci.sys.init"
 
 -- Mapの初期化、'ca_setup' configファイルを使用
 m = Map("ca_setup", "ネットワーク設定のバックアップ",
@@ -23,7 +22,7 @@ function choice.write(self, section, value)
     elseif value == "restore" then
         if fs.stat("/etc/config/network.old") then
             fs.copy("/etc/config/network.bk", "/etc/config/network")
-            sysinit.restart("network")
+            luci.sys.exec("/etc/init.d/network restart")
         else
             -- バックアップファイルが存在しない場合のエラーメッセージ
             m.message = "バックアップファイルが見つかりません。"

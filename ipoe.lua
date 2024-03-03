@@ -1010,11 +1010,11 @@ o.value = peeraddr or translate("Not BIGLOBE")
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 -- function m.on_commit(map)
 function choice.write(self, section, value)
-    local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
+    -- local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
     --既存のWAN設定を削除
     deleteInterfaces()
     
-    if choice_val == "dhcp_auto" then
+    if value == "dhcp_auto" then
 
         -- DHCP自動設定を適用
         uci:set("network", "wan", "interface")
@@ -1025,7 +1025,7 @@ function choice.write(self, section, value)
         uci:set("network", "wan6", "reqprefix", "auto")
         uci:commit("network")
                 
-    elseif choice_val == "pppoe_ipv4" then
+    elseif value == "pppoe_ipv4" then
         
         -- PPPoE設定を適用
         local user = m.uci:get("ca_setup", "ipoe", "username")
@@ -1039,7 +1039,7 @@ function choice.write(self, section, value)
         uci:commit("network")
         uci:commit("firewall")
         
-    elseif choice_val == "ipoe_v6plus" then
+    elseif value == "ipoe_v6plus" then
        
         -- v6プラス
             local peeraddr = "2404:9200:225:100::64"
@@ -1049,7 +1049,7 @@ function choice.write(self, section, value)
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
         -- ここにいれる
     
-    elseif choice_val == "ipoe_ocnvirtualconnect" then
+    elseif value == "ipoe_ocnvirtualconnect" then
         
         -- OCNバーチャルコネクト
             local peeraddr = "2001:380:a120::9"
@@ -1058,7 +1058,7 @@ function choice.write(self, section, value)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
         -- ここにいれる
 
-    elseif choice_val == "ipoe_biglobe" then
+    elseif value == "ipoe_biglobe" then
         
         -- BIGLOBE IPv6オプション
             local peeraddr = set_peeraddr(wan_ipv6)
@@ -1067,22 +1067,22 @@ function choice.write(self, section, value)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
         -- ここにいれる
         
-    elseif choice_val == "ipoe_transix" then
+    elseif value == "ipoe_transix" then
         -- transix (ds-lite)
             local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
             configure_dslite_connection(gw_aftr)
     
-    elseif choice_val == "ipoe_xpass" then
+    elseif value == "ipoe_xpass" then
         -- クロスパス (ds-lite)
             local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
             configure_dslite_connection(gw_aftr)
         
-    elseif choice_val == "ipoe_v6connect" then
+    elseif value == "ipoe_v6connect" then
         -- v6コネクト
             local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
             configure_dslite_connection(gw_aftr)
         
-    elseif choice_val == "bridge_mode" then
+    elseif value == "bridge_mode" then
         -- ブリッジモード設定の適用
         -- uci:set("network", "lan", "type", "bridge")
         -- uci:set("network", "lan", "ifname", "eth0.1 eth0.2")  -- 例としてeth0.1とeth0.2をブリッジ

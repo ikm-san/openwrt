@@ -21,9 +21,9 @@ function choice.write(self, section, value)
         -- fs.copy("/etc/config/network", "/etc/config/network.bk")
         sys.call("cp /etc/config/network /etc/config/network.bk")
     elseif value == "restore" then
-        if fs.stat("/etc/config/network.bk") then
+        if fs.stat("/etc/config/network_bk") then
         -- fs.copy("/etc/config/network.bk", "/etc/config/network")
-        sys.call("cp /etc/config/network.bk /etc/config/network && /etc/init.d/network reload")
+        sys.call("cp /etc/config/network_bk /etc/config/network && /etc/init.d/network reload")
         --    os.execute("/etc/init.d/network restart")
         else
             -- バックアップファイルが存在しない場合のエラーメッセージ

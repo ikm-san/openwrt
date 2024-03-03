@@ -860,7 +860,7 @@ password:depends("wan_setup", "pppoe_ipv4")
 
 -- インターフェース設定を削除する関数
 local function deleteInterfaces()
-    local interfaces = {"wan", "wan6", "wanmap", "pppoe_wan", "ds-lite", "map-e"}
+    local interfaces = {"wanmap", "pppoe_wan", "ds-lite", "map-e"}
     for _, interface in ipairs(interfaces) do
         uci:delete("network", interface)
         uci:commit("network")

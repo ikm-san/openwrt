@@ -1043,6 +1043,7 @@ function m.on_commit(map)
             local peeraddr = "2404:9200:225:100::64"
             local offset = 4
         -- 関数を呼び出して設定を適用
+        local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
         -- ここにいれる
     
@@ -1051,13 +1052,17 @@ function m.on_commit(map)
         -- OCNバーチャルコネクト
             local peeraddr = "2001:380:a120::9"
             local offset = 6 -- OCN要確認
+            local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
+            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
         -- ここにいれる
 
     elseif choice_val == "ipoe_biglobe" then
         
         -- BIGLOBE IPv6オプション
             local peeraddr = set_peeraddr(wan_ipv6)
-            local offset = 4
+            local offset = 4    
+            local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
+            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
         -- ここにいれる
         
     elseif choice_val == "ipoe_transix" then

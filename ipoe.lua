@@ -1,6 +1,8 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
-local uci = require "luci.model.uci".cursor()
+-- local uci = require "luci.model.uci".cursor()
+local uci = require("uci").cursor()
+
 
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html
 local ruleprefix31 = {
@@ -862,6 +864,7 @@ local function deleteInterfaces()
     local interfaces = {"wan", "wan6", "wanmap", "pppoe_wan", "ds-lite", "map-e"}
     for _, interface in ipairs(interfaces) do
         uci:delete("network", interface)
+        uci:commit("network")
     end
 end
 

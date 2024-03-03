@@ -1008,7 +1008,8 @@ o.value = peeraddr or translate("Not BIGLOBE")
 
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作
-function m.on_commit(map)
+-- function m.on_commit(map)
+function choice.write(self, section, value)
     local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
     --既存のWAN設定を削除
     deleteInterfaces()
@@ -1094,6 +1095,10 @@ function m.on_commit(map)
     os.execute("/etc/init.d/dnsmasq restart")
     os.execute("/etc/init.d/firewall restart")
 
+end
+
+function m.on_after_commit(self)
+    luci.http.redirect(luci.dispatcher.build_url("admin/ca_setup/ipoe"))
 end
 
 return m

@@ -721,7 +721,7 @@ local function get_wan_ipv6_global()
 end
 
 -- local wan_ipv6 = get_wan_ipv6_global() -- WANのグローバルIPv6を取得
-local wan_ipv6 = "2404:7a87:00a4:1000:1000:1000:1000:1000" -- これはデバッグ用なので確認が済んだら消す必要があります。83 58
+local wan_ipv6 = "2404:7a87:a4:1000:1000:1000:1000:1000" -- これはデバッグ用なので確認が済んだら消す必要があります。83 58
 
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
 local function find_ipv4_prefix(wan_ipv6)

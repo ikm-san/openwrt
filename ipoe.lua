@@ -1086,13 +1086,12 @@ function choice.write(self, section, value)
     end
 
     -- ネットワークサービス、DHCPサービス、ファイアウォールの再起動
-    --デバッグ
-    -- os.execute("/etc/init.d/network restart && /etc/init.d/dnsmasq restart && /etc/init.d/firewall restart")
+    os.execute("/etc/init.d/network restart && /etc/init.d/dnsmasq restart && /etc/init.d/firewall restart")
 
 end
 
 function m.on_after_commit(self)
-    luci.http.redirect(luci.dispatcher.build_url("admin/ca_setup/ipoe"))
+    luci.http.redirect(luci.dispatcher.build_url("admin/"))
 end
 
 return m

@@ -11,6 +11,8 @@ opkg install map
 opkg install ds-lite 
 
 #CAセットアップメニュー用のファイル、キャッシュのクリア、Luciサービス再起動
+mkdir -p /usr/lib/lua/luci/controller/
+mkdir -p /usr/lib/lua/luci/model/cbi/ca_setup/
 wget -O /usr/lib/lua/luci/controller/ca_setup.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup.lua
 wget -O /usr/lib/lua/luci/model/cbi/ca_setup/ipoe.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/ipoe.lua
 wget -O /usr/lib/lua/luci/model/cbi/ca_setup/sandbox.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/sandbox.lua
@@ -21,3 +23,4 @@ rm -rf /tmp/luci-*
 ?
 opkg install lua luci-base
 opkg install liblucihttp-lua
+

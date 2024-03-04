@@ -19,3 +19,4 @@ rm -rf /tmp/luci-*
 /etc/init.d/uhttpd restart
 
 
+chmod +x /usr/bin/restore_network.sh

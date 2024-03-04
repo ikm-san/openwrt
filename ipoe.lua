@@ -898,8 +898,6 @@ local function configure_dslite_connection(gw_aftr)
     uci:commit("dhcp")
 
     -- DS-LiteインターフェースをWANゾーンに追加
-    -- uci:add_list("firewall", "@zone[1]", "network", "dslite")        
-    -- uci:commit("firewall")
     uci:set_list("firewall", "@zone[1]", "network", {"dslite"})
     uci:commit("firewall")
 
@@ -945,10 +943,8 @@ uci:section("network", "interface", "wanmap", {
     -- Firewall settings
     local ZONE_NO = "1"
     uci:delete("firewall", "@zone["..ZONE_NO.."]", "network", "wan")
-    uci:add_list("firewall", "@zone["..ZONE_NO.."]", "network", "wan6")
-    uci:add_list("firewall", "@zone["..ZONE_NO.."]", "network", "wanmap")
-
-    uci:commit()
+    uci:set_list("firewall", "@zone["..ZONE_NO.."]", "network", {"wan6", "wanmap"})
+    uci:commit("firewall")
 end
 
 -- Biglobe用の東西peeraddr切り分け関数
@@ -1010,10 +1006,7 @@ o.value = peeraddr or translate("Not BIGLOBE")
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 -- function m.on_commit(map)
 function choice.write(self, section, value)
-    -- local choice_val = m.uci:get("ca_setup", "ipoe", "wan_setup")
-    --既存のWAN設定を削除
-    --デバッグ
-    --deleteInterfaces()
+        deleteInterfaces()
     
     if value == "dhcp_auto" then
 
@@ -1038,7 +1031,7 @@ function choice.write(self, section, value)
             ifname = "eth0.2"
         })
         uci:commit("network")        
-        uci:add_list("firewall", "@zone[1]", "network", "pppoe_wan")        
+        uci:set_list("firewall", "@zone[1]", "network", {"pppoe_wan"})     
         uci:commit("firewall")
         
     elseif value == "ipoe_v6plus" then

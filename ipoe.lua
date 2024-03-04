@@ -1037,6 +1037,7 @@ function choice.write(self, section, value)
     elseif value == "ipoe_v6plus" then
        
         -- v6プラス
+            local wan_ipv6 = get_wan_ipv6_global()
             local peeraddr = "2404:9200:225:100::64"
             local offset = 4
         -- 関数を呼び出して設定を適用

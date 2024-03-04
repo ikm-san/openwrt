@@ -913,9 +913,6 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     uci:set("dhcp", "lan", "ndp", "relay")
     uci:set("dhcp", "lan", "force", "1")
 
-    -- WAN settings
-    uci:set("network", "wan", "auto", "0")
-
     -- DHCP WAN6 settings
     uci:set("dhcp", "wan6", "dhcp")
     uci:set("dhcp", "wan6", "interface", "wan6")
@@ -924,22 +921,27 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     uci:set("dhcp", "wan6", "ra", "relay")
     uci:set("dhcp", "wan6", "dhcpv6", "relay")
     uci:set("dhcp", "wan6", "ndp", "relay")
+    uci:commit("dhcp")  
+
+    -- WAN settings
+    uci:set("network", "wan", "auto", "0")
 
     -- WANMAP settings
-uci:section("network", "interface", "wanmap", {
-    proto = "map",
-    maptype = "map-e",
-    peeraddr = peeraddr,
-    ipaddr = ipv4_prefix,
-    ip4prefixlen = ipv4_prefixlen,
-    ip6prefix = ipv6_prefix .. "::",
-    ip6prefixlen = ipv6_prefixlen,
-    ealen = ealen,
-    psidlen = psidlen,
-    offset = offset,
-    legacymap = "1",
-    mtu = "1460"
-})
+    uci:section("network", "interface", "wanmap", {
+        proto = "map",
+        maptype = "map-e",
+        peeraddr = peeraddr,
+        ipaddr = ipv4_prefix,
+        ip4prefixlen = ipv4_prefixlen,
+        ip6prefix = ipv6_prefix .. "::",
+        ip6prefixlen = ipv6_prefixlen,
+        ealen = ealen,
+        psidlen = psidlen,
+        offset = offset,
+        legacymap = "1",
+        mtu = "1460"
+    })
+    uci:commit("network") 
 
     -- Firewall settings
     local ZONE_NO = "1"
@@ -1114,9 +1116,8 @@ function choice.write(self, section, value)
             luci.sys.reboot()
     end
 
-    -- ネットワークサービス、DHCPサービス、ファイアウォールの再起動
-    os.execute("/etc/init.d/network restart && /etc/init.d/dnsmasq restart && /etc/init.d/firewall restart")
-
+            -- デバイスを再起動する
+            luci.sys.reboot()
 end
 
 function m.on_after_commit(self)

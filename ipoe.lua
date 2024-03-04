@@ -1083,6 +1083,33 @@ function choice.write(self, section, value)
         -- uci:set("network", "lan", "ifname", "eth0.1 eth0.2")  -- 例としてeth0.1とeth0.2をブリッジ
         -- uci:delete("network", "lan", "proto")  -- DHCPなどの既存設定を削除
         -- uci:commit("network")
+        -- これらのサービスはダムAPでは実行されません
+            local services = {"firewall", "dnsmasq", "odhcpd"}
+            for _, service in ipairs(services) do
+                if sys.init.enabled(service) then
+                    sys.init.stop(service)
+                    sys.init.disable(service)
+                end
+            end
+            
+            -- LANインターフェースをDHCPクライアントに切り替える
+            uci:set("network", "lan", "proto", "dhcp")
+            uci:delete("network", "wan")
+            uci:delete("network", "wan6")
+            uci:delete("network", "lan", "ipaddr")
+            uci:delete("network", "lan", "netmask")
+            
+            -- ホスト名を"WifiAP"に変更する
+            uci:set("system", "@system[0]", "hostname", "WifiAP")
+            
+            -- すべての変更をコミットする
+            uci:commit()
+            
+            -- ファイアウォールの設定を削除する
+            os.execute("mv /etc/config/firewall /etc/config/firewall.unused")
+            
+            -- デバイスを再起動する
+            luci.sys.reboot()
     end
 
     -- ネットワークサービス、DHCPサービス、ファイアウォールの再起動

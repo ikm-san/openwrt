@@ -20,7 +20,9 @@ function choice.write(self, section, value)
     if value == "save" then
         sys.call("cp /etc/config/network /etc/config/network_bk")
     elseif value == "restore" then
-        sys.call("/usr/bin/restore_network.sh")
+sys.call("cp /etc/config/network /etc/config/network_bk")
+
+                -- sys.call("/usr/bin/restore_network.sh")
     end
 end
 

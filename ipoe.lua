@@ -933,7 +933,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
         peeraddr = peeraddr,
         ipaddr = ipv4_prefix,
         ip4prefixlen = ipv4_prefixlen,
-        ip6prefix = ipv6_prefix .. "::",
+        ip6prefix = ipv6_prefix,
         ip6prefixlen = ipv6_prefixlen,
         ealen = ealen,
         psidlen = psidlen,

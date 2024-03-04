@@ -849,7 +849,7 @@ choice:value("ipoe_biglobe", "IPv6オプション")
 choice:value("ipoe_transix", "transix")
 choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
-choice:value("bridge_mode", "ブリッジモード")
+choice:value("bridge_mode", "ブリッジ・APモード")
 
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
 username = s:option(Value, "username", "PPPoE ユーザー名")

@@ -950,8 +950,8 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
         psidlen = psidlen,
         offset = offset,
         legacymap = "1",
-        mtu = "1460"
-        tunlink= "wan6"
+        mtu = "1460",
+        tunlink= "wan6",
         encaplimit = "ignore" --v6プラスのみ？
     })
     uci:commit("network") 

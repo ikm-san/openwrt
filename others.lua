@@ -17,12 +17,11 @@ choice:value("save", "設定を保存")
 choice:value("restore", "設定を復元")
 
 function choice.write(self, section, value)
+    sys.call("logger -t luci 'choice.write called with value: " .. value .. "'")
     if value == "save" then
         sys.call("cp /etc/config/network /etc/config/network_bk")
     elseif value == "restore" then
-sys.call("cp /etc/config/network /etc/config/network_bk")
-
-                -- sys.call("/usr/bin/restore_network.sh")
+        sys.call("/usr/bin/restore_network.sh")
     end
 end
 

@@ -721,7 +721,7 @@ local function get_wan_ipv6_global()
     return ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
 end
 
-wan_ipv6 = get_wan_ipv6_global() -- WANのグローバルIPv6を取得
+local wan_ipv6 = get_wan_ipv6_global() -- WANのグローバルIPv6を取得
 -- local wan_ipv6 = "2404:7a87:a4:1000:1000:1000:1000:1000" -- これはデバッグ用なので確認が済んだら消す必要があります。83 58
 
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
@@ -1037,6 +1037,7 @@ function choice.write(self, section, value)
     elseif value == "ipoe_v6plus" then
        
         -- v6プラス
+            wan_ipv6 = get_wan_ipv6_global()
             peeraddr = "2404:9200:225:100::64"
             offset = 4
         -- 関数を呼び出して設定を適用

@@ -24,3 +24,5 @@ rm -rf /tmp/luci-*
 opkg install lua luci-base
 opkg install liblucihttp-lua
 
+Clear-Content .ssh\known_hosts -Force
+

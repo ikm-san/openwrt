@@ -4,12 +4,10 @@ cp /etc/config/network /etc/config/network.old
 
 #不足している場合に備え、必要なソフトウェアのインストール
 opkg update
-opkg install lua luci-base
 opkg install luci-lua-runtime
-opkg install liblucihttp-lua
 opkg install luci-app-uhttpd
 opkg install luci-proto-ipv6 
-opkg install mape
+opkg install map
 opkg install ds-lite 
 
 #CAセットアップメニュー用のファイル、キャッシュのクリア、Luciサービス再起動
@@ -19,3 +17,7 @@ wget -O /usr/lib/lua/luci/model/cbi/ca_setup/sandbox.lua https://raw.githubuserc
 wget -O /etc/config/ca_setup https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup
 rm -rf /tmp/luci-*
 /etc/init.d/uhttpd restart
+
+?
+opkg install lua luci-base
+opkg install liblucihttp-lua

@@ -723,6 +723,11 @@ end
 
 local wan_ipv6 = {}
 local wan_ipv6 = get_wan_ipv6_global() -- WANのグローバルIPv6を取得
+
+-- Pattern to match the first four sections of an IPv6 address
+local pattern = "^([0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
+local ipv6_56 = wan_ipv6:match(pattern)
+
 -- local wan_ipv6 = "2404:7a87:a4:1000:1000:1000:1000:1000" -- これはデバッグ用なので確認が済んだら消す必要があります。83 58
 
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
@@ -925,7 +930,13 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
 
     -- WAN settings
     uci:set("network", "wan", "auto", "0")
-
+    
+    -- WAN6 settings
+    uci:set("network", "wan6", "proto", "dhcpv6")
+    uci:set("network", "wan6", "reqaddress", "try")
+    uci:set("network", "wan6", "reqprefix", "auto")
+    uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "::/56")
+    
     -- WANMAP settings
     uci:section("network", "interface", "wanmap", {
         proto = "map",
@@ -940,6 +951,8 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
         offset = offset,
         legacymap = "1",
         mtu = "1460"
+        tunlink= "wan6"
+        encaplimit = "ignore" --v6プラスのみ？
     })
     uci:commit("network") 
 

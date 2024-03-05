@@ -36,6 +36,7 @@ function choice.write(self, section, value)
             if dev_data[".type"] == "wifi-device" and not dev_data["disabled"] then
                 uci:set("wireless", dev, "country", "JP")
                 uci:set("wireless", dev, "txpower", "10")
+                uci:set("wireless", dev, "disabled", "0")
     
                 -- 現存するwifi-ifaceセクションを検索
                 local iface_section = nil

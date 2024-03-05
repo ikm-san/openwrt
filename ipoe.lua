@@ -718,11 +718,18 @@ end
 local function get_wan_ipv6_global()
     local command = "ip -6 addr show dev wan | awk '/inet6/ && /scope global/ {print $2}' | cut -d'/' -f1 | head -n 1"
     local ipv6_global = sys.exec(command)
-    return ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
-end
+    local normalized_ipv6 = ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
 
-local wan_ipv6 = {}
+    -- IPv6アドレスが見つからない場合は0を返す
+    if normalized_ipv6 == nil or normalized_ipv6 == '' then
+        return '0'
+    else
+        return normalized_ipv6
+    end
+end
+-- local wan_ipv6 = {}
 local wan_ipv6 = get_wan_ipv6_global() -- WANのグローバルIPv6を取得
+
 
 -- Pattern to match the first four sections of an IPv6 address
 local pattern = "^([0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
@@ -1120,12 +1127,13 @@ function choice.write(self, section, value)
             
     end
 
-            -- デバイスを再起動する
-            luci.sys.reboot()
+
 end
 
 function m.on_after_commit(self)
-    luci.http.redirect(luci.dispatcher.build_url("admin/"))
+        -- デバイスを再起動する
+        luci.sys.reboot()
+        luci.http.redirect(luci.dispatcher.build_url("admin/"))
 end
 
 return m

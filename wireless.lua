@@ -28,6 +28,11 @@ ssid:depends("network_config", "wifi")
 password:depends("network_config", "wifi")
 
 
+-- メッシュWiFi子機設定
+msg_text = s:option(DummyValue, "smg_text", "取扱注意")
+msg_text.default = "※Dumb APになるため注意"
+msg_text:depends("network_config", "mesh_child")
+
 function choice.write(self, section, value)
     
     if value == "wifi" then
@@ -72,7 +77,7 @@ function choice.write(self, section, value)
     
         -- 設定の保存と適用
         uci:commit("wireless")
-        sys.call("wifi reload")
+        luci.sys.reboot()
 
        
     elseif value == "mesh_parent" then

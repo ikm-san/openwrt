@@ -72,7 +72,6 @@ function choice.write(self, section, value)
         -- 設定の保存と適用
         uci:commit("wireless")
         sys.call("wifi reload")
-    end
 
        
     elseif value == "mesh_parent" then

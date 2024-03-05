@@ -48,15 +48,18 @@ function apply.write(self, section)
                         uci:set("wireless", iface_section, "disabled", "0") -- Enable wireless
                     end
                 end
+
+            
+        -- 設定の保存と適用
+        uci:commit("wireless")
+        sys.call("wifi reload")
+        
     elseif value == "mesh_parent" then
         -- メッシュWiFi親機設定を適用する処理
     elseif value == "mesh_child" then
         -- メッシュWiFi子機設定を適用する処理
     end
 
-    -- 設定の保存と適用
-    uci:commit("wireless")
-    sys.call("wifi reload")
 end
 
 return m

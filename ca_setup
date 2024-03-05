@@ -2,8 +2,9 @@ config backup
     option network_config 'save'
     option network_config 'restore'
 
-config wireless
-    option network_config 'wifi-iface'
+config wifi-iface
+    option network_config 'wifi'
+
 
 config ipoe
     option wan_setup 'pppoe_ipv4'

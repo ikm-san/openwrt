@@ -60,8 +60,6 @@ if value == "wifi" then
     
     -- 設定の保存と適用
     uci:commit("wireless")
-    sys.exec("/etc/init.d/network restart")
-
        
     elseif value == "mesh_parent" then
         -- メッシュWiFi親機設定を適用する処理
@@ -72,6 +70,8 @@ if value == "wifi" then
 end
 
 function m.on_after_commit(self)
+    -- ネットワークの再起動をここで行う
+    sys.exec("/etc/init.d/network restart")
     luci.http.redirect(luci.dispatcher.build_url("admin/"))
 end
 

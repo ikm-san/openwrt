@@ -4,10 +4,8 @@ cp /etc/config/network /etc/config/network.old
 
 # Interface - LAN を192.168.10.1に変更してほかのルーター下に置けるようにする
 
-#不足している場合に備え、必要なソフトウェアのインストール
-#CAセットアップメニュー用のファイル、キャッシュのクリア、Luciサービス再起動
-# 
-
+#必要なソフトウェアのインストール
+#CAセットアップメニュー用のファイル、キャッシュのクリア、再起動
 
 Clear-Content .ssh\known_hosts -Force
 
@@ -29,12 +27,3 @@ rm -rf /tmp/luci-*
 /etc/init.d/uhttpd restart
 
 reboot
-
-?
-opkg install lua luci-base
-opkg install liblucihttp-lua
-
-opkg install luci-compat
-opkg install luci-app-uhttpd
-
-

@@ -4,15 +4,15 @@ local sys = require "luci.sys"
 m = Map("wireless", "WiFi各種設定")
 m.apply_on_parse = true -- SAVE&APPLYボタンが押されたときに設定を適用
 
-s = m:section(TypedSection, "wifi-iface", _("Settings"))
+s = m:section(TypedSection, "wifi-iface","Settings")
 s.anonymous = true
 s.addremove = false
 
-ssid = s:option(Value, "ssid", _("SSID"))
+ssid = s:option(Value, "ssid", "SSID")
 ssid.datatype = "maxlength(32)"
 ssid.default = "OpenWrt"
 
-password = s:option(Value, "key", _("Password"))
+password = s:option(Value, "key", "Password")
 password.datatype = "pw"
 password.password = true
 

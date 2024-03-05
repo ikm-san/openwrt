@@ -10,6 +10,9 @@ s = m:section(TypedSection, "wifi-iface", "Settings")
 s.anonymous = true
 s.addremove = false
 
+choice = s:option(ListValue, "network_config")
+choice:value("wireless", "WiFi設定")
+
 ssid = s:option(Value, "ssid", "SSID")
 ssid.datatype = "maxlength(32)"
 ssid.default = "OpenWrt"

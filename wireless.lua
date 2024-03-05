@@ -24,8 +24,8 @@ password = s:option(Value, "key", "Password")
 password.datatype = "pw"
 password.password = true
 
-function apply.write(self, section)
-    local value = choice:formvalue(section)
+function m.on_commit(map)
+    local value = choice:formvalue(s.section)
     
     if value == "wifi" then
         -- WiFi接続設定を適用する処理

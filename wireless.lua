@@ -1,10 +1,12 @@
 local uci = require "luci.model.uci".cursor()
 local sys = require "luci.sys"
 
+-- 'ca_setup'設定ファイルを扱うMapを作成
 m = Map("ca_setup", "WiFi各種設定")
 m.apply_on_parse = true -- SAVE&APPLYボタンが押されたときに設定を適用
 
-s = m:section(TypedSection, "wireless","Settings")
+-- 'wifi-iface'セクションを操作するためのSectionを定義
+s = m:section(TypedSection, "wifi-iface", "Settings")
 s.anonymous = true
 s.addremove = false
 

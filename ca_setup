@@ -3,7 +3,7 @@ config backup
     option network_config 'restore'
 
 config wireless
-    option network_config 'wireless'
+    option network_config 'wifi-iface'
 
 config ipoe
     option wan_setup 'pppoe_ipv4'

@@ -10,9 +10,13 @@ s = m:section(TypedSection, "wifi-iface", "Settings")
 s.anonymous = true
 s.addremove = false
 
-choice = s:option(ListValue, "network_config")
-choice:value("wireless", "WiFi設定")
+-- 設定の選択肢を定義
+choice = s:option(ListValue, "network_config", "設定の選択")
+choice:value("wifi", "WiFi接続設定")
+choice:value("mesh_parent", "メッシュWiFi親機設定")
+choice:value("mesh_child", "メッシュWiFi子機設定")
 
+-- SSIDとパスワードの設定
 ssid = s:option(Value, "ssid", "SSID")
 ssid.datatype = "maxlength(32)"
 ssid.default = "OpenWrt"
@@ -22,27 +26,38 @@ password.datatype = "pw"
 password.password = true
 
 function m.on_commit(map)
-    local devices = {"radio0", "radio1", "radio2"} -- トライバンドまで対応
-
-    for _, dev in ipairs(devices) do
-        -- デバイスの存在を確認
-        if uci:get("wireless", dev) ~= nil then
-            -- 国コードと最大送信電力の設定
-            uci:set("wireless", dev, "country", "JP")
-            uci:set("wireless", dev, "txpower", "10")
-
-            -- インターフェースの設定
-            local iface_section = dev .. "_network"
-            uci:set("wireless", iface_section, "device", dev)
-            uci:set("wireless", iface_section, "mode", "ap")
-            uci:set("wireless", iface_section, "ssid", ssid:formvalue(dev))
-            uci:set("wireless", iface_section, "encryption", "psk2+ccmp")
-            uci:set("wireless", iface_section, "key", password:formvalue(dev))
-            uci:set("wireless", iface_section, "disabled", "0") -- Enable wireless
-        end
+    local config_selection = choice:formvalue(s.section)
+    
+    if config_selection == "wifi" then
+        -- WiFi接続設定を適用する処理
+                local devices = {"radio0", "radio1", "radio2"} -- トライバンドまで対応
+            
+                for _, dev in ipairs(devices) do
+                    -- デバイスの存在を確認
+                    if uci:get("wireless", dev) ~= nil then
+                        -- 国コードと最大送信電力の設定
+                        uci:set("wireless", dev, "country", "JP")
+                        uci:set("wireless", dev, "txpower", "10")
+            
+                        -- インターフェースの設定
+                        local iface_section = dev .. "_network"
+                        uci:set("wireless", iface_section, "device", dev)
+                        uci:set("wireless", iface_section, "mode", "ap")
+                        uci:set("wireless", iface_section, "ssid", ssid:formvalue(dev))
+                        uci:set("wireless", iface_section, "encryption", "psk2+ccmp")
+                        uci:set("wireless", iface_section, "key", password:formvalue(dev))
+                        uci:set("wireless", iface_section, "disabled", "0") -- Enable wireless
+                    end
+                end
+    elseif config_selection == "mesh_parent" then
+        -- メッシュWiFi親機設定を適用する処理
+    elseif config_selection == "mesh_child" then
+        -- メッシュWiFi子機設定を適用する処理
     end
 
     -- 設定の保存と適用
     uci:commit("wireless")
     sys.call("wifi reload")
 end
+
+return m

@@ -4,6 +4,8 @@ config backup
 
 config wifi-iface
     option network_config 'wifi'
+    option network_config 'mesh_parent'
+    option network_config 'mesh_child'
 
 
 config ipoe

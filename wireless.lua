@@ -50,7 +50,7 @@ if value == "wifi" then
                     -- 既存のセクションを更新
                     uci:set("wireless", s['.name'], "mode", "ap")
                     uci:set("wireless", s['.name'], "ssid", ssid:formvalue(section))
-                    uci:set("wireless", s['.name'], "encryption", "psk2+ccmp")
+                    uci:set("wireless", s['.name'], "encryption", "sae-mixed")
                     uci:set("wireless", s['.name'], "key", password:formvalue(section))
                     uci:set("wireless", s['.name'], "disabled", "0") -- Enable wireless
                     return false -- 一致する最初のセクションのみを更新

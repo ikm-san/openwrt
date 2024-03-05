@@ -17,7 +17,7 @@ password.datatype = "pw"
 password.password = true
 
 function m.on_commit(map)
-    local devices = {"radio0", "radio1", "radio2"} -- 2.4GHz, 5GHz, および 6GHzのデバイス名を指定
+    local devices = {"radio0", "radio1", "radio2"} -- トライバンドまで対応
 
     for _, dev in ipairs(devices) do
         -- デバイスの存在を確認

@@ -77,7 +77,6 @@ function choice.write(self, section, value)
     
         -- 設定の保存と適用
         uci:commit("wireless")
-        luci.sys.reboot()
 
        
     elseif value == "mesh_parent" then

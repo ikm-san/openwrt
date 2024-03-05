@@ -876,7 +876,7 @@ local function deleteInterfaces()
     local interfaces = {"wanmap", "pppoe_wan", "ds-lite", "map-e"}
     for _, interface in ipairs(interfaces) do
         uci:delete("network", interface)
-        uci:commit("network")
+        -- uci:commit("network")
     end
 end
 
@@ -964,9 +964,8 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     uci:commit("network") 
 
     -- Firewall settings
-    local ZONE_NO = "1"
-    uci:delete("firewall", "@zone["..ZONE_NO.."]", "network", "wan")
-    uci:set_list("firewall", "@zone["..ZONE_NO.."]", "network", {"wan6", "wanmap"})
+    uci:delete("firewall", "@zone[1]", "network", "wan")
+    uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap"})
     uci:commit("firewall")
 end
 
@@ -1032,15 +1031,46 @@ function choice.write(self, section, value)
         deleteInterfaces()
     
     if value == "dhcp_auto" then
+            -- DHCP自動設定を適用
+            -- wan と wan6 インターフェースの設定を削除
+            uci:delete("network", "wan")
+            uci:delete("network", "wan6")
+            
+            -- 新しい wan インターフェース設定を追加
+            uci:section("network", "interface", "wan", {
+                device = "wan",
+                proto = "dhcp"
+            })
+            
+            -- 新しい wan6 インターフェース設定を追加
+            uci:section("network", "interface", "wan6", {
+                device = "wan",
+                proto = "dhcpv6"
+            })
+            
+            -- DHCP wanセクションの設定を削除
+            uci:delete("dhcp", "wan")
+            
+            -- 新しい DHCP wanセクションの設定を追加
+            uci:section("dhcp", "wan", nil, {
+                interface = "wan",
+                ignore = "1"
+            })
 
-        -- DHCP自動設定を適用
-        uci:set("network", "wan", "interface")
-        uci:set("network", "wan", "proto", "dhcp")
-        uci:set("network", "wan6", "interface")
-        uci:set("network", "wan6", "proto", "dhcpv6")
-        uci:set("network", "wan6", "reqaddress", "try")
-        uci:set("network", "wan6", "reqprefix", "auto")
-        uci:commit("network")
+            -- 'firewall' の設定を更新します
+            uci:foreach("firewall", "zone",
+                function(s)
+                    if s[".index"] == 1 then 
+                        uci:delete("firewall", s[".name"], "network") -- 既存の設定を削除
+                        uci:add_list("firewall", s[".name"], "network", "wan") -- 'wan' を設定
+                    end
+                end
+            )
+                   
+            -- 設定をコミットして適用
+            uci:commit("network")
+            uci:commit("dhcp")
+            uci:commit("firewall")
                 
     elseif value == "pppoe_ipv4" then
         

@@ -63,14 +63,16 @@ function choice.write(self, section, value)
                     uci:set("wireless", iface_section, "disabled", "0") -- Enable wireless
                 else
                     -- 新しいwifi-ifaceセクションを追加
-                    iface_section = uci:add("wireless", "wifi-iface")
-                    uci:set("wireless", iface_section, "device", dev)
-                    uci:set("wireless", iface_section, "mode", "ap")
-                    uci:set("wireless", iface_section, "ssid", ssid:formvalue(section))
-                    uci:set("wireless", iface_section, "encryption", "psk2+ccmp")
-                    uci:set("wireless", iface_section, "key", password:formvalue(section))
-                    uci:set("wireless", iface_section, "network", "lan") -- Ensure it's associated with LAN
-                    uci:set("wireless", iface_section, "disabled", "0") -- Enable wireless
+                        uci:section("wireless", "wifi-iface", nil, {
+                            device = "dev",
+                            mode = "ap",
+                            ssid = ssid:formvalue(section),
+                            encryption = "psk2+ccmp",
+                            key = password:formvalue(section),
+                            network = "lan",
+                            disabled = "0"
+                        })
+
                 end
             end
         end

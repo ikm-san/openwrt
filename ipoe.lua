@@ -1038,8 +1038,8 @@ function choice.write(self, section, value)
     elseif value == "pppoe_ipv4" then
         
         -- PPPoE設定を適用
-        local user = m.uci:get("ca_setup", "ipoe", "username")
-        local pass = m.uci:get("ca_setup", "ipoe", "password")
+        user = m.uci:get("ca_setup", "ipoe", "username")
+        pass = m.uci:get("ca_setup", "ipoe", "password")
          uci:section("network", "interface", "pppoe_wan", {
             proto = "pppoe",
             username = user,
@@ -1056,51 +1056,44 @@ function choice.write(self, section, value)
             wan_ipv6 = get_wan_ipv6_global()
             peeraddr = "2404:9200:225:100::64"
             offset = 4
-        -- 関数を呼び出して設定を適用
             ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
-        -- ここにいれる
     
     elseif value == "ipoe_ocnvirtualconnect" then
         
         -- OCNバーチャルコネクト
-            local peeraddr = "2001:380:a120::9"
-            local offset = 6 -- OCN要確認
-            local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
+            peeraddr = "2001:380:a120::9"
+            offset = 6 -- OCN要確認
+            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
-        -- ここにいれる
+        -- ここにいれる 細かい設定が違うので、v6プラスと分ける必要がある
 
     elseif value == "ipoe_biglobe" then
         
         -- BIGLOBE IPv6オプション
-            local peeraddr = set_peeraddr(wan_ipv6)
-            local offset = 4    
-            local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
+            peeraddr = set_peeraddr(wan_ipv6)
+            offset = 4    
+            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
-        -- ここにいれる
         
     elseif value == "ipoe_transix" then
         -- transix (ds-lite)
-            local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
+            gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
             configure_dslite_connection(gw_aftr)
     
     elseif value == "ipoe_xpass" then
         -- クロスパス (ds-lite)
-            local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
+            gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
             configure_dslite_connection(gw_aftr)
         
     elseif value == "ipoe_v6connect" then
         -- v6コネクト
-            local gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
+            gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
             configure_dslite_connection(gw_aftr)
         
     elseif value == "bridge_mode" then
         -- ブリッジモード設定の適用
-        -- uci:set("network", "lan", "type", "bridge")
-        -- uci:set("network", "lan", "ifname", "eth0.1 eth0.2")  -- 例としてeth0.1とeth0.2をブリッジ
-        -- uci:delete("network", "lan", "proto")  -- DHCPなどの既存設定を削除
-        -- uci:commit("network")
-        -- これらのサービスはダムAPでは実行されません
+            -- ルーター用のサービス停止
             local services = {"firewall", "dnsmasq", "odhcpd"}
             for _, service in ipairs(services) do
                 if sys.init.enabled(service) then
@@ -1125,8 +1118,6 @@ function choice.write(self, section, value)
             -- ファイアウォールの設定を削除する
             os.execute("mv /etc/config/firewall /etc/config/firewall.unused")
             
-            -- デバイスを再起動する
-            luci.sys.reboot()
     end
 
             -- デバイスを再起動する

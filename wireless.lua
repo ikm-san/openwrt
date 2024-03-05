@@ -3,7 +3,6 @@ local sys = require "luci.sys"
 
 -- 'ca_setup'設定ファイルを扱うMapを作成
 m = Map("ca_setup", "WiFi各種設定")
-m.apply_on_parse = true -- SAVE&APPLYボタンが押されたときに設定を適用
 
 -- 'wifi-iface'セクションを操作するためのSectionを定義
 s = m:section(TypedSection, "wifi-iface", "Settings")
@@ -25,10 +24,10 @@ password = s:option(Value, "key", "Password")
 password.datatype = "pw"
 password.password = true
 
-function m.on_commit(map)
-    local config_selection = choice:formvalue(s.section)
+function apply.write(self, section)
+    local value = choice:formvalue(section)
     
-    if config_selection == "wifi" then
+    if value == "wifi" then
         -- WiFi接続設定を適用する処理
                 local devices = {"radio0", "radio1", "radio2"} -- トライバンドまで対応
             
@@ -49,9 +48,9 @@ function m.on_commit(map)
                         uci:set("wireless", iface_section, "disabled", "0") -- Enable wireless
                     end
                 end
-    elseif config_selection == "mesh_parent" then
+    elseif value == "mesh_parent" then
         -- メッシュWiFi親機設定を適用する処理
-    elseif config_selection == "mesh_child" then
+    elseif value == "mesh_child" then
         -- メッシュWiFi子機設定を適用する処理
     end
 

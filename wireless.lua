@@ -82,4 +82,8 @@ function choice.write(self, section, value)
 
 end
 
+function m.on_after_commit(self)
+    luci.http.redirect(luci.dispatcher.build_url("admin/"))
+end
+
 return m

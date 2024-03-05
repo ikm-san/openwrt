@@ -2,6 +2,9 @@ config backup
     option network_config 'save'
     option network_config 'restore'
 
+config wireless
+    option network_config 'wireless'
+
 config ipoe
     option wan_setup 'pppoe_ipv4'
     option wan_setup 'ipoe_v6plus'

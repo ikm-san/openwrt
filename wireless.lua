@@ -35,50 +35,32 @@ msg_text:depends("network_config", "mesh_child")
 
 function choice.write(self, section, value)
     
-    if value == "wifi" then
-        local wireless_devices = uci:get_all("wireless")
-        for dev, dev_data in pairs(wireless_devices) do
-            if dev_data[".type"] == "wifi-device" and not dev_data["disabled"] then
-                uci:set("wireless", dev, "country", "JP")
-                uci:set("wireless", dev, "txpower", "10")
-                uci:set("wireless", dev, "disabled", "0")
-    
-                -- 現存するwifi-ifaceセクションを検索
-                local iface_section = nil
-                uci:foreach("wireless", "wifi-iface",
-                    function(s)
-                        if s.device == dev then
-                            iface_section = s[".name"]
-                            return false -- 既存セクションを見つけたらループを抜ける
-                        end
-                    end)
-                
-                -- 既存セクションがある場合はそのセクションを更新、なければ新規追加
-                if iface_section then
+if value == "wifi" then
+    -- 特定の無線デバイスに対して設定を適用
+    local devices = {"radio0", "radio1", "radio2"}
+    for _, dev in ipairs(devices) do
+        uci:set("wireless", dev, "country", "JP")
+        uci:set("wireless", dev, "txpower", "10")
+        uci:set("wireless", dev, "disabled", "0")
+        
+        -- 現存するwifi-ifaceセクションを検索し、設定を更新
+        uci:foreach("wireless", "wifi-iface",
+            function(s)
+                if s.device == dev then
                     -- 既存のセクションを更新
-                    uci:set("wireless", iface_section, "mode", "ap")
-                    uci:set("wireless", iface_section, "ssid", ssid:formvalue(section))
-                    uci:set("wireless", iface_section, "encryption", "psk2+ccmp")
-                    uci:set("wireless", iface_section, "key", password:formvalue(section))
-                    uci:set("wireless", iface_section, "disabled", "0") -- Enable wireless
-                else
-                    -- 新しいwifi-ifaceセクションを追加
-                        uci:section("wireless", "wifi-iface", nil, {
-                            device = "dev",
-                            mode = "ap",
-                            ssid = ssid:formvalue(section),
-                            encryption = "psk2+ccmp",
-                            key = password:formvalue(section),
-                            network = "lan",
-                            disabled = "0"
-                        })
-
+                    uci:set("wireless", s['.name'], "mode", "ap")
+                    uci:set("wireless", s['.name'], "ssid", ssid:formvalue(section))
+                    uci:set("wireless", s['.name'], "encryption", "psk2+ccmp")
+                    uci:set("wireless", s['.name'], "key", password:formvalue(section))
+                    uci:set("wireless", s['.name'], "disabled", "0") -- Enable wireless
+                    return false -- 一致する最初のセクションのみを更新
                 end
-            end
-        end
+            end)
+    end
     
-        -- 設定の保存と適用
-        uci:commit("wireless")
+    -- 設定の保存と適用
+    uci:commit("wireless")
+    sys.exec("/etc/init.d/network restart")
 
        
     elseif value == "mesh_parent" then

@@ -1,7 +1,7 @@
 local uci = require "luci.model.uci".cursor()
 local sys = require "luci.sys"
 
-m = Map("wireless", "WiFi各種設定))
+m = Map("wireless", "WiFi各種設定")
 m.apply_on_parse = true -- SAVE&APPLYボタンが押されたときに設定を適用
 
 s = m:section(TypedSection, "wifi-iface", _("Settings"))

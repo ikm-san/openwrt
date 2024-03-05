@@ -28,8 +28,7 @@ ssid:depends("network_config", "wifi")
 password:depends("network_config", "wifi")
 
 
-function apply.write(self, section)
-    local value = choice:formvalue(section)
+function choice.write(self, section, value)
     
     if value == "wifi" then
         -- WiFi接続設定を適用する処理

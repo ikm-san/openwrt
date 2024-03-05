@@ -21,7 +21,7 @@ ssid.datatype = "maxlength(32)"
 ssid.default = "OpenWrt"
 
 password = s:option(Value, "key", "Password")
-password.datatype = "pw"
+password.datatype = "rangelength(8,63)" -- WPA/WPA2パスワードの一般的な長さ要件
 password.password = true
 
 ssid:depends("network_config", "wifi")

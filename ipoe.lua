@@ -890,7 +890,7 @@ local function configure_dslite_connection(gw_aftr)
     uci:set("dhcp", "lan", "force", "1")
 
     -- WAN設定の無効化
-    uci:set("network", "wan", "auto", "0")
+    -- uci:set("network", "wan", "auto", "0")
 
     -- DS-Liteインターフェースの設定
     uci:section("network", "interface", "dslite", {

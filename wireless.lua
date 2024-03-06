@@ -53,8 +53,9 @@ if value == "wifi" then
                     uci:set("wireless", s['.name'], "encryption", "sae-mixed")
                     uci:set("wireless", s['.name'], "key", password:formvalue(section))
                     uci:set("wireless", s['.name'], "disabled", "0") -- Enable wireless
-                    uci:commit("wireless")
+                    
                     return false -- 一致する最初のセクションのみを更新
+                    uci:commit("wireless")
                 end
             end)
     

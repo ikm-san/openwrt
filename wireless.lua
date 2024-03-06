@@ -72,10 +72,10 @@ end
 
 function m.on_after_commit(self)
     -- 設定の保存と適用
-    uci:commit("wireless")
+    uci:commit()
     -- ネットワークの再起動をここで行う
     sys.exec("/etc/init.d/network restart")
-    luci.http.redirect(luci.dispatcher.build_url("admin/"))
+    -- luci.http.redirect(luci.dispatcher.build_url("admin/"))
 end
 
 return m

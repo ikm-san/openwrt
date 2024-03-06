@@ -55,11 +55,10 @@ if value == "wifi" then
                     uci:set("wireless", s['.name'], "disabled", "0") -- Enable wireless
                     
                     return false -- 一致する最初のセクションのみを更新
-                    uci:commit("wireless")
+                    
                 end
             end)
-    
-        
+        uci:commit("wireless")
     end
     
       

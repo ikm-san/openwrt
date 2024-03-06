@@ -911,7 +911,7 @@ local function configure_dslite_connection(gw_aftr)
     uci:commit("dhcp")
 
     -- DS-LiteインターフェースをWANゾーンに追加
-    uci:set_list("firewall", "@zone[1]", "network", {"dslite"})
+    uci:set_list("firewall", "@zone[1]", "network", {"wan6", "dslite"})
     uci:commit("firewall")
 
 end
@@ -1067,8 +1067,6 @@ function choice.write(self, section, value)
             uci:commit("dhcp")
 
             -- Firewall settings
-            uci:delete("firewall", "@zone[1]", "network", "dslite")
-            uci:delete("firewall", "@zone[1]", "network", "wanmap")
             uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
             uci:commit("firewall")
         

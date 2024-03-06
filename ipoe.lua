@@ -1035,6 +1035,7 @@ function choice.write(self, section, value)
             -- wan と wan6 インターフェースの設定を削除
             uci:delete("network", "wan")
             uci:delete("network", "wan6")
+            uci:commit("network")
             
             -- 新しい wan インターフェース設定を追加
             uci:section("network", "interface", "wan", {

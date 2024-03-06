@@ -75,7 +75,6 @@ function m.on_after_commit(self)
     uci:commit()
     -- ネットワークの再起動をここで行う
     sys.exec("/etc/init.d/network restart")
-    -- luci.http.redirect(luci.dispatcher.build_url("admin/"))
 end
 
 return m

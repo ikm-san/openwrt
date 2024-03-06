@@ -73,7 +73,7 @@ end
 
 function m.on_after_commit(self)
     -- 設定の保存と適用
-    uci:commit()
+    uci:commit("wireless")
     -- ネットワークの再起動をここで行う
     sys.exec("/etc/init.d/network restart")
 end

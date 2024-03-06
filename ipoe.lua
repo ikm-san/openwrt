@@ -911,7 +911,7 @@ local function configure_dslite_connection(gw_aftr)
     uci:commit("dhcp")
 
     -- DS-LiteインターフェースをWANゾーンに追加
-    uci:set_list("firewall", "@zone[1]", "network", {"wan6", "dslite"})
+    uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
     uci:commit("firewall")
 
 end

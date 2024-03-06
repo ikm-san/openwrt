@@ -1043,10 +1043,12 @@ function choice.write(self, section, value)
                 proto = "dhcp"
             })
             
-            -- 新しい wan6 インターフェース設定を追加
+            -- 新しい wan6 インターフェースの設定を追加
             uci:section("network", "interface", "wan6", {
                 device = "wan",
-                proto = "dhcpv6"
+                proto = "dhcpv6",
+                reqaddress = "try",
+                reqprefix = "auto"
             })
             
             -- DHCP wanセクションの設定を削除

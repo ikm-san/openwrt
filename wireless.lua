@@ -56,6 +56,8 @@ if value == "wifi" then
                     return false -- 一致する最初のセクションのみを更新
                 end
             end)
+    
+        
     end
     
     -- 設定の保存と適用
@@ -70,6 +72,8 @@ if value == "wifi" then
 end
 
 function m.on_after_commit(self)
+    -- 設定の保存と適用
+    uci:commit("wireless")
     -- ネットワークの再起動をここで行う
     sys.exec("/etc/init.d/network restart")
     luci.http.redirect(luci.dispatcher.build_url("admin/"))

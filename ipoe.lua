@@ -1066,7 +1066,7 @@ function choice.write(self, section, value)
             uci:commit("network")
             uci:commit("dhcp")
 
-            - Firewall settings
+            -- Firewall settings
             uci:delete("firewall", "@zone[1]", "network", "dslite")
             uci:delete("firewall", "@zone[1]", "network", "wanmap")
             uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})

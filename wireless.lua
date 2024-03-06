@@ -53,6 +53,7 @@ if value == "wifi" then
                     uci:set("wireless", s['.name'], "encryption", "sae-mixed")
                     uci:set("wireless", s['.name'], "key", password:formvalue(section))
                     uci:set("wireless", s['.name'], "disabled", "0") -- Enable wireless
+                    uci:commit("wireless")
                     return false -- 一致する最初のセクションのみを更新
                 end
             end)
@@ -60,9 +61,7 @@ if value == "wifi" then
         
     end
     
-    -- 設定の保存と適用
-    uci:commit("wireless")
-       
+      
     elseif value == "mesh_parent" then
         -- メッシュWiFi親機設定を適用する処理
     elseif value == "mesh_child" then

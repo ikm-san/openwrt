@@ -1032,8 +1032,7 @@ function choice.write(self, section, value)
     
     if value == "dhcp_auto" then
             -- DHCP自動設定を適用
-            -- wan と wan6 インターフェースの設定を削除
-            uci:delete("network", "wan")
+            -- wan6 インターフェースの設定を削除
             uci:delete("network", "wan6")
             uci:commit("network")
             

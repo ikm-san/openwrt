@@ -1116,17 +1116,17 @@ function choice.write(self, section, value)
         
     elseif value == "ipoe_transix" then
         -- transix (ds-lite)
-            gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
+            gw_aftr = m.uci:get("ca_setup", "ipoe_transix", "gw_aftr")
             configure_dslite_connection(gw_aftr)
     
     elseif value == "ipoe_xpass" then
         -- クロスパス (ds-lite)
-            gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
+            gw_aftr = m.uci:get("ca_setup", "ipoe_xpass", "gw_aftr")
             configure_dslite_connection(gw_aftr)
         
     elseif value == "ipoe_v6connect" then
         -- v6コネクト
-            gw_aftr = m.uci:get("ca_setup", choice_val, "gw_aftr")
+            gw_aftr = m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr")
             configure_dslite_connection(gw_aftr)
         
     elseif value == "bridge_mode" then

@@ -876,7 +876,7 @@ local function deleteInterfaces()
     local interfaces = {"wanmap", "pppoe_wan", "dslite", "map-e"}
     for _, interface in ipairs(interfaces) do
         uci:delete("network", interface)
-        -- uci:commit("network")
+        uci:commit("network")
     end
 end
 
@@ -1065,7 +1065,14 @@ function choice.write(self, section, value)
             -- 設定をコミットして適用
             uci:commit("network")
             uci:commit("dhcp")
-                
+
+            - Firewall settings
+            uci:delete("firewall", "@zone[1]", "network", "dslite")
+            uci:delete("firewall", "@zone[1]", "network", "wanmap")
+            uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
+            uci:commit("firewall")
+        
+        
     elseif value == "pppoe_ipv4" then
         
         -- PPPoE設定を適用

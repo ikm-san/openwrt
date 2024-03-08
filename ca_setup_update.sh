@@ -7,8 +7,11 @@ cp /etc/config/network /etc/config/network.old
 #必要なソフトウェアのインストール
 #CAセットアップメニュー用のファイル、キャッシュのクリア、再起動
 
+#Win
 Clear-Content .ssh\known_hosts -Force
 
+#Mac
+ssh-keygen -R 192.168.10.1
 
 
 opkg update

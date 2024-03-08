@@ -1,6 +1,7 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
+local ca_function = require "ca_function" 
 
 
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html

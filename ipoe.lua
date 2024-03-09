@@ -4,15 +4,7 @@ local uci = require "luci.model.uci".cursor()
 local calib = require "calib" 
 
 
--- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html
-local ruleprefix31 = {
-    ["240b0010"] = "106.72",
-    ["240b0012"] = "14.8",
-    ["240b0250"] = "14.10",
-    ["240b0252"] = "14.12",
-    ["24047a80"] = "133.200",
-    ["24047a84"] = "133.206"
-}
+local ruleprefix31 = calib.getRulePrefix31()
 
 local ruleprefix38 = {
     ["24047a8200"] = "125.196.208",

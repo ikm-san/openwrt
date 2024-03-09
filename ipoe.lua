@@ -3,132 +3,20 @@ local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
 local calib = require "calib" 
 
+-- WANのグローバルIPv6を取得
+local wan_ipv6 = calib.get_wan_ipv6_global() 
+
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html
 local ruleprefix31 = calib.getRulePrefix31()
 local ruleprefix38 = calib.getRulePrefix38()
 local ruleprefix38_20 = calib.getRulePrefix38_20()
 
-
-
-
-
-local wan_ipv6 = calib.get_wan_ipv6_global() -- WANのグローバルIPv6を取得
-
-
 -- Pattern to match the first four sections of an IPv6 address
-local pattern = "^([0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
+local pattern = "^([0-9a-fA-F]+calib.find_ipv4_prefix:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
 local ipv6_56 = wan_ipv6:match(pattern)
 
--- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
-local function find_ipv4_prefix(wan_ipv6)
-    local segments = {}
-    for seg in wan_ipv6:gmatch("[a-fA-F0-9]+") do
-        table.insert(segments, string.format("%04x", tonumber(seg, 16)))
-    end
 
-    local full_ipv6 = table.concat(segments, ":"):gsub("::", function(s)
-        return ":" .. string.rep("0000:", 8 - #segments)
-    end)
-
-    -- 40ビットと32ビットのプレフィックスを取得
-    local hex_prefix_40 = full_ipv6:gsub(":", ""):sub(1, 10)
-    local hex_prefix_32 = full_ipv6:gsub(":", ""):sub(1, 8)
-
-    local ipv4_prefix = ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] or ruleprefix31[hex_prefix_32]
-    local ipv6_prefixlen
-
-    if ipv4_prefix then
-        local ipv4_parts = {}
-        for part in ipv4_prefix:gmatch("(%d+)") do
-            table.insert(ipv4_parts, part)
-        end
-        while #ipv4_parts < 4 do
-            table.insert(ipv4_parts, "0")
-        end
-
-        -- 有効なプレフィックス長を判断
-        if ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] then
-
-                     -- ipv6prefixを32ビットもしくは48ビットセクションまで抽出し48ビットフォーマットの場合は00で埋める
-                     local function extract_ipv6_prefix(wan_ipv6)
-                                    -- IPv6アドレスを":"で分割
-                                    local ipv6_sections = {}
-                                    for section in wan_ipv6:gmatch("[^:]+") do
-                                        table.insert(ipv6_sections, section)
-                                    end
-                                
-                                    -- 先頭から48ビットを取り出し、最後の8ビットを00にする処理を正しく行う
-                                    local prefix = ipv6_sections[1]
-                                    if #ipv6_sections >= 3 then
-                                        -- 3セクション目が存在する場合、先頭2セクションをそのまま使用し、3セクション目の先頭2文字を使用して後ろに00を追加
-                                        local full_third = string.format("%04x", tonumber(ipv6_sections[3], 16))
-                                        local third_section = string.sub(full_third, 1, 2) -- 3セクション目の２文字を取得
-
-                                            if third_section ~= "00" then
-                                                    prefix = prefix .. ":" .. ipv6_sections[2] .. ":" .. third_section .. "00"
-                                                    local dec_value = tonumber(third_section, 16)
-                                                        -- 10進数値を関数で2進数に変換
-                                                    local bin_value = calib.dec_to_bin(dec_value)
-                                                        -- ビット数を算出
-                                                    ipv6_prefixlen = #bin_value + 32
-                                            else
-                                                    -- 3セクション目が存在しない場合、先頭2セクションのみを使用
-                                                    prefix = prefix .. ":" .. ipv6_sections[2]
-                                                    ipv6_prefixlen = 32
-                                            end
-                
-                                    else
-                                        -- 3セクション目が存在しない場合、先頭2セクションのみを使用
-                                        prefix = prefix .. ":" .. ipv6_sections[2]
-                                        ipv6_prefixlen = 32
-                                    end
-                                
-                                    -- 3セクション目が"00"になった場合の処理は、具体的な例に基づいて調整が必要
-                                    if prefix:find(":00") then
-                                        -- 第3セクションが"00"の場合、省略可能なルールに従い調整
-                                        prefix = prefix:gsub(":00", "")
-                                    end                
-                                    
-                            -- 最後にプレフィックスの省略形を生成
-                            return prefix .. ":", ipv6_prefixlen
-                        end
-            
-                            function to_binary(n)
-                                        if n == 0 then return "0" end
-                                        local bin = ""
-                                        while n > 0 do
-                                            bin = tostring(n % 2) .. bin
-                                            n = math.floor(n / 2)
-                                        end
-                                        return bin
-                            end
-                local third_octet = tonumber(ipv4_prefix:match("^%d+%.%d+%.(%d+)")) -- 第3セクションを数値として抽出
-                local binary_string = to_binary(third_octet)
-                ipv4_prefixlen = string.len(binary_string) + 16
-                ipv6_prefix , ipv6_prefixlen = extract_ipv6_prefix(wan_ipv6)
-                -- ipv6_prefixlen = 33 --デバッグ用
-            
-        elseif ruleprefix31[hex_prefix_32] then
-            ipv6_prefixlen = 32
-            ipv4_prefixlen = 16
-            ipv6_prefix = wan_ipv6:sub(1, 8) .. ":"
-        end
-
-        ealen = 56 - ipv6_prefixlen
-        psidlen = ealen - (32 - ipv4_prefixlen)
-        
-        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen
-    else
-        return nil, "No matching IPv4 prefix found."
-    end
-end
-
-
-
-
-
-
-
+-- WAN設定選択リスト
 m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。")
 
 s = m:section(TypedSection, "ipoe", "")
@@ -270,7 +158,7 @@ end
 
 --デバッグ表示用
 
-local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
+local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = calib.find_ipv4_prefix(wan_ipv6)
 local offset = 4 -- 実際のオフセットを計算または取得する処理を追加
 -- local peeraddr = set_peeraddr(wan_ipv6)
 
@@ -359,7 +247,7 @@ function choice.write(self, section, value)
             wan_ipv6 = get_wan_ipv6_global()
             peeraddr = "2404:9200:225:100::64"
             offset = 4
-            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
+            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
     
     elseif value == "ipoe_ocnvirtualconnect" then
@@ -367,7 +255,7 @@ function choice.write(self, section, value)
         -- OCNバーチャルコネクト
             peeraddr = "2001:380:a120::9"
             offset = 6 -- OCN要確認
-            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
+            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
         -- ここにいれる 細かい設定が違うので、v6プラスと分ける必要がある
 
@@ -376,7 +264,7 @@ function choice.write(self, section, value)
         -- BIGLOBE IPv6オプション
             peeraddr = set_peeraddr(wan_ipv6)
             offset = 4    
-            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = find_ipv4_prefix(wan_ipv6)
+            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
         
     elseif value == "ipoe_transix" then

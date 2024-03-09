@@ -1081,10 +1081,15 @@ function choice.write(self, section, value)
             proto = "pppoe",
             username = user,
             password = pass,
-            ifname = "eth0.2"
+            ifname = "wan"
         })
+
+        -- WAN settings
+        uci:set("network", "wan", "auto", "1")
+        uci:set("network", "wan6", "auto", "0")
         uci:commit("network")        
-        uci:set_list("firewall", "@zone[1]", "network", {"pppoe_wan"})     
+
+        uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
         uci:commit("firewall")
         
     elseif value == "ipoe_v6plus" then

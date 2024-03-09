@@ -243,10 +243,10 @@ function choice.write(self, section, value)
     elseif value == "ipoe_v6plus" then
        
         -- v6プラス
-            wan_ipv6 = calib.get_wan_ipv6_global()
+            -- wan_ipv6 = calib.get_wan_ipv6_global()
             peeraddr = "2404:9200:225:100::64"
             offset = 4
-            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, ipv6_56 = calib.find_ipv4_prefix(wan_ipv6)
+            -- ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, ipv6_56 = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
     
     elseif value == "ipoe_ocnvirtualconnect" then

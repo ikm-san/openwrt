@@ -30,27 +30,6 @@ function M.dec_to_bin(dec)
     return bin == "" and "0" or bin
 end
 
--- V6 Plus Map Rule ※ID転用不可!
-function M.fetchRules()
-    local command = "curl -s 'https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules'"
-    local handle = io.popen(command, "r")
-    local result = handle:read("*a")
-    handle:close()
-    
-    -- JSONP形式のレスポンスからJSON部分のみを抽出
-    local jsonStr = result:match("%((.+)%)")
-    if not jsonStr then
-        error("JSONPからJSONを抽出できませんでした。")
-    end
-    
-    local status, map_rule = pcall(json.parse, jsonStr)
-    if not status then
-        error("JSONの解析に失敗しました。")
-    end
-
-    return map_rule
-end
-
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
 function M.find_ipv4_prefix()
     local wan_ipv6 = M.get_wan_ipv6_global() 
@@ -155,8 +134,7 @@ function M.find_ipv4_prefix()
     end
 end
 
-
--- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html
+-- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html RulePrefix31, 38, 38_20
 function M.getRulePrefix31()
     local ruleprefix31 = {
         ["240b0010"] = "106.72",
@@ -168,7 +146,6 @@ function M.getRulePrefix31()
     }
     return ruleprefix31
 end
-
 
 function M.getRulePrefix38()
 local ruleprefix38 = {

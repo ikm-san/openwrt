@@ -855,6 +855,7 @@ s.addremove = false
 s.anonymous = true
 
 choice = s:option(ListValue, "wan_setup", "操作")
+choice:value("", "-- 選択してください --")
 choice:value("dhcp_auto", "DHCP自動")
 choice:value("pppoe_ipv4", "PPPoE接続")
 choice:value("ipoe_v6plus", "v6プラス")

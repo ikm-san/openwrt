@@ -11,11 +11,10 @@ s.addremove = false
 
 -- 設定の選択肢を定義
 choice = s:option(ListValue, "network_config", "設定の選択")
-choice:value("", "-- 選択してください --")
 choice:value("wifi", "WiFi接続設定")
 choice:value("mesh_parent", "メッシュWiFi親機設定")
 choice:value("mesh_child", "メッシュWiFi子機設定")
-choice.default = ""
+choice.default = "wifi"
 
 -- SSIDとパスワードの設定
 ssid = s:option(Value, "ssid", "SSID")

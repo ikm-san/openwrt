@@ -6,6 +6,11 @@ local calib = require "calib"
 -- WANのグローバルIPv6を取得
 local wan_ipv6 = calib.get_wan_ipv6_global() 
 
+-- Pattern to match the first four sections of an IPv6 address
+local testnum = calib.find_ipv4_prefix()
+local pattern = "^([0-9a-fA-F]+testnum:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
+local ipv6_56 = wan_ipv6:match(pattern)
+
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html
 -- local ruleprefix31 = calib.getRulePrefix31()
 -- local ruleprefix38 = calib.getRulePrefix38()

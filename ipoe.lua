@@ -1033,30 +1033,19 @@ function choice.write(self, section, value)
     
     if value == "dhcp_auto" then
         -- DHCP自動設定を適用
-        -- wan および wan6 インターフェースの設定を削除
-        uci:delete("network", "wan")
-        uci:delete("network", "wan6")
-        uci:delete("dhcp", "wan")
+        -- wan インターフェースの設定を変更
+        uci:set("network", "wan", "ifname", "wan")
+        uci:set("network", "wan", "proto", "dhcp")
         
-        -- 新しい wan インターフェース設定を追加
-        uci:section("network", "interface", "wan", {
-            ifname = "wan",
-            proto = "dhcp"
-        })
-        
-        -- 新しい wan6 インターフェースの設定を追加
-        uci:section("network", "interface", "wan6", {
-            ifname = "wan6",
-            proto = "dhcpv6",
-            reqaddress = "try",
-            reqprefix = "auto"
-        })
-
-            -- Firewall settings
-            uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
-
+        -- wan6 インターフェースの設定を変更
+        uci:set("network", "wan6", "ifname", "wan6")
+        uci:set("network", "wan6", "proto", "dhcpv6")
+        uci:set("network", "wan6", "reqaddress", "try")
+        uci:set("network", "wan6", "reqprefix", "auto")
         uci:commit("network")
-        uci:commit("dhcp")
+
+        -- Firewall settings
+        uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
         uci:commit("firewall")
         
         

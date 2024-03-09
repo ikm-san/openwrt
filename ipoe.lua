@@ -1064,7 +1064,6 @@ function choice.write(self, section, value)
                 ignore = "1"
             })
 
-                  
             -- 設定をコミットして適用
             uci:commit("network")
             uci:commit("dhcp")

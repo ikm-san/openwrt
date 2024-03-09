@@ -3,22 +3,13 @@ local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
 local calib = require "calib" 
 
-
+-- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html
 local ruleprefix31 = calib.getRulePrefix31()
 local ruleprefix38 = calib.getRulePrefix38()
 local ruleprefix38_20 = calib.getRulePrefix38_20()
 
 
--- 10進数を2進数に変換する関数
-local function dec_to_bin(dec)
-    local bin = ""
-    while dec > 0 do
-        local remainder = dec % 2
-        bin = tostring(remainder) .. bin
-        dec = math.floor(dec / 2)
-    end
-    return bin == "" and "0" or bin
-end
+
 
 
 local wan_ipv6 = calib.get_wan_ipv6_global() -- WANのグローバルIPv6を取得
@@ -27,8 +18,6 @@ local wan_ipv6 = calib.get_wan_ipv6_global() -- WANのグローバルIPv6を取�
 -- Pattern to match the first four sections of an IPv6 address
 local pattern = "^([0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
 local ipv6_56 = wan_ipv6:match(pattern)
-
--- local wan_ipv6 = "2404:7a87:a4:1000:1000:1000:1000:1000" -- これはデバッグ用なので確認が済んだら消す必要があります。83 58
 
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
 local function find_ipv4_prefix(wan_ipv6)
@@ -79,7 +68,7 @@ local function find_ipv4_prefix(wan_ipv6)
                                                     prefix = prefix .. ":" .. ipv6_sections[2] .. ":" .. third_section .. "00"
                                                     local dec_value = tonumber(third_section, 16)
                                                         -- 10進数値を関数で2進数に変換
-                                                    local bin_value = dec_to_bin(dec_value)
+                                                    local bin_value = calib.dec_to_bin(dec_value)
                                                         -- ビット数を算出
                                                     ipv6_prefixlen = #bin_value + 32
                                             else
@@ -183,7 +172,7 @@ local function configure_dslite_connection(gw_aftr)
     uci:set("dhcp", "lan", "force", "1")
 
     -- WAN設定の無効化
-    -- uci:set("network", "wan", "auto", "0")
+    uci:set("network", "wan", "auto", "0")
 
     -- DS-Liteインターフェースの設定
     uci:section("network", "interface", "dslite", {
@@ -193,6 +182,7 @@ local function configure_dslite_connection(gw_aftr)
         mtu = '1460'
     })
     uci:commit("network")
+    
     -- DHCP関連設定
     uci:set("dhcp", "wan6", "dhcp")
     uci:set("dhcp", "wan6", "interface", "wan6")

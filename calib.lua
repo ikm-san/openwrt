@@ -30,7 +30,7 @@ function M.dec_to_bin(dec)
     return bin == "" and "0" or bin
 end
 
-
+-- V6 Plus Map Rule ※ID転用不可!
 function M.fetchRules()
     local command = "curl -s 'https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules'"
     local handle = io.popen(command, "r")
@@ -51,10 +51,9 @@ function M.fetchRules()
     return map_rule
 end
 
-
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
 function M.find_ipv4_prefix()
-    local local wan_ipv6 = M.get_wan_ipv6_global() 
+    local wan_ipv6 = M.get_wan_ipv6_global() 
     local segments = {}
     for seg in wan_ipv6:gmatch("[a-fA-F0-9]+") do
         table.insert(segments, string.format("%04x", tonumber(seg, 16)))

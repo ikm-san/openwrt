@@ -19,6 +19,18 @@ function M.get_wan_ipv6_global()
     end
 end
 
+-- 10進数を2進数に変換する関数
+function M.dec_to_bin(dec)
+    local bin = ""
+    while dec > 0 do
+        local remainder = dec % 2
+        bin = tostring(remainder) .. bin
+        dec = math.floor(dec / 2)
+    end
+    return bin == "" and "0" or bin
+end
+
+
 function M.fetchRules()
     local command = "curl -s 'https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules'"
     local handle = io.popen(command, "r")

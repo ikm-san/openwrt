@@ -77,7 +77,7 @@ local function configure_dslite_connection(gw_aftr)
 
 end
 
--- map-e 接続設定関数
+-- map-e v6 plus 接続設定関数
 function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
       
     -- DHCP LAN settings
@@ -128,6 +128,61 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     -- Firewall settings
     uci:delete("firewall", "@zone[1]", "network", "wan")
     uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap"})
+    uci:commit("firewall")
+end
+
+-- map-e OCN Virtual Connect 接続設定関数
+function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+      
+    -- DHCP LAN settings
+    uci:set("dhcp", "lan", "dhcp")
+    uci:set("dhcp", "lan", "dhcpv6", "server")
+    uci:set("dhcp", "lan", "ra", "relay")
+    uci:set("dhcp", "lan", "ndp", "relay")
+    uci:set("dhcp", "lan", "force", "1")
+
+    -- DHCP WAN6 settings
+    uci:set("dhcp", "wan6", "dhcp")
+    uci:set("dhcp", "wan6", "interface", "wan6")
+    uci:set("dhcp", "wan6", "ignore", "1")
+    uci:set("dhcp", "wan6", "master", "1")
+    uci:set("dhcp", "wan6", "ra", "relay")
+    uci:set("dhcp", "wan6", "dhcpv6", "relay")
+    uci:set("dhcp", "wan6", "ndp", "relay")
+    uci:commit("dhcp")  
+
+    -- WAN settings
+    uci:set("network", "wan", "auto", "0")
+    
+    -- WAN6RA settings
+    uci:section("network", "interface", "map6ra", {
+        device = "wan",
+        proto = "static",
+        ip6gw = ipv6_56 .. "::1",
+        ip6gprefix = ipv6_56 .. "::1",
+        ip6addr = ipv6_56 .. "::1001"
+    })
+    
+    -- WANMAP settings
+    uci:section("network", "interface", "wanmap", {
+        proto = "map",
+        maptype = "map-e",
+        peeraddr = peeraddr,
+        ipaddr = ipv4_prefix,
+        ip4prefixlen = ipv4_prefixlen,
+        ip6prefix = ipv6_prefix,
+        ip6prefixlen = ipv6_prefixlen,
+        ealen = ealen,
+        psidlen = psidlen,
+        offset = offset,
+        legacymap = "1",
+        mtu = "1460"
+    })
+    uci:commit("network") 
+
+    -- Firewall settings
+    uci:delete("firewall", "@zone[1]", "network", "wan")
+    uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap", "map6ra"})
     uci:commit("firewall")
 end
 
@@ -246,9 +301,8 @@ function choice.write(self, section, value)
         -- OCNバーチャルコネクト
             peeraddr = "2001:380:a120::9"
             offset = 6 -- OCN要確認
-            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-        -- ここにいれる 細かい設定が違うので、v6プラスと分ける必要がある
-
+            configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+        
     elseif value == "ipoe_biglobe" then
         
         -- BIGLOBE IPv6オプション

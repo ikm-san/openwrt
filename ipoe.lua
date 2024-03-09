@@ -1077,11 +1077,10 @@ function choice.write(self, section, value)
         -- PPPoE設定を適用
         -- user = m.uci:get("ca_setup", "ipoe", "username")
         -- pass = m.uci:get("ca_setup", "ipoe", "password")
-         uci:section("network", "interface", "pppoe_wan", {
+         uci:section("network", "interface", "wan", {
             proto = "pppoe",
             username = username:formvalue(section),
             password = password:formvalue(section),
-            ifname = "wan"
         })
         uci:commit("network") 
         uci:save() 

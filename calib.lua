@@ -53,7 +53,7 @@ end
 
 
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
-local function M.find_ipv4_prefix()
+function M.find_ipv4_prefix(wan_ipv6)
     local segments = {}
     for seg in wan_ipv6:gmatch("[a-fA-F0-9]+") do
         table.insert(segments, string.format("%04x", tonumber(seg, 16)))

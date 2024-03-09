@@ -1037,11 +1037,11 @@ function choice.write(self, section, value)
             uci:delete("network", "wan")
             uci:delete("network", "wan6")
             uci:commit("network")
+            uci:save() 
             
             -- 新しい wan インターフェース設定を追加
             uci:section("network", "interface", "wan", {
                 device = "wan",
-                auto = "1",
                 proto = "dhcp"
             })
             
@@ -1049,12 +1049,10 @@ function choice.write(self, section, value)
             uci:section("network", "interface", "wan6", {
                 device = "wan",
                 proto = "dhcpv6",
-                auto = "1",
                 reqaddress = "try",
                 reqprefix = "auto"
             })
-            uci:commit("network")
-            uci:save()
+            
         
             -- DHCP wanセクションの設定を削除
             uci:delete("dhcp", "wan")
@@ -1065,7 +1063,7 @@ function choice.write(self, section, value)
                 interface = "wan",
                 ignore = "1"
             })
-            
+            uci:commit("network")
             uci:commit("dhcp")
 
             -- Firewall settings

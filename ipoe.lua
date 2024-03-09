@@ -1053,7 +1053,9 @@ function choice.write(self, section, value)
                 reqaddress = "try",
                 reqprefix = "auto"
             })
-            
+            uci:commit("network")
+            uci:save()
+        
             -- DHCP wanセクションの設定を削除
             uci:delete("dhcp", "wan")
             uci:commit("dhcp")
@@ -1063,9 +1065,7 @@ function choice.write(self, section, value)
                 interface = "wan",
                 ignore = "1"
             })
-
-            -- 設定をコミットして適用
-            uci:commit("network")
+            
             uci:commit("dhcp")
 
             -- Firewall settings

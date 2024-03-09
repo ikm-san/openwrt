@@ -6,10 +6,6 @@ local calib = require "calib"
 -- WANのグローバルIPv6を取得
 local wan_ipv6 = calib.get_wan_ipv6_global() 
 
--- Pattern to match the first four sections of an IPv6 address
-local testnum = calib.find_ipv4_prefix()
-local pattern = "^([0-9a-fA-F]+testnum:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
-local ipv6_56 = wan_ipv6:match(pattern)
 
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html
 -- local ruleprefix31 = calib.getRulePrefix31()
@@ -161,7 +157,12 @@ end
 
 local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, ipv6_56 = calib.find_ipv4_prefix(wan_ipv6)
 local offset = 4 -- 実際のオフセットを計算または取得する処理を追加
--- local peeraddr = set_peeraddr(wan_ipv6)
+
+-- Pattern to match the first four sections of an IPv6 address
+-- local pattern = "^([0-9a-fA-F]+ipv4_prefix:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
+local pattern = "^([0-9a-fA-F]+)ipv4_prefix:([0-9a-fA-F]+):([0-9a-fA-F]+):([0-9a-fA-F]+)"
+local ipv6_56 = wan_ipv6:match(pattern)
+
 
 o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))
 o.value = wan_ipv6 or translate("Not available")

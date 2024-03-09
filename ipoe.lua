@@ -83,12 +83,8 @@ local function configure_dslite_connection(gw_aftr)
 end
 
 -- map-e 接続設定関数
-function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
-    
-    -- Pattern to match the first four sections of an IPv6 address
-    local pattern = "^([0-9a-fA-F]+calib.find_ipv4_prefix:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
-    local ipv6_56 = wan_ipv6:match(pattern)
-    
+function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+      
     -- DHCP LAN settings
     uci:set("dhcp", "lan", "dhcp")
     uci:set("dhcp", "lan", "dhcpv6", "server")
@@ -158,7 +154,7 @@ end
 
 --デバッグ表示用
 
-local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = calib.find_ipv4_prefix(wan_ipv6)
+local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, ipv6_56 = calib.find_ipv4_prefix(wan_ipv6)
 local offset = 4 -- 実際のオフセットを計算または取得する処理を追加
 -- local peeraddr = set_peeraddr(wan_ipv6)
 
@@ -247,8 +243,8 @@ function choice.write(self, section, value)
             wan_ipv6 = calib.get_wan_ipv6_global()
             peeraddr = "2404:9200:225:100::64"
             offset = 4
-            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = calib.find_ipv4_prefix(wan_ipv6)
-            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
+            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, ipv6_56 = calib.find_ipv4_prefix(wan_ipv6)
+            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
     
     elseif value == "ipoe_ocnvirtualconnect" then
         
@@ -256,8 +252,8 @@ function choice.write(self, section, value)
             wan_ipv6 = calib.get_wan_ipv6_global()
             peeraddr = "2001:380:a120::9"
             offset = 6 -- OCN要確認
-            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = calib.find_ipv4_prefix(wan_ipv6)
-            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
+            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, ipv6_56 = calib.find_ipv4_prefix(wan_ipv6)
+            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
         -- ここにいれる 細かい設定が違うので、v6プラスと分ける必要がある
 
     elseif value == "ipoe_biglobe" then
@@ -266,8 +262,8 @@ function choice.write(self, section, value)
             wan_ipv6 = calib.get_wan_ipv6_global()
             peeraddr = set_peeraddr(wan_ipv6)
             offset = 4    
-            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen = calib.find_ipv4_prefix(wan_ipv6)
-            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
+            ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, ipv6_56 = calib.find_ipv4_prefix(wan_ipv6)
+            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset,ipv6_56)
         
     elseif value == "ipoe_transix" then
         -- transix (ds-lite)

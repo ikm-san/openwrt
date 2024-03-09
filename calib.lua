@@ -1,3 +1,6 @@
+local fs = require "nixio.fs"
+local sys = require "luci.sys"
+local uci = require "luci.model.uci".cursor()
 local json = require("luci.jsonc")
 local io = require("io")
 

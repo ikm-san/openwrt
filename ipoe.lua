@@ -182,6 +182,9 @@ o.value = psidlen
 o = s:option(DummyValue, "offset", translate("Offset"))
 o.value = offset
 
+o = s:option(DummyValue, "ipv6_56", translate("IPv6_56"))
+o.value = offset
+
 o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
 o.value = peeraddr or translate("Not BIGLOBE")
 

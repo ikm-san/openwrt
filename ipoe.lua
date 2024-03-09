@@ -33,7 +33,7 @@ password:depends("wan_setup", "pppoe_ipv4")
 
 -- インターフェース設定を削除する関数
 local function deleteInterfaces()
-    local interfaces = {"wanmap", "dslite", "map-e"}
+    local interfaces = {"wanmap", "dslite", "map-e", "map6ra"}
     for _, interface in ipairs(interfaces) do
         uci:delete("network", interface)
         uci:commit("network")
@@ -245,7 +245,6 @@ o.value = peeraddr or translate("Not BIGLOBE")
 
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作
--- function m.on_commit(map)
 function choice.write(self, section, value)
         deleteInterfaces()
     
@@ -264,11 +263,9 @@ function choice.write(self, section, value)
 
         -- Firewall settings
         uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
-        uci:commit("firewall")
+        uci:commit("firewall")      
         
-        
-    elseif value == "pppoe_ipv4" then
-        
+    elseif value == "pppoe_ipv4" then        
         -- PPPoE設定を適用
         -- user = m.uci:get("ca_setup", "ipoe", "username")
         -- pass = m.uci:get("ca_setup", "ipoe", "password")
@@ -279,8 +276,7 @@ function choice.write(self, section, value)
         })
         uci:commit("network") 
         uci:save() 
-        
-        
+              
         -- WAN settings
         uci:set("network", "wan", "auto", "1")
         uci:set("network", "wan6", "auto", "0")
@@ -289,22 +285,18 @@ function choice.write(self, section, value)
         uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
         uci:commit("firewall")
         
-    elseif value == "ipoe_v6plus" then
-       
+    elseif value == "ipoe_v6plus" then      
         -- v6プラス
             peeraddr = "2404:9200:225:100::64"
-            -- ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56 = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
     
     elseif value == "ipoe_ocnvirtualconnect" then
-        
         -- OCNバーチャルコネクト
             peeraddr = "2001:380:a120::9"
             offset = 6 -- OCN要確認
             configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
         
     elseif value == "ipoe_biglobe" then
-        
         -- BIGLOBE IPv6オプション
             peeraddr = set_peeraddr(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)

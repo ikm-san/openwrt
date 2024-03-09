@@ -142,6 +142,25 @@ function M.find_ipv4_prefix()
     end
 end
 
+-- IPv6アドレスの最初の4セクションを抜き出して正規化する関数
+function M.extract_ipv6_56(wan_ipv6)
+    -- IPv6アドレスをセクションに分割する
+    local sections = {}
+    for section in ipv6_address:gmatch("[^:]+") do
+        table.insert(sections, section)
+    end
+
+    -- 各セクションを正規化（4桁の16進数に）する
+    for i, section in ipairs(sections) do
+        sections[i] = string.format("%04x", tonumber(section, 16))
+    end
+
+    -- 最初の4セクションを抜き出し
+    local ipv6_56 = table.concat(sections, ":", 1, 4)
+    
+    return ipv6_56
+end
+
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html RulePrefix31, 38, 38_20
 function M.getRulePrefix31()
     local ruleprefix31 = {

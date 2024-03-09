@@ -7,9 +7,9 @@ local calib = require "calib"
 local wan_ipv6 = calib.get_wan_ipv6_global() 
 
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html
-local ruleprefix31 = calib.getRulePrefix31()
-local ruleprefix38 = calib.getRulePrefix38()
-local ruleprefix38_20 = calib.getRulePrefix38_20()
+-- local ruleprefix31 = calib.getRulePrefix31()
+-- local ruleprefix38 = calib.getRulePrefix38()
+-- local ruleprefix38_20 = calib.getRulePrefix38_20()
 
 -- Pattern to match the first four sections of an IPv6 address
 local pattern = "^([0-9a-fA-F]+calib.find_ipv4_prefix:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"

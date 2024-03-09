@@ -130,8 +130,12 @@ function M.find_ipv4_prefix()
 
         ealen = 56 - ipv6_prefixlen
         psidlen = ealen - (32 - ipv4_prefixlen)
+
+        -- Pattern to match the first four sections of an IPv6 address
+        local pattern = "^([0-9a-fA-F]+calib.find_ipv4_prefix:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
+        ipv6_56 = wan_ipv6:match(pattern)
         
-        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen
+        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, ipv6_56
     else
         return nil, "No matching IPv4 prefix found."
     end

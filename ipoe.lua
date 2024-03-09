@@ -1081,7 +1081,7 @@ function choice.write(self, section, value)
             proto = "pppoe",
             username = user,
             password = pass,
-            ifname = "@wan"
+            ifname = "wan"
         })
         uci:commit("network") 
         uci:save() 

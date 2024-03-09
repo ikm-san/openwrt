@@ -8,8 +8,7 @@ local M = {}
 
 -- WANインターフェースのIPv6アドレス（scope global）を取得
 function M.get_wan_ipv6_global()
-    local command = "ip -6 addr show dev wan | awk '/inet6/ && /scope global/ {print $2}' | cut -d'/' -f1 | head -n 1"
-    local ipv6_global = sys.exec(command)
+    local ipv6_global = sys.exec("ip -6 addr show dev wan | awk '/inet6/ && /scope global/ {print $2}' | cut -d'/' -f1 | head -n 1")
     local normalized_ipv6 = ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
 
     -- IPv6アドレスが見つからない場合は0を返す

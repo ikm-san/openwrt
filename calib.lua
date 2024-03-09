@@ -46,7 +46,7 @@ function M.find_ipv4_prefix()
     local hex_prefix_40 = full_ipv6:gsub(":", ""):sub(1, 10)
     local hex_prefix_32 = full_ipv6:gsub(":", ""):sub(1, 8)
 
-    local ipv4_prefix = ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] or ruleprefix31[hex_prefix_32]
+    local ipv4_prefix = M.ruleprefix38[hex_prefix_40] or M.ruleprefix38_20[hex_prefix_40] or M.ruleprefix31[hex_prefix_32]
     local ipv6_prefixlen
 
     if ipv4_prefix then
@@ -59,7 +59,7 @@ function M.find_ipv4_prefix()
         end
 
         -- 有効なプレフィックス長を判断
-        if ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] then
+        if M.ruleprefix38[hex_prefix_40] or M.ruleprefix38_20[hex_prefix_40] then
 
                      -- ipv6prefixを32ビットもしくは48ビットセクションまで抽出し48ビットフォーマットの場合は00で埋める
                      local function extract_ipv6_prefix(wan_ipv6)
@@ -119,7 +119,7 @@ function M.find_ipv4_prefix()
                 ipv4_prefixlen = string.len(binary_string) + 16
                 ipv6_prefix , ipv6_prefixlen = extract_ipv6_prefix(wan_ipv6)
                             
-        elseif ruleprefix31[hex_prefix_32] then
+        elseif M.ruleprefix31[hex_prefix_32] then
             ipv6_prefixlen = 32
             ipv4_prefixlen = 16
             ipv6_prefix = wan_ipv6:sub(1, 8) .. ":"

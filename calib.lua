@@ -33,6 +33,12 @@ end
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
 function M.find_ipv4_prefix()
     local wan_ipv6 = M.get_wan_ipv6_global() 
+
+    -- Pattern to match the first four sections of an IPv6 address
+    local pattern = "^([0-9a-fA-F]+calib.find_ipv4_prefix:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
+    local ipv6_56 = wan_ipv6:match(pattern)
+
+    
     local segments = {}
     for seg in wan_ipv6:gmatch("[a-fA-F0-9]+") do
         table.insert(segments, string.format("%04x", tonumber(seg, 16)))
@@ -130,11 +136,7 @@ function M.find_ipv4_prefix()
 
         ealen = 56 - ipv6_prefixlen
         psidlen = ealen - (32 - ipv4_prefixlen)
-
-        -- Pattern to match the first four sections of an IPv6 address
-        local pattern = "^([0-9a-fA-F]+calib.find_ipv4_prefix:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
-        ipv6_56 = wan_ipv6:match(pattern)
-        
+     
         return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, ipv6_56
     else
         return nil, "No matching IPv4 prefix found."

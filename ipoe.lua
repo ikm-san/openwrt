@@ -12,7 +12,8 @@ local ruleprefix38 = calib.getRulePrefix38()
 local ruleprefix38_20 = calib.getRulePrefix38_20()
 
 -- Pattern to match the first four sections of an IPv6 address
-local pattern = "^([0-9a-fA-F]+calib.find_ipv4_prefix:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
+local testnum = calib.find_ipv4_prefix
+local pattern = "^([0-9a-fA-F]+testnum:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
 local ipv6_56 = wan_ipv6:match(pattern)
 
 

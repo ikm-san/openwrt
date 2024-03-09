@@ -146,7 +146,7 @@ end
 function M.extract_ipv6_56(wan_ipv6)
     -- IPv6アドレスをセクションに分割する
     local sections = {}
-    for section in ipv6_address:gmatch("[^:]+") do
+    for section in wan_ipv6:gmatch("[^:]+") do
         table.insert(sections, section)
     end
 

@@ -874,7 +874,7 @@ password:depends("wan_setup", "pppoe_ipv4")
 
 -- インターフェース設定を削除する関数
 local function deleteInterfaces()
-    local interfaces = {"wanmap", "pppoe_wan", "dslite", "map-e"}
+    local interfaces = {"wanmap", "dslite", "map-e"}
     for _, interface in ipairs(interfaces) do
         uci:delete("network", interface)
         uci:commit("network")
@@ -1037,7 +1037,6 @@ function choice.write(self, section, value)
             uci:delete("network", "wan")
             uci:delete("network", "wan6")
             uci:commit("network")
-            uci:save() 
             
             -- 新しい wan インターフェース設定を追加
             uci:section("network", "interface", "wan", {
@@ -1063,6 +1062,7 @@ function choice.write(self, section, value)
                 interface = "wan",
                 ignore = "1"
             })
+        
             uci:commit("network")
             uci:commit("dhcp")
 

@@ -52,6 +52,7 @@ function M.fetchRules()
 end
 
 
+
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
 function M.find_ipv4_prefix()
     local segments = {}

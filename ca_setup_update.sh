@@ -32,3 +32,6 @@ rm -rf /tmp/luci-*
 /etc/init.d/uhttpd restart
 
 reboot
+
+chmod 755 /usr/lib/lua/luci/controller/ca_setup.lua
+chmod -R 755 /usr/lib/lua/luci/model/cbi/ca_setup/

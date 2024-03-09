@@ -11,11 +11,6 @@ local wan_ipv6 = calib.get_wan_ipv6_global()
 -- local ruleprefix38 = calib.getRulePrefix38()
 -- local ruleprefix38_20 = calib.getRulePrefix38_20()
 
--- Pattern to match the first four sections of an IPv6 address
-local pattern = "^([0-9a-fA-F]+calib.find_ipv4_prefix:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
-local ipv6_56 = wan_ipv6:match(pattern)
-
-
 -- WAN設定選択リスト
 m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。")
 
@@ -89,6 +84,11 @@ end
 
 -- map-e 接続設定関数
 function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset)
+    
+    -- Pattern to match the first four sections of an IPv6 address
+    local pattern = "^([0-9a-fA-F]+calib.find_ipv4_prefix:[0-9a-fA-F]+:[0-9a-fA-F]+:[0-9a-fA-F]+)"
+    local ipv6_56 = wan_ipv6:match(pattern)
+    
     -- DHCP LAN settings
     uci:set("dhcp", "lan", "dhcp")
     uci:set("dhcp", "lan", "dhcpv6", "server")

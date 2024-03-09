@@ -136,7 +136,7 @@ function M.find_ipv4_prefix()
         psidlen = ealen - (32 - ipv4_prefixlen)
 
         
-        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, ipv6_56
+        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen
     else
         return nil, "No matching IPv4 prefix found."
     end

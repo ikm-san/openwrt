@@ -1081,9 +1081,12 @@ function choice.write(self, section, value)
             proto = "pppoe",
             username = user,
             password = pass,
-            ifname = "wan"
+            ifname = "@wan"
         })
-
+        uci:commit("network") 
+        uci:save() 
+        
+        
         -- WAN settings
         uci:set("network", "wan", "auto", "1")
         uci:set("network", "wan6", "auto", "0")

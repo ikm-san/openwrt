@@ -152,7 +152,12 @@ function M.extract_ipv6_56(wan_ipv6)
 
     -- 各セクションを正規化（4桁の16進数に）する
     for i, section in ipairs(sections) do
-        sections[i] = string.format("%04x", tonumber(section, 16))
+        local hex_section = tonumber(section, 16)
+        if hex_section ~= nil then
+            sections[i] = string.format("%04x", hex_section)
+        else
+            sections[i] = "0000" -- 16進数として解釈できない場合は0000を使用
+        end
     end
 
     -- 最初の4セクションを抜き出し

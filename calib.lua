@@ -142,25 +142,19 @@ function M.find_ipv4_prefix()
     end
 end
 
--- IPv6アドレスの最初の4セクションを抜き出して正規化する関数
+-- IPv6アドレスの最初の4セクションを抜き出して::/56化する関数
 function M.extract_ipv6_56(wan_ipv6)
     -- IPv6アドレスをセクションに分割する
     local sections = {}
     for section in wan_ipv6:gmatch("[^:]+") do
-        table.insert(sections, section)
-    end
-
-    -- 各セクションを正規化（4桁の16進数に）する
-    for i, section in ipairs(sections) do
         local hex_section = tonumber(section, 16)
         if hex_section ~= nil then
-            sections[i] = string.format("%04x", hex_section)
+            table.insert(sections, section)
         else
-            sections[i] = "0000" -- 16進数として解釈できない場合は0000を使用
+            table.insert(sections, "0")
         end
     end
 
-    -- 最初の4セクションを抜き出し
     local ipv6_56 = table.concat(sections, ":", 1, 4)
     
     return ipv6_56

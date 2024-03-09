@@ -855,7 +855,6 @@ s.addremove = false
 s.anonymous = true
 
 choice = s:option(ListValue, "wan_setup", "操作")
-choice:value("", "-- 選択してください --")
 choice:value("dhcp_auto", "DHCP自動")
 choice:value("pppoe_ipv4", "PPPoE接続")
 choice:value("ipoe_v6plus", "v6プラス")
@@ -865,7 +864,6 @@ choice:value("ipoe_transix", "transix")
 choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
-choice.default = ""
 
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
 username = s:option(Value, "username", "PPPoE ユーザー名")

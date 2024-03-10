@@ -9,7 +9,7 @@ m.reset = false
 m.submit = false
 
 function fetch_data()
-    local url = "https://api.example.com/data"
+    local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
     local response, code = http.request(url)
     if code ~= 200 then
         return nil, "HTTP request failed"

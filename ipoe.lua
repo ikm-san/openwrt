@@ -205,6 +205,7 @@ end
 --デバッグ表示用
 
 local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56 = calib.find_ipv4_prefix(wan_ipv6)
+local map_rule = M.fetchRules()
 
 o = s:option(DummyValue, "map_rule", translate("Map Rule"))
 o.value = map_rule or translate("Not available")

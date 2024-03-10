@@ -250,6 +250,10 @@ function choice.write(self, section, value)
     
     if value == "dhcp_auto" then
         -- DHCP自動設定を適用
+        uci:delete("network", "wan")
+        uci:delete("network", "wan6")
+        uci:commit("network")
+        
         -- wan インターフェースの設定を変更
         uci:set("network", "wan", "ifname", "wan")
         uci:set("network", "wan", "proto", "dhcp")

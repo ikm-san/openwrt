@@ -1,10 +1,9 @@
-local fs = require "nixio.fs"
 local http = require "luci.http"
 local jsonc = require "luci.jsonc"
 
-local m, s, btn
+local m, s, o
 
-m = SimpleForm("fetchdata", "Fetch Data")
+m = SimpleForm("fetchdata", "自動データ取得")
 m.reset = false
 m.submit = false
 
@@ -12,31 +11,29 @@ function fetch_data()
     local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
     local response, code = http.request(url)
     if code ~= 200 then
-        return nil, "HTTP request failed"
+        return nil, "HTTPリクエストが失敗しました。ステータスコード: " .. tostring(code)
     end
-    
-    local jsonStr = response:match("%((.+)%)") -- JSONP response parsing
+
+    -- JSONP応答からJSON部分を抽出（API応答がJSONP形式と仮定）
+    local jsonStr = response:match("%((.+)%)")
     if not jsonStr then
-        return nil, "Failed to extract JSON"
+        return nil, "JSONP応答からJSONを抽出できませんでした。"
     end
-    
+
     local status, data = pcall(jsonc.parse, jsonStr)
     if not status then
-        return nil, "JSON parsing failed"
+        return nil, "JSONの解析に失敗しました。"
     end
-    
+
     return data, nil
 end
 
-btn = m:field(Button, "fetch", "Fetch Data", "Click to fetch data")
-btn.inputstyle = "reload"
-function btn.write()
-    local data, err = fetch_data()
-    if data then
-        m.message = "Data fetched successfully: " .. jsonc.stringify(data)
-    else
-        m.message = "Error fetching data: " .. err
-    end
+local data, err = fetch_data()
+
+if data then
+    m.message = "データの取得に成功しました: <pre>" .. jsonc.stringify(data, true) .. "</pre>"
+else
+    m.message = "データの取得に失敗しました: " .. err
 end
 
 return m

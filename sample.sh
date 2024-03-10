@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # APIのURL
-url="https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
+url="url here"
 
 # curlを使用してデータを取得
 map_rules=$(curl -s "$url")

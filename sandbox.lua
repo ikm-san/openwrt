@@ -1,39 +1,27 @@
-local http = require "luci.http"
-local jsonc = require "luci.jsonc"
+local uci = require("luci.model.uci").cursor()
+local json = require("luci.jsonc")
 
-local m, s, o
+local function save_ca_setup_config(json_data)
+    -- JSONデータをパース
+    local data = json.parse(json_data)
 
-m = SimpleForm("fetchdata", "自動データ取得")
-m.reset = false
-m.submit = false
+    -- 'ca_setup' configを開くまたは作成する
+    uci:section("ca_setup", "settings", nil, {
+        dmr = data.dmr,
+        id = data.id,
+        ipv6_fixlen = data.ipv6_fixlen,
+        fmr = json.stringify(data.fmr)  -- fmrはJSON形式の文字列として保存
+    })
 
-function fetch_data()
-    local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
-    local response, code = http.request(url)
-    if code ~= 200 then
-        return nil, "HTTPリクエストが失敗しました。ステータスコード: " .. tostring(code)
-    end
-
-    -- JSONP応答からJSON部分を抽出（API応答がJSONP形式と仮定）
-    local jsonStr = response:match("%((.+)%)")
-    if not jsonStr then
-        return nil, "JSONP応答からJSONを抽出できませんでした。"
-    end
-
-    local status, data = pcall(jsonc.parse, jsonStr)
-    if not status then
-        return nil, "JSONの解析に失敗しました。"
-    end
-
-    return data, nil
+    -- 設定をコミット
+    uci:commit("ca_setup")
 end
 
-local data, err = fetch_data()
+-- JSONデータを含む変数（この例では直接文字列を渡していますが、実際には外部から取得したデータを使用します）
+local json_data = '?({"dmr":"2404:9200:225:100::64","id":"953389bacb479f3df35b112aa0d12d22","ipv6_fixlen":56,"fmr":[...データの続き...]})'
 
-if data then
-    m.message = "データの取得に成功しました: <pre>" .. jsonc.stringify(data, true) .. "</pre>"
-else
-    m.message = "データの取得に失敗しました: " .. err
-end
+-- JSON文字列から先頭の'?('と末尾の')'を削除（APIからの応答形式に基づく）
+json_data = json_data:sub(3, -2)
 
-return m
+-- 設定保存関数を呼び出し
+save_ca_setup_config(json_data)

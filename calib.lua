@@ -163,33 +163,6 @@ function M.extract_ipv6_56(wan_ipv6)
 end
 
 
---fetchRules
-
-function M.fetchRules()
-    local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
-    local response, code = http.request(url)
-    
-    if code ~= 200 then
-        return nil, "HTTPリクエストに失敗しました。ステータスコード: " .. tostring(code)
-    end
-    
-    -- JSONP形式のレスポンスからJSON部分のみを抽出
-    local jsonStr = response:match("%((.+)%)")
-    if not jsonStr then
-        return nil, "JSONPからJSONを抽出できませんでした。"
-    end
-    
-    local status, map_rule = pcall(jsonc.parse, jsonStr)
-    if not status then
-        return nil, "JSONの解析に失敗しました。"
-    end
-
-    return "eeee", nil
-end
-
-
-
-
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html RulePrefix31, 38, 38_20
 function M.getRulePrefix31()
     local ruleprefix31 = {

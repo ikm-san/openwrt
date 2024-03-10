@@ -184,7 +184,7 @@ function M.fetchRules()
         return nil, "JSONの解析に失敗しました。"
     end
 
-    return map_rule, nil
+    return "eeee", nil
 end
 
 

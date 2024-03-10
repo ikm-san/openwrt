@@ -23,9 +23,10 @@ function update.write()
         sys.exec("wget -O /usr/lib/lua/luci/model/cbi/ca_setup/update.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/update.lua")
         sys.exec("wget -O /usr/lib/lua/luci/model/cbi/ca_setup/sandbox.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/sandbox.lua")
         sys.exec("wget -O /etc/config/ca_setup https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup")
-
+        sys.exec("rm -rf /tmp/luci-*")
+        sys.exec("/etc/init.d/uhttpd restart")
         -- デバイスを再起動する
-        luci.sys.reboot()
+        -- luci.sys.reboot()
 end
 
 return m

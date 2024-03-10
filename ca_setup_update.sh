@@ -20,6 +20,7 @@ opkg install luci-proto-ipv6
 opkg install luci-compat
 opkg install map
 opkg install ds-lite 
+opkg install luasec
 mkdir -p /usr/lib/lua/luci/controller/
 mkdir -p /usr/lib/lua/luci/model/cbi/ca_setup/
 wget -O /usr/lib/lua/luci/controller/ca_setup.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup.lua

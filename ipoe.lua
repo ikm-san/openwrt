@@ -250,37 +250,32 @@ function choice.write(self, section, value)
     
     if value == "dhcp_auto" then
         -- DHCP自動設定を適用
-        -- wan セクションを削除し、設定を保存
+        -- wan および wan6 インターフェースの設定を削除
         uci:delete("network", "wan")
-        uci:save("network")
-        
-        -- 新しいwanセクションをinterfaceとして追加
-        uci:section("network", "interface", "wan", {
-            ifname = "wan", -- インターフェース名を 'wan' に設定
-            proto = "dhcp",
-            auto = "1"
-        })
-        uci:save("network")
-        
-        -- wan6 セクションを削除し、設定を保存
         uci:delete("network", "wan6")
-        uci:save("network")
+        uci:delete("dhcp", "wan") 
         
-        -- 新しいwan6セクションをinterfaceとして追加
+        -- 新しい wan インターフェース設定を追加
+        uci:section("network", "interface", "wan", {
+            ifname = "wan", 
+            proto = "dhcp"
+        })
+        
+        -- 新しい wan6 インターフェースの設定を追加
         uci:section("network", "interface", "wan6", {
-            ifname = "wan", -- wan6でもインターフェース名を 'wan' に設定
+            ifname = "wan", 
             proto = "dhcpv6",
             reqaddress = "try",
             reqprefix = "auto"
         })
-        uci:save("network")
 
         -- Firewall settings
-        uci:set_list("firewall", "@zone[1]", "network", {"wan"})
+        uci:set_list("firewall", "@zone[1]", "network",  {"wan", "wan6"})
 
-         -- 設定をコミット
+        -- 設定をコミット
         uci:commit("network")
-        uci:commit("firewall")      
+        uci:commit("dhcp")
+        uci:commit("firewall") 
         
     elseif value == "pppoe_ipv4" then        
         -- PPPoE設定を適用

@@ -250,20 +250,54 @@ function choice.write(self, section, value)
     
     if value == "dhcp_auto" then
         -- DHCP自動設定を適用
-        uci:delete("network", "wan")
-        uci:delete("network", "wan6")
-        uci:commit("network")
-        
-        -- wan インターフェースの設定を変更
-        uci:set("network", "wan", "ifname", "wan")
-        uci:set("network", "wan", "proto", "dhcp")
-        
-        -- wan6 インターフェースの設定を変更
-        uci:set("network", "wan6", "ifname", "wan6")
-        uci:set("network", "wan6", "proto", "dhcpv6")
-        uci:set("network", "wan6", "reqaddress", "try")
-        uci:set("network", "wan6", "reqprefix", "auto")
-        uci:commit("network")
+            -- wan インターフェースの設定
+            if uci:get("network", "wan") then
+                -- 不要な設定を削除
+                uci:foreach("network", "wan", function(s)
+                    for k, _ in pairs(s) do
+                        if not (k == ".name" or k == ".type" or k == "ifname" or k == "proto" or k == "auto") then
+                            uci:delete("network", "wan", k)
+                        end
+                    end
+                end)
+                -- 必要な設定を更新または追加
+                uci:set("network", "wan", "proto", "dhcp")
+                uci:set("network", "wan", "ifname", "wan")
+                uci:set("network", "wan", "auto", "1")
+            else
+                -- wanインターフェースが存在しない場合、新規作成
+                uci:set("network", "wan", "interface")
+                uci:set("network", "wan", "proto", "dhcp")
+                uci:set("network", "wan", "ifname", "wan")
+                uci:set("network", "wan", "auto", "1")
+            end
+            
+            -- wan6 インターフェースの設定
+            if uci:get("network", "wan6") then
+                -- 不要な設定を削除
+                uci:foreach("network", "wan6", function(s)
+                    for k, _ in pairs(s) do
+                        if not (k == ".name" or k == ".type" or k == "ifname" or k == "proto" or k == "reqaddress" or k == "reqprefix") then
+                            uci:delete("network", "wan6", k)
+                        end
+                    end
+                end)
+                -- 必要な設定を更新または追加
+                uci:set("network", "wan6", "proto", "dhcpv6")
+                uci:set("network", "wan6", "ifname", "wan6") 
+                uci:set("network", "wan6", "reqaddress", "try")
+                uci:set("network", "wan6", "reqprefix", "auto")
+            else
+                -- wan6インターフェースが存在しない場合、新規作成
+                uci:set("network", "wan6", "interface")
+                uci:set("network", "wan6", "proto", "dhcpv6")
+                uci:set("network", "wan6", "ifname", "wan6") 
+                uci:set("network", "wan6", "reqaddress", "try")
+                uci:set("network", "wan6", "reqprefix", "auto")
+            end
+            
+            -- 設定をコミット
+            uci:commit("network")
 
         -- Firewall settings
         uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})

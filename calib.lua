@@ -1,6 +1,7 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
+local http = require "luci.http"
 local json = require("luci.jsonc")
 local io = require("io")
 
@@ -165,23 +166,25 @@ end
 --fetchRules
 
 function M.fetchRules()
-    local command = "curl -s 'https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules'"
-    local handle = io.popen(command, "r")
-    local result = handle:read("*a")
-    handle:close()
+    local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
+    local response, code = http.request(url)
+    
+    if code ~= 200 then
+        return nil, "HTTPリクエストに失敗しました。ステータスコード: " .. tostring(code)
+    end
     
     -- JSONP形式のレスポンスからJSON部分のみを抽出
-    local jsonStr = result:match("%((.+)%)")
+    local jsonStr = response:match("%((.+)%)")
     if not jsonStr then
-        error("JSONPからJSONを抽出できませんでした。")
+        return nil, "JSONPからJSONを抽出できませんでした。"
     end
     
-    local status, map_rule = pcall(json.parse, jsonStr)
+    local status, map_rule = pcall(jsonc.parse, jsonStr)
     if not status then
-        error("JSONの解析に失敗しました。")
+        return nil, "JSONの解析に失敗しました。"
     end
 
-    return map_rule
+    return map_rule, nil
 end
 
 

@@ -10,10 +10,10 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
-local function wan32_40(ipv6_address)
+local function wan32_40(wan_ipv6)
     -- IPv6アドレスをセクションに分割
     local sections = {}
-    for section in ipv6_address:gmatch("([^:]+)") do
+    for section in wan_ipv6:gmatch("([^:]+)") do
         table.insert(sections, section)
     end
 
@@ -34,7 +34,7 @@ local function wan32_40(ipv6_address)
 end
 
 -- WANのグローバルIPv6を取得
-local ipv6_address = calib.get_wan_ipv6_global()
+local wan_ipv6 = calib.get_wan_ipv6_global()
 local wan32_ipv6, wan40_ipv6 = wan32_40(ipv6_address)
 
 

@@ -1,6 +1,6 @@
 local uci = require("luci.model.uci").cursor()
 local jsonc = require("luci.jsonc")
-local wan_ipv6 = '240b:10:af40:100:6a:48af:4000:100' -- 例としてのIPv6アドレス
+local wan_ipv6 = '240b:10:' -- 例としてのIPv6アドレス
 
 -- ca_setup設定からdmr, ipv6_fixlen, およびfmrの値を読み込む
 local dmr = uci:get("ca_setup", "@settings[0]", "dmr")

@@ -9,14 +9,16 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
--- 固定値のwan_ipv6アドレス
+-- 第3セクションまでを考慮したパターン
+local wan_ipv6B = "240b:10:4a00:"
+-- 第2セクションまでのパターン
 local wan_ipv6 = "240b:10::"
 
 -- fmrの読み込みと解析
 local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
 local fmr = jsonc.parse(fmr_json)
 
--- wan_ipv6アドレスにマッチするfmrエントリを検索
+-- wan_ipv6アドレスにマッチするfmrエントリを検索する関数
 local function find_matching_fmr(wan_ipv6, fmr_list)
     for _, entry in ipairs(fmr_list) do
         local ipv6_prefix = entry.ipv6:match("^(.-)/")
@@ -27,7 +29,12 @@ local function find_matching_fmr(wan_ipv6, fmr_list)
     return nil
 end
 
-local matching_fmr = find_matching_fmr(wan_ipv6, fmr)
+-- 第3セクションまでを考慮したパターンで検索
+local matching_fmr = find_matching_fmr(wan_ipv6B, fmr)
+-- 見つからなければ、第2セクションまでのパターンで検索
+if not matching_fmr then
+    matching_fmr = find_matching_fmr(wan_ipv6, fmr)
+end
 
 -- 該当するfmrエントリの情報を出力
 if matching_fmr then

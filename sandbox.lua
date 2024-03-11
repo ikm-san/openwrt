@@ -9,18 +9,39 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
--- dmrの表示
-local dmr = uci:get("ca_setup", "@settings[0]", "dmr")
-s:option(DummyValue, "_dmr", translate("DMR")).value = dmr
+-- 固定値のwan_ipv6アドレス
+local wan_ipv6 = "240b:10::"
 
--- ipv6_fixlenの表示
-local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
-s:option(DummyValue, "_ipv6_fixlen", translate("IPv6 FixLen")).value = ipv6_fixlen
-
--- fmrの表示
+-- fmrの読み込みと解析
 local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
 local fmr = jsonc.parse(fmr_json)
-local fmr_string = jsonc.stringify(fmr, true) -- 読みやすい形式でJSONを文字列化
-s:option(DummyValue, "_fmr", translate("FMR")).value = fmr_string
+
+-- wan_ipv6アドレスにマッチするfmrエントリを検索
+local function find_matching_fmr(wan_ipv6, fmr_list)
+    for _, entry in ipairs(fmr_list) do
+        local ipv6_prefix = entry.ipv6:match("^(.-)/")
+        if wan_ipv6:find(ipv6_prefix) == 1 then
+            return entry
+        end
+    end
+    return nil
+end
+
+local matching_fmr = find_matching_fmr(wan_ipv6, fmr)
+
+-- 該当するfmrエントリの情報を出力
+if matching_fmr then
+    local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
+    local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
+
+    s:option(DummyValue, "_ipv6_prefix", translate("IPv6 Prefix")).value = ipv6_prefix
+    s:option(DummyValue, "_ipv6_prefix_length", translate("IPv6 Prefix Length")).value = ipv6_prefix_length
+    s:option(DummyValue, "_ipv4_prefix", translate("IPv4 Prefix")).value = ipv4_prefix
+    s:option(DummyValue, "_ipv4_prefix_length", translate("IPv4 Prefix Length")).value = ipv4_prefix_length
+    s:option(DummyValue, "_ea_length", translate("EA Length")).value = matching_fmr.ea_length
+    s:option(DummyValue, "_psid_offset", translate("PSID Offset")).value = matching_fmr.psid_offset
+else
+    s:option(DummyValue, "_error", translate("Error")).value = translate("No matching FMR entry found.")
+end
 
 return m

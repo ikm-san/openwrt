@@ -1,34 +1,26 @@
 local uci = require("luci.model.uci").cursor()
 local jsonc = require("luci.jsonc")
-local wan_ipv6 = '240b:10:' -- 例としてのIPv6アドレス
 
--- ca_setup設定からdmr, ipv6_fixlen, およびfmrの値を読み込む
+local m, s
+
+m = SimpleForm("ca_setup", translate("CA Setup Configuration"))
+m.reset = false
+m.submit = false
+
+s = m:section(SimpleSection, translate("Settings"))
+
+-- dmrの表示
 local dmr = uci:get("ca_setup", "@settings[0]", "dmr")
+s:option(DummyValue, "_dmr", translate("DMR")).value = dmr
+
+-- ipv6_fixlenの表示
 local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
+s:option(DummyValue, "_ipv6_fixlen", translate("IPv6 FixLen")).value = ipv6_fixlen
+
+-- fmrの表示
 local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
 local fmr = jsonc.parse(fmr_json)
+local fmr_string = jsonc.stringify(fmr, true) -- 読みやすい形式でJSONを文字列化
+s:option(DummyValue, "_fmr", translate("FMR")).value = fmr_string
 
--- IPv6アドレスにマッチするfmrエントリを探す
-local function find_matching_fmr(wan_ipv6, fmr_list)
-    for _, entry in ipairs(fmr_list) do
-        local ipv6_prefix = entry.ipv6:match("^(.-)/")
-        if wan_ipv6:find(ipv6_prefix) == 1 then
-            return entry
-        end
-    end
-    return nil
-end
-
-local matching_fmr = find_matching_fmr(wan_ipv6, fmr)
-
--- 結果を表示
-if matching_fmr then
-    print("IPv6 Prefix: " .. matching_fmr.ipv6)
-    print("IPv4 Prefix: " .. matching_fmr.ipv4)
-    print("PSID Offset: " .. tostring(matching_fmr.psid_offset))
-    print("EA Length: " .. tostring(matching_fmr.ea_length))
-    print("DMR: " .. dmr)
-    print("IPv6 FixLen: " .. ipv6_fixlen)
-else
-    print("該当するFMRエントリが見つかりません。")
-end
+return m

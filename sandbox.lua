@@ -3,17 +3,13 @@ local json = require("luci.jsonc")
 local https = require("ssl.https")
 local lucihttp = require("luci.http")
 
--- フォームとセクションの定義
-local f, s, o
+-- フォームの初期化
+local f = SimpleForm("fetchdata", translate("データ取得"))
+f.reset = false
+f.submit = false
 
-f = SimpleForm("fetchdata", translate("データ取得"))
-s = f:section(SimpleSection, nil, translate("下のボタンをクリックしてデータを取得してください。"))
-
--- 実行ボタン
-o = s:option(Button, "_fetch", translate("データ取得"))
-o.inputstyle = "apply"
-
-function o.write(self, section)
+-- ページ読み込み時に自動で実行される関数
+local function auto_fetch_data()
     local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
     local data, error = fetchHttpsData(url)
 
@@ -21,13 +17,12 @@ function o.write(self, section)
         local json_data = data:sub(3, -2) -- JSON文字列から先頭の'?('と末尾の')'を削除
         save_ca_setup_config(json_data)
         f.message = translate("データの取得と保存に成功しました。")
-        -- 処理が成功したら、同じページにリダイレクト
-        lucihttp.redirect(lucihttp.getenv("REQUEST_URI"))
     else
         f.errmessage = translate("データの取得に失敗しました: ") .. error
     end
 end
 
+-- 設定を保存する関数
 function save_ca_setup_config(json_data)
     local data = json.parse(json_data)
     uci:section("ca_setup", "settings", nil, {
@@ -39,6 +34,7 @@ function save_ca_setup_config(json_data)
     uci:commit("ca_setup")
 end
 
+-- HTTPSデータを取得する関数
 function fetchHttpsData(url)
     local body, code, headers, status = https.request(url)
     if code == 200 then
@@ -47,5 +43,8 @@ function fetchHttpsData(url)
         return nil, status
     end
 end
+
+-- ページ読み込み時にデータ取得を自動実行
+auto_fetch_data()
 
 return f

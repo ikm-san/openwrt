@@ -73,6 +73,8 @@ if matching_fmr then
     s:option(DummyValue, "_wan40", translate("wan40")).value = wan40_ipv6
 else
     s:option(DummyValue, "_error", translate("Error")).value = translate("No matching FMR entry found.")
+        s:option(DummyValue, "_wan32", translate("wan32")).value = wan32_ipv6
+    s:option(DummyValue, "_wan40", translate("wan40")).value = wan40_ipv6
 end
 
 return m

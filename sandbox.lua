@@ -1,5 +1,6 @@
 local uci = require("luci.model.uci").cursor()
 local jsonc = require("luci.jsonc")
+local calib = require "calib" 
 
 local m, s
 
@@ -32,7 +33,8 @@ local function wan32_40(ipv6_address)
     return wan32_ipv6, wan40_ipv6
 end
 
-local ipv6_address = "240b:10:af4:100:6a:48af:4000:100"
+-- WANのグローバルIPv6を取得
+local ipv6_address = calib.get_wan_ipv6_global()
 local wan32_ipv6, wan40_ipv6 = wan32_40(ipv6_address)
 
 

@@ -1,50 +1,44 @@
 local uci = require("luci.model.uci").cursor()
 local json = require("luci.jsonc")
-local https = require("ssl.https")
-local lucihttp = require("luci.http")
 
--- フォームの初期化
-local f = SimpleForm("fetchdata", translate("データ取得"))
-f.reset = false
-f.submit = false
+-- 与えられたIPv6アドレス
+local wan_ipv6 = '240b:10:af40:100:6a:48af:4000:100'
 
--- ページ読み込み時に自動で実行される関数
-local function auto_fetch_data()
-    local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
-    local data, error = fetchHttpsData(url)
+-- ca_setupの設定を取得
+local settings = uci:get_all("ca_setup", "settings")
 
-    if data then
-        local json_data = data:sub(3, -2) -- JSON文字列から先頭の'?('と末尾の')'を削除
-        save_ca_setup_config(json_data)
-        f.message = translate("データの取得と保存に成功しました。")
-    else
-        f.errmessage = translate("データの取得に失敗しました: ") .. error
+-- dmrとipv6_fixlenを取得
+local dmr = settings.dmr
+local ipv6_fixlen = settings.ipv6_fixlen
+
+-- fmrのJSONデータを取得し、解析
+local fmr_data = json.parse(settings.fmr)
+
+-- IPv6アドレスを確認する関数
+local function find_matching_fmr(wan_ipv6, fmr_data)
+    for _, fmr in ipairs(fmr_data) do
+        local ipv6_prefix = fmr.ipv6:match("^(.-)/")
+        if wan_ipv6:find(ipv6_prefix) == 1 then
+            return fmr
+        end
     end
+    return nil
 end
 
--- 設定を保存する関数
-function save_ca_setup_config(json_data)
-    local data = json.parse(json_data)
-    uci:section("ca_setup", "settings", nil, {
-        dmr = data.dmr,
-        id = data.id,
-        ipv6_fixlen = data.ipv6_fixlen,
-        fmr = json.stringify(data.fmr)
-    })
-    uci:commit("ca_setup")
+-- 該当するfmrを探す
+local matching_fmr = find_matching_fmr(wan_ipv6, fmr_data)
+
+if matching_fmr then
+    local ipv6prefix, ipv6prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
+    local ipv4prefix, ipv4prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
+    print("IPv6 Prefix: " .. ipv6prefix)
+    print("IPv6 Prefix Length: " .. ipv6prefix_length)
+    print("IPv4 Prefix: " .. ipv4prefix)
+    print("IPv4 Prefix Length: " .. ipv4prefix_length)
+    print("PSID Offset: " .. matching_fmr.psid_offset)
+    print("EA Length: " .. matching_fmr.ea_length)
+    print("DMR: " .. dmr)
+    print("IPv6 FixLen: " .. ipv6_fixlen)
+else
+    print("該当するFMRエントリが見つかりません。")
 end
-
--- HTTPSデータを取得する関数
-function fetchHttpsData(url)
-    local body, code, headers, status = https.request(url)
-    if code == 200 then
-        return body, nil
-    else
-        return nil, status
-    end
-end
-
--- ページ読み込み時にデータ取得を自動実行
-auto_fetch_data()
-
-return f

@@ -1,42 +1,32 @@
 local uci = require("luci.model.uci").cursor()
-local json = require("luci.jsonc")
+local jsonc = require("luci.jsonc")
+local wan_ipv6 = '240b:10:af40:100:6a:48af:4000:100' -- 例としてのIPv6アドレス
 
--- 与えられたIPv6アドレス
-local wan_ipv6 = '240b:10:af40:100:6a:48af:4000:100'
+-- ca_setup設定からdmr, ipv6_fixlen, およびfmrの値を読み込む
+local dmr = uci:get("ca_setup", "@settings[0]", "dmr")
+local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
+local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
+local fmr = jsonc.parse(fmr_json)
 
--- ca_setupの設定を取得
-local settings = uci:get_all("ca_setup", "settings")
-
--- dmrとipv6_fixlenを取得
-local dmr = settings.dmr
-local ipv6_fixlen = settings.ipv6_fixlen
-
--- fmrのJSONデータを取得し、解析
-local fmr_data = json.parse(settings.fmr)
-
--- IPv6アドレスを確認する関数
-local function find_matching_fmr(wan_ipv6, fmr_data)
-    for _, fmr in ipairs(fmr_data) do
-        local ipv6_prefix = fmr.ipv6:match("^(.-)/")
+-- IPv6アドレスにマッチするfmrエントリを探す
+local function find_matching_fmr(wan_ipv6, fmr_list)
+    for _, entry in ipairs(fmr_list) do
+        local ipv6_prefix = entry.ipv6:match("^(.-)/")
         if wan_ipv6:find(ipv6_prefix) == 1 then
-            return fmr
+            return entry
         end
     end
     return nil
 end
 
--- 該当するfmrを探す
-local matching_fmr = find_matching_fmr(wan_ipv6, fmr_data)
+local matching_fmr = find_matching_fmr(wan_ipv6, fmr)
 
+-- 結果を表示
 if matching_fmr then
-    local ipv6prefix, ipv6prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
-    local ipv4prefix, ipv4prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
-    print("IPv6 Prefix: " .. ipv6prefix)
-    print("IPv6 Prefix Length: " .. ipv6prefix_length)
-    print("IPv4 Prefix: " .. ipv4prefix)
-    print("IPv4 Prefix Length: " .. ipv4prefix_length)
-    print("PSID Offset: " .. matching_fmr.psid_offset)
-    print("EA Length: " .. matching_fmr.ea_length)
+    print("IPv6 Prefix: " .. matching_fmr.ipv6)
+    print("IPv4 Prefix: " .. matching_fmr.ipv4)
+    print("PSID Offset: " .. tostring(matching_fmr.psid_offset))
+    print("EA Length: " .. tostring(matching_fmr.ea_length))
     print("DMR: " .. dmr)
     print("IPv6 FixLen: " .. ipv6_fixlen)
 else

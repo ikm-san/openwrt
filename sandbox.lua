@@ -18,13 +18,11 @@ function o.write(self, section)
     local data, error = fetchHttpsData(url)
 
     if data then
-        -- JSON文字列から先頭の'?('と末尾の')'を削除（APIからの応答形式に基づく）
-        local json_data = data:sub(3, -2)
-
-        -- 設定保存関数を呼び出し
+        local json_data = data:sub(3, -2) -- JSON文字列から先頭の'?('と末尾の')'を削除
         save_ca_setup_config(json_data)
-
         f.message = translate("データの取得と保存に成功しました。")
+        -- 処理が成功したら、同じページにリダイレクト
+        lucihttp.redirect(lucihttp.getenv("REQUEST_URI"))
     else
         f.errmessage = translate("データの取得に失敗しました: ") .. error
     end

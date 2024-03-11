@@ -9,6 +9,15 @@ local M = {}
 
 -- WANインターフェースのIPv6アドレス（scope global）を取得
 function M.get_wan_ipv6_global()
+    -- WANインターフェースの状態を確認
+    local interface_up = sys.exec("ip link show dev wan | grep 'state UP'")
+
+    -- インターフェースがダウンしているか確認
+    if interface_up == nil or interface_up == '' then
+        return '0' -- インターフェースがダウンしている場合、'0' を返す
+    end
+
+    -- WANインターフェースのIPv6アドレス（scope global）を取得
     local ipv6_global = sys.exec("ip -6 addr show dev wan | awk '/inet6/ && /scope global/ {print $2}' | cut -d'/' -f1 | head -n 1")
     local normalized_ipv6 = ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
 
@@ -19,6 +28,7 @@ function M.get_wan_ipv6_global()
         return normalized_ipv6
     end
 end
+
 
 -- 10進数を2進数に変換する関数
 function M.dec_to_bin(dec)

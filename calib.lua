@@ -157,7 +157,7 @@ function M.extract_ipv6_56(wan_ipv6)
         end
     end
 
-    local ipv6_56 = table.concat(sections, ":", 1, 4)
+    local ipv6_56 = table.concat(sections, ":", 1, 4).. "::"
     
     return ipv6_56
 end

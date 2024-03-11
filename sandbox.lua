@@ -35,7 +35,7 @@ end
 
 -- WANのグローバルIPv6を取得
 local wan_ipv6 = calib.get_wan_ipv6_global()
-local wan32_ipv6, wan40_ipv6 = wan32_40(ipv6_address)
+local wan32_ipv6, wan40_ipv6 = wan32_40(wan_ipv6)
 
 
 -- fmrの読み込みと解析

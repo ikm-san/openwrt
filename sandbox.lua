@@ -17,7 +17,7 @@ local function wan32_40(ipv6_address)
     end
 
     -- wan32_ipv6の生成
-    local wan32_ipv6 = table.concat({sections[1], sections[2]}, ":")
+    local wan32_ipv6 = table.concat({sections[1], sections[2]}, ":").. "::"
 
     -- wan40_ipv6の生成
     -- 第3セクションを4桁に正規化
@@ -27,7 +27,7 @@ local function wan32_40(ipv6_address)
     end
     -- 第3セクションの先頭2桁を取得し、後ろ2桁を00で置き換え
     local third_section_modified = third_section_normalized:sub(1, 2) .. "00"
-    local wan40_ipv6 = table.concat({sections[1], sections[2], third_section_modified}, ":")
+    local wan40_ipv6 = table.concat({sections[1], sections[2], third_section_modified}, ":").. "::"
 
     return wan32_ipv6, wan40_ipv6
 end

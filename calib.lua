@@ -273,14 +273,14 @@ function M.get_mapconfig()
     local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
     local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
     local fmr = jsonc.parse(fmr_json)
-    local matching_fmr = find_matching_fmr(wan40_ipv6, fmr) or find_matching_fmr(wan32_ipv6, fmr)
+    local matching_fmr = M.find_matching_fmr(wan40_ipv6, fmr) or M.find_matching_fmr(wan32_ipv6, fmr)
 
     if matching_fmr then
         local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
         local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
-        -- Assuming ealen, psidlen, and offset are to be calculated or retrieved.
-        -- Placeholder values used here, replace with actual logic to calculate or retrieve these values.
-        local ealen, psidlen, offset = 0, 0, 0 -- These need to be defined based on your requirements
+        local ealen = matching_fmr.ea_length
+        local offset = matching_fmr.psid_offset
+        local psidlen = ealen - (32 - ipv4_prefix_lenth)
         return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset
     else
         error("No matching FMR entry found.")

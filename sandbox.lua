@@ -10,7 +10,7 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
-local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset = pcall(calib.get_mapconfig)
+local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset = calib.get_mapconfig
 
 -- 該当するfmrエントリの情報を出力
 

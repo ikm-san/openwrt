@@ -14,8 +14,6 @@ local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen,
 
 -- 該当するfmrエントリの情報を出力
 
-
-
     s:option(DummyValue, "_wan_ipv6", translate("wan_ipv6")).value = wan_ipv6
     s:option(DummyValue, "_peeraddr", translate("peeraddr")).value = peeraddr
     s:option(DummyValue, "_ipv6_fixlen", translate("ipv6_fixlen")).value = ipv6_fixlen

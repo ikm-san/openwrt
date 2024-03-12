@@ -10,32 +10,9 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
-local function wan32_40(wan_ipv6)
-    -- IPv6アドレスをセクションに分割
-    local sections = {}
-    for section in wan_ipv6:gmatch("([^:]+)") do
-        table.insert(sections, section)
-    end
-
-    -- wan32_ipv6の生成
-    local wan32_ipv6 = table.concat({sections[1], sections[2]}, ":").. "::"
-
-    -- wan40_ipv6の生成
-    -- 第3セクションを4桁に正規化
-    local third_section_normalized = sections[3]
-    if #third_section_normalized < 4 then
-        third_section_normalized = string.format("%04x", tonumber(third_section_normalized, 16))
-    end
-    -- 第3セクションの先頭2桁を取得し、後ろ2桁を00で置き換え
-    local third_section_modified = third_section_normalized:sub(1, 2) .. "00"
-    local wan40_ipv6 = table.concat({sections[1], sections[2], third_section_modified}, ":").. "::"
-
-    return wan32_ipv6, wan40_ipv6
-end
-
 -- WANのグローバルIPv6を取得
 local wan_ipv6 = calib.get_wan_ipv6_global()
-local wan32_ipv6, wan40_ipv6 = wan32_40(wan_ipv6)
+local wan32_ipv6, wan40_ipv6 = calib.wan32_40(wan_ipv6)
 
 local peeraddr = uci:get("ca_setup", "@settings[0]", "dmr")
 local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")

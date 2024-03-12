@@ -37,6 +37,8 @@ end
 local wan_ipv6 = calib.get_wan_ipv6_global()
 local wan32_ipv6, wan40_ipv6 = wan32_40(wan_ipv6)
 
+local peeraddr = uci:get("ca_setup", "@settings[0]", "dmr")
+local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
 
 -- fmrの読み込みと解析
 local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
@@ -65,6 +67,9 @@ if matching_fmr then
     local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
     local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
 
+    s:option(DummyValue, "_wan_ipv6", translate("wan_ipv6")).value = wan_ipv6
+    s:option(DummyValue, "_peeraddr", translate("peeraddr")).value = peeraddr
+    s:option(DummyValue, "_ipv6_fixlen", translate("ipv6_fixlen")).value = ipv6_fixlen
     s:option(DummyValue, "_ipv6_prefix", translate("IPv6 Prefix")).value = ipv6_prefix
     s:option(DummyValue, "_ipv6_prefix_length", translate("IPv6 Prefix Length")).value = ipv6_prefix_length
     s:option(DummyValue, "_ipv4_prefix", translate("IPv4 Prefix")).value = ipv4_prefix

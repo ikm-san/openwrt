@@ -232,8 +232,7 @@ function M.peeraddrVNE(wan_ipv6)
     return peeraddr
 end
 
--- ISP usage --
-
+-- wan_ipv6をセクション毎に分割する関数 --
 function M.split_ipv6(wan_ipv6)
     local sections = {}
     for section in wan_ipv6:gmatch("([^:]+)") do
@@ -242,6 +241,7 @@ function M.split_ipv6(wan_ipv6)
     return sections
 end
 
+-- Map用にwan_ipv6を先頭32bit 40bit化する関数 --
 function M.generate_ipv6_prefixes(sections)
     local wan32_ipv6 = table.concat({sections[1], sections[2]}, ":").. "::"
     local third_section_normalized = sections[3]
@@ -253,6 +253,7 @@ function M.generate_ipv6_prefixes(sections)
     return wan32_ipv6, wan40_ipv6
 end
 
+-- fmrをマッチングする関数 --
 function M.find_matching_fmr(wan_ipv6, fmr_list)
     for _, entry in ipairs(fmr_list) do
         local ipv6_prefix = entry.ipv6:match("^(.-)/")
@@ -263,7 +264,8 @@ function M.find_matching_fmr(wan_ipv6, fmr_list)
     return nil
 end
 
-function M.get_configuration()
+-- map configを出力する関数 --
+function M.get_mapconfig()
     local wan_ipv6 = M.get_wan_ipv6_global()
     local sections = M.split_ipv6(wan_ipv6)
     local wan32_ipv6, wan40_ipv6 = M.generate_ipv6_prefixes(sections)

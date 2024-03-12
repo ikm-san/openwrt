@@ -22,6 +22,8 @@ local function auto_fetch_data()
     end
 end
 
+local timestamp = os.time()
+
 -- 設定を保存する関数
 function save_ca_setup_config(json_data)
     local data = json.parse(json_data)
@@ -29,7 +31,7 @@ function save_ca_setup_config(json_data)
         dmr = data.dmr,
         ipv6_fixlen = data.ipv6_fixlen,
         fmr = json.stringify(data.fmr),
-        timestamp = os.time()
+        time = timestamp
     })
     uci:commit("ca_setup")
 end

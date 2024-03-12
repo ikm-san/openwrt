@@ -11,7 +11,7 @@ m.submit = false
 s = m:section(SimpleSection, translate("Settings"))
 
 -- WANのグローバルIPv6を取得
-local wan_ipv6 = calib.get_wan_ipv6_global()
+wan_ipv6 = calib.get_wan_ipv6_global()
 local wan32_ipv6, wan40_ipv6 = calib.wan32_40(wan_ipv6)
 
 local peeraddr = uci:get("ca_setup", "@settings[0]", "dmr")

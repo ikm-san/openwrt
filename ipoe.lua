@@ -207,7 +207,7 @@ end
 
 --デバッグ表示用
 
-local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56 = calib.find_ipv4_prefix(wan_ipv6)
+local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
 
 
 o = s:option(DummyValue, "VNE", translate("VNE"))
@@ -305,18 +305,18 @@ function choice.write(self, section, value)
         
     elseif value == "ipoe_v6plus" then      
         -- v6プラス
-            peeraddr = "2404:9200:225:100::64"
+           -- peeraddr = "2404:9200:225:100::64"
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
     
     elseif value == "ipoe_ocnvirtualconnect" then
         -- OCNバーチャルコネクト
-            peeraddr = "2001:380:a120::9"
+            -- peeraddr = "2001:380:a120::9"
             offset = 6 -- OCN要確認
             configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
         
     elseif value == "ipoe_biglobe" then
         -- BIGLOBE IPv6オプション
-            peeraddr = set_peeraddr(wan_ipv6)
+            -- peeraddr = set_peeraddr(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
         
     elseif value == "ipoe_transix" then

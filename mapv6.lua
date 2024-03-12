@@ -26,7 +26,13 @@ end
 
 local currentTime = os.time()
 local timestamp = os.date("%Y-%m-%d %H:%M:%S", currentTime)
+
 local conn = ubus.connect()
+if not conn then
+    error("Failed to connect to ubus")
+end
+
+local system_info = conn:call("system", "board", {})
 
 -- 設定を保存する関数
 function save_ca_setup_config(json_data)
@@ -36,7 +42,7 @@ function save_ca_setup_config(json_data)
         ipv6_fixlen = data.ipv6_fixlen,
         fmr = json.stringify(data.fmr),
         time = timestamp,
-        model = conn
+        model = system_info.model
     })
     uci:commit("ca_setup")
 end

@@ -10,13 +10,7 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
-local success, peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset = pcall(calib.get_mapconfig)
-if success then
-    print("Configuration Loaded Successfully")
-    -- Use the variables for your purposes here
-else
-    print("Error: " .. peeraddr) -- peeraddr will contain the error message if pcall fails
-end
+local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset = pcall(calib.get_mapconfig)
 
 -- 該当するfmrエントリの情報を出力
 

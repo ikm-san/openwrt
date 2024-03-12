@@ -201,8 +201,8 @@ function M.dtermineVNE(wan_ipv6)
     end
 end
 
--- map毎peeraddr設定用関数 --
-local function M.peeraddrVNE(wan_ipv6)
+-- VNE毎 map peeraddr設定用関数 --
+function M.peeraddrVNE(wan_ipv6)
     local prefix = wan_ipv6:sub(1, 5) -- IPv6アドレスの最初の5文字を取得
     local vne_map = {
         ["240b:"] = "2404:9200:225:100::64",

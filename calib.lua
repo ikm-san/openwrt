@@ -172,6 +172,30 @@ function M.extract_ipv6_56(wan_ipv6)
     return ipv6_56
 end
 
+function M.dtermineVNE(wan_ipv6)
+    local prefix = wan_ipv6:sub(1, 5) -- IPv6アドレスの最初の5文字を取得
+    local vne_map = {
+        ["240b:"] = "v6プラス",
+        ["2404:"] = "IPv6オプション", -- または "v6コネクト"。このプレフィックスは二つのVNE名にマッピングされるため、追加の文脈が必要かもしれません。
+        ["2400:"] = "OCNバーチャルコネクト",
+        ["2409:"] = "transix",
+        -- "2001:f"のケースは特別扱いが必要なため、後で処理します。
+        ["2408:"] = "NTT東日本フレッツ",
+        ["2001:"] = "NTT西日本フレッツ"
+    }
+
+    -- 特別なケース "2001:f" の処理
+    if prefix == "2001:" and wan_ipv6:sub(6, 6) == "f" then
+        return "クロスパス"
+    end
+
+    -- プレフィックスに基づいてVNE名を返す
+    if vne_map[prefix] then
+        return vne_map[prefix]
+    else
+        return "判定できません"
+    end
+end
 
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html RulePrefix31, 38, 38_20
 function M.getRulePrefix31()

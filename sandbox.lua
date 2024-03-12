@@ -1,6 +1,8 @@
 local uci = require("luci.model.uci").cursor()
 local jsonc = require("luci.jsonc")
 local calib = require "calib" 
+local https = require("ssl.https")
+local lucihttp = require("luci.http")
 
 local m, s
 

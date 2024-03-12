@@ -1,8 +1,6 @@
 local uci = require("luci.model.uci").cursor()
 local jsonc = require("luci.jsonc")
 local calib = require "calib" 
-local https = require("ssl.https")
-local lucihttp = require("luci.http")
 
 local m, s
 
@@ -12,89 +10,78 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
-
--- ページ読み込み時に自動で実行される関数
-local function auto_fetch_data()
-    local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
-    local data, error = fetchHttpsData(url)
-
-    if data then
-        local json_data = data:sub(3, -2) -- JSON文字列から先頭の'?('と末尾の')'を削除
-        save_ca_setup_config(json_data)
-        f.message = translate("データの取得と保存に成功しました。")
-    else
-        f.errmessage = translate("データの取得に失敗しました: ") .. error
+local function wan32_40(wan_ipv6)
+    -- IPv6アドレスをセクションに分割
+    local sections = {}
+    for section in wan_ipv6:gmatch("([^:]+)") do
+        table.insert(sections, section)
     end
-end
 
--- 設定を保存する関数
-function save_ca_setup_config(json_data)
-    local data = json.parse(json_data)
-    uci:section("ca_setup", "settings", nil, {
-        dmr = data.dmr,
-        ipv6_fixlen = data.ipv6_fixlen,
-        fmr = json.stringify(data.fmr)
-    })
-    uci:commit("ca_setup")
-end
+    -- wan32_ipv6の生成
+    local wan32_ipv6 = table.concat({sections[1], sections[2]}, ":").. "::"
 
--- HTTPSデータを取得する関数
-function fetchHttpsData(url)
-    local body, code, headers, status = https.request(url)
-    if code == 200 then
-        return body, nil
-    else
-        return nil, status
+    -- wan40_ipv6の生成
+    -- 第3セクションを4桁に正規化
+    local third_section_normalized = sections[3]
+    if #third_section_normalized < 4 then
+        third_section_normalized = string.format("%04x", tonumber(third_section_normalized, 16))
     end
+    -- 第3セクションの先頭2桁を取得し、後ろ2桁を00で置き換え
+    local third_section_modified = third_section_normalized:sub(1, 2) .. "00"
+    local wan40_ipv6 = table.concat({sections[1], sections[2], third_section_modified}, ":").. "::"
+
+    return wan32_ipv6, wan40_ipv6
 end
 
--- ページ読み込み時にデータ取得を自動実行
-auto_fetch_data()
+-- WANのグローバルIPv6を取得
+local wan_ipv6 = calib.get_wan_ipv6_global()
+local wan32_ipv6, wan40_ipv6 = wan32_40(wan_ipv6)
 
-
+local peeraddr = uci:get("ca_setup", "@settings[0]", "dmr")
+local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
 
 -- fmrの読み込みと解析
 local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
 local fmr = jsonc.parse(fmr_json)
 
-
--- map configを出力する関数 --
-function get_mapconfig()
-    local wan_ipv6 = calib.get_wan_ipv6_global()
-    local sections = calib.split_ipv6(wan_ipv6)
-    local wan32_ipv6, wan40_ipv6 = calib.generate_ipv6_prefixes(sections)
-    local peeraddr = uci:get("ca_setup", "@settings[0]", "dmr")
-    local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
-    -- local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
-    -- local fmr = jsonc.parse(fmr_json)
-    local matching_fmr = calib.find_matching_fmr(wan40_ipv6, fmr) or calib.find_matching_fmr(wan32_ipv6, fmr)
-
-    if matching_fmr then
-        local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
-        local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
-        local ealen = matching_fmr.ea_length
-        local offset = matching_fmr.psid_offset
-        local psidlen = ealen - (32 - ipv4_prefix_lenth)
-        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset
-    else
-        error("No matching FMR entry found.")
+-- wan_ipv6アドレスにマッチするfmrエントリを検索する関数
+local function find_matching_fmr(wan_ipv6, fmr_list)
+    for _, entry in ipairs(fmr_list) do
+        local ipv6_prefix = entry.ipv6:match("^(.-)/")
+        if wan_ipv6:find(ipv6_prefix) == 1 then
+            return entry
+        end
     end
+    return nil
 end
 
-
-local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset = get_mapconfig()
-
+-- 第3セクションまでを考慮したパターンで検索
+local matching_fmr = find_matching_fmr(wan40_ipv6, fmr)
+-- 見つからなければ、第2セクションまでのパターンで検索
+if not matching_fmr then
+    matching_fmr = find_matching_fmr(wan32_ipv6, fmr)
+end
 
 -- 該当するfmrエントリの情報を出力
+if matching_fmr then
+    local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
+    local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
 
+    s:option(DummyValue, "_wan_ipv6", translate("wan_ipv6")).value = wan_ipv6
     s:option(DummyValue, "_peeraddr", translate("peeraddr")).value = peeraddr
     s:option(DummyValue, "_ipv6_fixlen", translate("ipv6_fixlen")).value = ipv6_fixlen
     s:option(DummyValue, "_ipv6_prefix", translate("IPv6 Prefix")).value = ipv6_prefix
     s:option(DummyValue, "_ipv6_prefix_length", translate("IPv6 Prefix Length")).value = ipv6_prefix_length
     s:option(DummyValue, "_ipv4_prefix", translate("IPv4 Prefix")).value = ipv4_prefix
     s:option(DummyValue, "_ipv4_prefix_length", translate("IPv4 Prefix Length")).value = ipv4_prefix_length
-    s:option(DummyValue, "_ea_length", translate("EA Length")).value = ealen
-    s:option(DummyValue, "_psid_offset", translate("PSID Offset")).value = offset
-    s:option(DummyValue, "_psid_len", translate("PSID Length")).value = psidlen
+    s:option(DummyValue, "_ea_length", translate("EA Length")).value = matching_fmr.ea_length
+    s:option(DummyValue, "_psid_offset", translate("PSID Offset")).value = matching_fmr.psid_offset
+    s:option(DummyValue, "_wan32", translate("wan32")).value = wan32_ipv6
+    s:option(DummyValue, "_wan40", translate("wan40")).value = wan40_ipv6
+else
+    s:option(DummyValue, "_error", translate("Error")).value = translate("No matching FMR entry found.")
+        s:option(DummyValue, "_wan32", translate("wan32")).value = wan32_ipv6
+    s:option(DummyValue, "_wan40", translate("wan40")).value = wan40_ipv6
+end
 
 return m

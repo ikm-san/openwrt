@@ -29,8 +29,8 @@ function save_ca_setup_config(json_data)
     uci:section("ca_setup", "settings", nil, {
         dmr = data.dmr,
         ipv6_fixlen = data.ipv6_fixlen,
-        fmr = json.stringify(data.fmr)
-        timestamp = os.time()
+        fmr = json.stringify(data.fmr),
+        timestamp = os.time(),
         conn = ubus.connect()
     })
     uci:commit("ca_setup")

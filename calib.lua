@@ -147,8 +147,10 @@ function M.find_ipv4_prefix()
         psidlen = ealen - (32 - ipv4_prefixlen)
         ipv6_56 = M.extract_ipv6_56(wan_ipv6)
         offset = 4
+        peeraddr = M.peeraddrVNE(wan_ipv6)
+     
         
-        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56
+        return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr
     else
         return nil, "No matching IPv4 prefix found."
     end
@@ -172,13 +174,15 @@ function M.extract_ipv6_56(wan_ipv6)
     return ipv6_56
 end
 
+-- VNE切り分け判定用関数 --
 function M.dtermineVNE(wan_ipv6)
     local prefix = wan_ipv6:sub(1, 5) -- IPv6アドレスの最初の5文字を取得
     local vne_map = {
         ["240b:"] = "v6プラス",
-        ["2404:"] = "IPv6オプション", -- または "v6コネクト"。このプレフィックスは二つのVNE名にマッピングされるため、追加の文脈が必要かもしれません。
+        ["2404:"] = "IPv6オプション",
         ["2400:"] = "OCNバーチャルコネクト",
         ["2409:"] = "transix",
+        ["2405:"] = "v6コネクト",        
         -- "2001:f"のケースは特別扱いが必要なため、後で処理します。
         ["2408:"] = "NTT東日本フレッツ",
         ["2001:"] = "NTT西日本フレッツ"
@@ -187,6 +191,34 @@ function M.dtermineVNE(wan_ipv6)
     -- 特別なケース "2001:f" の処理
     if prefix == "2001:" and wan_ipv6:sub(6, 6) == "f" then
         return "クロスパス"
+    end
+
+    -- プレフィックスに基づいてVNE名を返す
+    if vne_map[prefix] then
+        return vne_map[prefix]
+    else
+        return "判定できません"
+    end
+end
+
+-- map毎peeraddr設定用関数 --
+local function M.peeraddrVNE(wan_ipv6)
+    local prefix = wan_ipv6:sub(1, 5) -- IPv6アドレスの最初の5文字を取得
+    local vne_map = {
+        ["240b:"] = "2404:9200:225:100::64",
+        ["2400:"] = "2001:380:a120::9",
+    }
+    if prefix == "2404:" then
+            local target_char = wan_ipv6:sub(9,9)
+            if target_char then
+                local num = tonumber(target_char, 16)
+                if num >= 0 and num < 4 then
+                    peeraddr = "2001:260:700:1::1:276"
+                elseif num >= 4 and num < 8 then
+                    peeraddr = "2001:260:700:1::1:275"
+                end
+            end
+        return peeraddr
     end
 
     -- プレフィックスに基づいてVNE名を返す

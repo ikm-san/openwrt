@@ -203,30 +203,33 @@ end
 
 -- VNE毎 map peeraddr設定用関数 --
 function M.peeraddrVNE(wan_ipv6)
+    local peeraddr = "判定できません"
     local prefix = wan_ipv6:sub(1, 5) -- IPv6アドレスの最初の5文字を取得
+
+    -- 特定のプレフィックスに対応する値をマップします。
     local vne_map = {
         ["240b:"] = "2404:9200:225:100::64",
         ["2400:"] = "2001:380:a120::9",
     }
+
+    -- "2404:"プレフィックスの場合の特別な処理
     if prefix == "2404:" then
-            local target_char = wan_ipv6:sub(9,9)
-            if target_char then
-                local num = tonumber(target_char, 16)
-                if num >= 0 and num < 4 then
-                    peeraddr = "2001:260:700:1::1:276"
-                elseif num >= 4 and num < 8 then
-                    peeraddr = "2001:260:700:1::1:275"
-                end
+        local target_char = wan_ipv6:sub(9, 9)
+        if target_char then
+            local num = tonumber(target_char, 16)
+            if num and num >= 0 and num < 4 then
+                peeraddr = "2001:260:700:1::1:275"
+            elseif num and num >= 4 and num < 8 then
+                peeraddr = "2001:260:700:1::1:276"
             end
-        return peeraddr
+        end
+    elseif vne_map[prefix] then
+        -- vne_mapにプレフィックスが存在する場合、対応する値をpeeraddrに割り当てます。
+        peeraddr = vne_map[prefix]
     end
 
-    -- プレフィックスに基づいてVNE名を返す
-    if vne_map[prefix] then
-        return vne_map[prefix]
-    else
-        return "判定できません"
-    end
+    -- 最終的に決定したpeeraddrの値を返します。
+    return peeraddr
 end
 
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html RulePrefix31, 38, 38_20

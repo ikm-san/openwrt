@@ -29,8 +29,8 @@ end
     s:option(DummyValue, "_ipv6_prefix_length", translate("IPv6 Prefix Length")).value = ipv6_prefix_length
     s:option(DummyValue, "_ipv4_prefix", translate("IPv4 Prefix")).value = ipv4_prefix
     s:option(DummyValue, "_ipv4_prefix_length", translate("IPv4 Prefix Length")).value = ipv4_prefix_length
-    s:option(DummyValue, "_ea_length", translate("EA Length")).value = matching_fmr.ea_length
-    s:option(DummyValue, "_psid_offset", translate("PSID Offset")).value = matching_fmr.psid_offset
+    s:option(DummyValue, "_ea_length", translate("EA Length")).value = ealen
+    s:option(DummyValue, "_psid_offset", translate("PSID Offset")).value = offset
     s:option(DummyValue, "_wan32", translate("wan32")).value = wan32_ipv6
     s:option(DummyValue, "_wan40", translate("wan40")).value = wan40_ipv6
 

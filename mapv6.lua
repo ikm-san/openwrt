@@ -2,6 +2,7 @@ local uci = require("luci.model.uci").cursor()
 local json = require("luci.jsonc")
 local https = require("ssl.https")
 local lucihttp = require("luci.http")
+local ubus = require "ubus"
 
 -- フォームの初期化
 local f = SimpleForm("fetchdata", translate("データ取得"))
@@ -29,6 +30,8 @@ function save_ca_setup_config(json_data)
         dmr = data.dmr,
         ipv6_fixlen = data.ipv6_fixlen,
         fmr = json.stringify(data.fmr)
+        timestamp = os.time()
+        conn = ubus.connect()
     })
     uci:commit("ca_setup")
 end

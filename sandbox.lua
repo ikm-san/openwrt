@@ -10,11 +10,11 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
-local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset = calib.get_mapconfig
+local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset = calib.get_mapconfig()
+
 
 -- 該当するfmrエントリの情報を出力
 
-    s:option(DummyValue, "_wan_ipv6", translate("wan_ipv6")).value = wan_ipv6
     s:option(DummyValue, "_peeraddr", translate("peeraddr")).value = peeraddr
     s:option(DummyValue, "_ipv6_fixlen", translate("ipv6_fixlen")).value = ipv6_fixlen
     s:option(DummyValue, "_ipv6_prefix", translate("IPv6 Prefix")).value = ipv6_prefix
@@ -23,8 +23,6 @@ local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen,
     s:option(DummyValue, "_ipv4_prefix_length", translate("IPv4 Prefix Length")).value = ipv4_prefix_length
     s:option(DummyValue, "_ea_length", translate("EA Length")).value = ealen
     s:option(DummyValue, "_psid_offset", translate("PSID Offset")).value = offset
-    s:option(DummyValue, "_psid_len", translate("PSID Length")).value = pisdlen
-    s:option(DummyValue, "_wan32", translate("wan32")).value = wan32_ipv6
-    s:option(DummyValue, "_wan40", translate("wan40")).value = wan40_ipv6
+    s:option(DummyValue, "_psid_len", translate("PSID Length")).value = psidlen
 
 return m

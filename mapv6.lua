@@ -29,7 +29,7 @@ function save_ca_setup_config(json_data)
         dmr = data.dmr,
         ipv6_fixlen = data.ipv6_fixlen,
         fmr = json.stringify(data.fmr),
-        timestamp = os.time(),
+        timestamp = os.time()
     })
     uci:commit("ca_setup")
 end

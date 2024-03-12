@@ -232,6 +232,59 @@ function M.peeraddrVNE(wan_ipv6)
     return peeraddr
 end
 
+-- ISP usage --
+
+function M.split_ipv6(wan_ipv6)
+    local sections = {}
+    for section in wan_ipv6:gmatch("([^:]+)") do
+        table.insert(sections, section)
+    end
+    return sections
+end
+
+function M.generate_ipv6_prefixes(sections)
+    local wan32_ipv6 = table.concat({sections[1], sections[2]}, ":").. "::"
+    local third_section_normalized = sections[3]
+    if #third_section_normalized < 4 then
+        third_section_normalized = string.format("%04x", tonumber(third_section_normalized, 16))
+    end
+    local third_section_modified = third_section_normalized:sub(1, 2) .. "00"
+    local wan40_ipv6 = table.concat({sections[1], sections[2], third_section_modified}, ":").. "::"
+    return wan32_ipv6, wan40_ipv6
+end
+
+function M.find_matching_fmr(wan_ipv6, fmr_list)
+    for _, entry in ipairs(fmr_list) do
+        local ipv6_prefix = entry.ipv6:match("^(.-)/")
+        if wan_ipv6:find(ipv6_prefix) == 1 then
+            return entry
+        end
+    end
+    return nil
+end
+
+function M.get_configuration()
+    local wan_ipv6 = M.get_wan_ipv6_global()
+    local sections = M.split_ipv6(wan_ipv6)
+    local wan32_ipv6, wan40_ipv6 = M.generate_ipv6_prefixes(sections)
+    local peeraddr = uci:get("ca_setup", "@settings[0]", "dmr")
+    local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
+    local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
+    local fmr = jsonc.parse(fmr_json)
+    local matching_fmr = find_matching_fmr(wan40_ipv6, fmr) or find_matching_fmr(wan32_ipv6, fmr)
+
+    if matching_fmr then
+        local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
+        local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
+        -- Assuming ealen, psidlen, and offset are to be calculated or retrieved.
+        -- Placeholder values used here, replace with actual logic to calculate or retrieve these values.
+        local ealen, psidlen, offset = 0, 0, 0 -- These need to be defined based on your requirements
+        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset
+    else
+        error("No matching FMR entry found.")
+    end
+end
+
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html RulePrefix31, 38, 38_20
 function M.getRulePrefix31()
     local ruleprefix31 = {

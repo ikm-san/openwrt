@@ -15,4 +15,8 @@ function index()
     
     -- デバッグ用
     entry({"admin", "ca_setup", "sandbox"}, cbi("ca_setup/sandbox"), _("テスト用"), 60)
+
+        -- デバッグ用
+    entry({"admin", "ca_setup", "mapv6"}, cbi("ca_setup/mapv6"), _("mapv6 reg"), 70)
+    
 end

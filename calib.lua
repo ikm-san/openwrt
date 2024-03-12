@@ -253,7 +253,7 @@ function M.generate_ipv6_prefixes(sections)
     return wan32_ipv6, wan40_ipv6
 end
 
--- fmrをマッチングする関数 --
+-- wan_ipv6アドレスにマッチするfmrエントリを検索する関数 --
 function M.find_matching_fmr(wan_ipv6, fmr_list)
     for _, entry in ipairs(fmr_list) do
         local ipv6_prefix = entry.ipv6:match("^(.-)/")

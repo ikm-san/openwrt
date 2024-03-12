@@ -266,7 +266,8 @@ end
 
 -- map configを出力する関数 --
 function M.get_mapconfig()
-    local wan_ipv6 = M.get_wan_ipv6_global()
+    -- local wan_ipv6 = M.get_wan_ipv6_global()
+    local wan_ipv6 = "240b:10:af40:100:6a:48af:4000:100"
     local sections = M.split_ipv6(wan_ipv6)
     local wan32_ipv6, wan40_ipv6 = M.generate_ipv6_prefixes(sections)
     local peeraddr = uci:get("ca_setup", "@settings[0]", "dmr")

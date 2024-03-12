@@ -14,7 +14,7 @@ function M.get_wan_ipv6_global()
 
     -- インターフェースがダウンしているか確認
     if interface_up == nil or interface_up == '' then
-        return '0' -- インターフェースがダウンしている場合、'0' を返す
+        return '0000:0000:0000:0000:0000:0000:0000:0000' -- インターフェースがダウンしている場合、'0' を返す
     end
 
     -- WANインターフェースのIPv6アドレス（scope global）を取得
@@ -23,7 +23,7 @@ function M.get_wan_ipv6_global()
 
     -- IPv6アドレスが見つからない場合は0を返す
     if normalized_ipv6 == nil or normalized_ipv6 == '' then
-        return '0'
+        return '0000:0000:0000:0000:0000:0000:0000:0000'
     else
         return normalized_ipv6
     end

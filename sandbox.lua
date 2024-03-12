@@ -10,7 +10,31 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
-local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset = calib.get_mapconfig()
+-- map configを出力する関数 --
+function get_mapconfig()
+    local wan_ipv6 = calib.get_wan_ipv6_global()
+    local sections = calib.split_ipv6(wan_ipv6)
+    local wan32_ipv6, wan40_ipv6 = M.generate_ipv6_prefixes(sections)
+    local peeraddr = uci:get("ca_setup", "@settings[0]", "dmr")
+    local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
+    local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
+    local fmr = jsonc.parse(fmr_json)
+    local matching_fmr = M.find_matching_fmr(wan40_ipv6, fmr) or calib.find_matching_fmr(wan32_ipv6, fmr)
+
+    if matching_fmr then
+        local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
+        local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
+        local ealen = matching_fmr.ea_length
+        local offset = matching_fmr.psid_offset
+        local psidlen = ealen - (32 - ipv4_prefix_lenth)
+        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset
+    else
+        error("No matching FMR entry found.")
+    end
+end
+
+
+local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset = get_mapconfig()
 
 
 -- 該当するfmrエントリの情報を出力

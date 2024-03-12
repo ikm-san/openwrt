@@ -225,7 +225,7 @@ o = s:option(DummyValue, "ipv6_56", translate("IPv6_56"))
 o.value = ipv6_56
 
 o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
-o.value = peeraddr or translate("Not BIGLOBE")
+o.value = peeraddr
 
 
 

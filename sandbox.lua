@@ -19,7 +19,7 @@ function get_mapconfig()
     local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
     local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
     local fmr = jsonc.parse(fmr_json)
-    local matching_fmr = M.find_matching_fmr(wan40_ipv6, fmr) or calib.find_matching_fmr(wan32_ipv6, fmr)
+    local matching_fmr = calib.find_matching_fmr(wan40_ipv6, fmr) or calib.find_matching_fmr(wan32_ipv6, fmr)
 
     if matching_fmr then
         local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")

@@ -4,6 +4,50 @@ local https = require("ssl.https")
 local lucihttp = require("luci.http")
 local ubus = require "ubus"
 
+-- 起動時ルーチンタスク
+local currentTime = os.time()
+local timestamp = os.date("%Y-%m-%d %H:%M:%S", currentTime)
+local conn = ubus.connect()
+if not conn then
+    error("Failed to connect to ubus")
+end
+local system_info = conn:call("system", "board", {})
+
+local brand
+if system_info.model and string.find(system_info.model, "Linksys") then
+    brandCheck = "OK"
+else
+    brandCheck = "NG"
+end
+
+print("Brand is Linksys:", brandCheck)
+
+
+-- UCIから時間設定を読み込む
+local savedTimeStr = uci:get("ca_setup", "settings", "time")
+
+if savedTimeStr then
+    -- 保存された時間をタイムスタンプに変換
+    local pattern = "(%d+)-(%d+)-(%d+) (%d+):(%d+):(%d+)"
+    local year, month, day, hour, min, sec = savedTimeStr:match(pattern)
+    local savedTime = os.time({year=year, month=month, day=day, hour=hour, min=min, sec=sec})
+
+    -- 現在のタイムスタンプを取得
+    local currentTime = os.time()
+
+    -- 24時間経過しているか確認
+    local timeCheck
+    if currentTime - savedTime >= 24 * 60 * 60 then
+        timeCheck = "OK"
+    else
+        timeCheck = "NG"
+    end
+else
+    -- 時間設定が見つからない場合
+    timeCheck = "EMPTY"
+end
+
+print(timeCheck)
 
 -- フォームの初期化
 local f = SimpleForm("fetchdata", translate("データ取得"))
@@ -24,15 +68,6 @@ local function auto_fetch_data()
     end
 end
 
-local currentTime = os.time()
-local timestamp = os.date("%Y-%m-%d %H:%M:%S", currentTime)
-
-local conn = ubus.connect()
-if not conn then
-    error("Failed to connect to ubus")
-end
-
-local system_info = conn:call("system", "board", {})
 
 -- 設定を保存する関数
 function save_ca_setup_config(json_data)

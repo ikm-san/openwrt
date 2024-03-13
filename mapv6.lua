@@ -75,9 +75,7 @@ function save_ca_setup_config(json_data)
         ipv6_fixlen = data.ipv6_fixlen,
         fmr = json.stringify(data.fmr),
         time = timestamp,
-        model = system_info.model,
-        brand = brandCheck,
-        timecheck = timeCheck
+        model = system_info.model
     })
     uci:commit("ca_setup")
 end

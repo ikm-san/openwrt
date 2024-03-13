@@ -70,7 +70,7 @@ end
 -- 設定を保存する関数
 function save_ca_setup_config(json_data)
       local data = json.parse(json_data)
-    uci:section("ca_setup", "settings", {
+    uci:section("ca_setup", "settings", nil, {
         dmr = data.dmr,
         ipv6_fixlen = data.ipv6_fixlen,
         fmr = json.stringify(data.fmr),

@@ -27,17 +27,11 @@ end
 
 
 -- UCIから時間設定を読み込む
-local savedTimeStr = uci:get("ca_setup", "v6plus", "time")
+local savedTimeStr = uci:get("ca_setup", "v6plus", "ostime")
 
 if savedTimeStr then
     -- 保存された時間をタイムスタンプに変換
-    local pattern = "(%d+)-(%d+)-(%d+) (%d+):(%d+):(%d+)"
-    local year, month, day, hour, min, sec = savedTimeStr:match(pattern)
-    local savedTime = os.time({year=year, month=month, day=day, hour=hour, min=min, sec=sec})
-
-    -- 現在のタイムスタンプを取得
-    local currentTime = os.time()
-
+    local savedTime = tonumber(savedTimeStr) 
     -- 24時間経過しているか確認
     local timeCheck
     if currentTime - savedTime >= 24 * 60 * 60 then
@@ -75,6 +69,7 @@ function save_ca_setup_config(json_data)
         ipv6_fixlen = data.ipv6_fixlen,
         fmr = json.stringify(data.fmr),
         time = timestamp,
+        ostime = os.time()
         model = system_info.model,
         lasttime = timeCheck
     })

@@ -69,6 +69,8 @@ end
 
 -- 設定を保存する関数
 function save_ca_setup_config(json_data)
+    uci:delete("ca_setup", "settings")
+    uci:commit("ca_setup")
     local data = json.parse(json_data)
     uci:section("ca_setup", "settings", nil, {
         dmr = data.dmr,

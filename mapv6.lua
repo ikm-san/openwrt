@@ -4,6 +4,11 @@ local https = require("ssl.https")
 local lucihttp = require("luci.http")
 local ubus = require "ubus"
 
+-- フォームの初期化
+local f = SimpleForm("fetchdata", translate("データ取得"))
+f.reset = false
+f.submit = false
+
 -- 起動時ルーチンタスク
 local currentTime = os.time()
 local timestamp = os.date("%Y-%m-%d %H:%M:%S", currentTime)
@@ -19,8 +24,6 @@ if system_info.model and string.find(system_info.model, "Linksys") then
 else
     brandCheck = "NG"
 end
-
-print("Brand is Linksys:", brandCheck)
 
 
 -- UCIから時間設定を読み込む
@@ -47,12 +50,7 @@ else
     timeCheck = "EMPTY"
 end
 
-print(timeCheck)
 
--- フォームの初期化
-local f = SimpleForm("fetchdata", translate("データ取得"))
-f.reset = false
-f.submit = false
 
 -- ページ読み込み時に自動で実行される関数
 local function auto_fetch_data()
@@ -77,7 +75,9 @@ function save_ca_setup_config(json_data)
         ipv6_fixlen = data.ipv6_fixlen,
         fmr = json.stringify(data.fmr),
         time = timestamp,
-        model = system_info.model
+        model = system_info.model,
+        brand = brandCheck,
+        timecheck = timeCheck
     })
     uci:commit("ca_setup")
 end

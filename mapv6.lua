@@ -69,7 +69,7 @@ function save_ca_setup_config(json_data)
         ipv6_fixlen = data.ipv6_fixlen,
         fmr = json.stringify(data.fmr),
         time = timestamp,
-        ostime = os.time()
+        ostime = os.time(),
         model = system_info.model,
         lasttime = timeCheck
     })

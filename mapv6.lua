@@ -27,7 +27,7 @@ end
 
 
 -- UCIから時間設定を読み込む
-local savedTimeStr = uci:get("ca_setup", "settings", "time")
+local savedTimeStr = uci:get("ca_setup", "v6plus", "time")
 
 if savedTimeStr then
     -- 保存された時間をタイムスタンプに変換
@@ -70,7 +70,7 @@ end
 -- 設定を保存する関数
 function save_ca_setup_config(json_data)
     local data = json.parse(json_data)
-    uci:section("ca_setup", "settings", "v6plus", {
+    uci:section("ca_setup", "settings", "map", {
         dmr = data.dmr,
         ipv6_fixlen = data.ipv6_fixlen,
         fmr = json.stringify(data.fmr),

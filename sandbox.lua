@@ -14,11 +14,11 @@ s = m:section(SimpleSection, translate("Settings"))
 wan_ipv6 = calib.get_wan_ipv6_global()
 local wan32_ipv6, wan40_ipv6 = calib.wan32_40(wan_ipv6)
 
-local peeraddr = uci:get("ca_setup", "@settings[0]", "dmr")
-local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
+local peeraddr = uci:get("ca_setup", "map", "dmr")
+local ipv6_fixlen = uci:get("ca_setup", "map", "ipv6_fixlen")
 
 -- fmrの読み込みと解析
-local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
+local fmr_json = uci:get("ca_setup", "map", "fmr")
 local fmr = jsonc.parse(fmr_json)
 
 -- wan_ipv6アドレスにマッチするfmrエントリを検索する関数

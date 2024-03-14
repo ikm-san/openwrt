@@ -28,17 +28,17 @@ end
 
 -- mapルールが保存された時間をチェック
 local function savetimecheck()
-    local timeCheck -- `timeCheck`を関数のスコープの最初に宣言
-    local currentTime = os.time() -- 現在の時間をUNIXタイムスタンプで取得   
+    local timeCheck
+    local currentTime = os.time()    
     local savedTimeStr = uci:get("ca_setup", "map", "ostime")
     if savedTimeStr then
         -- 保存された時間をタイムスタンプに変換
         local savedTime = tonumber(savedTimeStr)
         -- 24時間経過しているか確認
         if currentTime - savedTime >= 24 * 60 * 60 then
-            timeCheck = "OK"
+            timeCheck = "Y"
         else
-            timeCheck = "NG"
+            timeCheck = "N"
         end
     else
         -- 時間設定が見つからない場合
@@ -91,9 +91,12 @@ function fetchHttpsData(url)
     end
 end
 
-
-
 -- ページ読み込み時にデータ取得を自動実行
-auto_fetch_data()
+if savetime == "Y" then
+    auto_fetch_data()
+else
+    -- なにもしていません
+end
+-- auto_fetch_data()
 
 return f

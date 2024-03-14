@@ -3,11 +3,19 @@ local json = require("luci.jsonc")
 local https = require("ssl.https")
 local lucihttp = require("luci.http")
 local ubus = require "ubus"
+local calib = require "calib" 
+
 
 -- フォームの初期化
 local f = SimpleForm("fetchdata", translate("データ取得"))
 f.reset = false
 f.submit = false
+
+-- WANのグローバルIPv6を取得
+local wan_ipv6 = calib.get_wan_ipv6_global() 
+
+-- VNEの判定 --
+local VNE = calib.dtermineVNE(wan_ipv6)
 
 -- 起動時ルーチンタスク
 local currentTime = os.time()
@@ -90,10 +98,10 @@ function fetchHttpsData(url)
 end
 
 -- ページ読み込み時にデータ取得を自動実行
-if reloadtimer == "Y" and brandcheck == "OK" then
+if reloadtimer == "Y" and brandcheck == "OK" and VNE == "v6プラス" then
     auto_fetch_data()
 else
-    f.errmessage = translate("実行していません")
+    f.errmessage = translate("実行していません") .. reloadtimer .. brandcheck .. VNE
 end
 
 return f

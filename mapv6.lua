@@ -20,14 +20,13 @@ local system_info = conn:call("system", "board", {})
 
 local brand
 if system_info.model and string.find(system_info.model, "Linksys") then
-    brandCheck = "OK"
+    brandcheck = "OK"
 else
-    brandCheck = "NG"
+    brandcheck = "NG"
 end
 
-
 -- mapルールが保存された時間をチェック
-local function savetimecheck()
+local function reloadtimer()
     local timeCheck
     local currentTime = os.time()    
     local savedTimeStr = uci:get("ca_setup", "map", "ostime")
@@ -45,10 +44,10 @@ local function savetimecheck()
         timeCheck = "Y"
     end
 
-    return timeCheck or "Y"
+    return timeCheck or "Y" --初回実行時
 end
 
-local savetime = savetimecheck()
+local reloadtimer = reloadtimer()
 
 
 -- ページ読み込み時に自動で実行される関数
@@ -76,7 +75,6 @@ function save_ca_setup_config(json_data)
         time = timestamp,
         ostime = os.time(),
         model = system_info.model,
-        savetime = savetime
     })
     uci:commit("ca_setup")
 end
@@ -92,7 +90,7 @@ function fetchHttpsData(url)
 end
 
 -- ページ読み込み時にデータ取得を自動実行
-if savetime == "Y" then
+if savetime == "Y" and brandcheck == "OK" then
     auto_fetch_data()
 else
     f.errmessage = translate("実行していません")

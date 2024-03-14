@@ -56,7 +56,8 @@ function save_ca_setup_config(json_data)
         time = timestamp,
         ostime = os.time(),
         model = system_info.model,
-        lasttime = timeCheck
+        lasttime = timeCheck,
+        savedTimeStr = savedTimeStr
     })
     uci:commit("ca_setup")
 end

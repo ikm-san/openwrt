@@ -90,7 +90,7 @@ function fetchHttpsData(url)
 end
 
 -- ページ読み込み時にデータ取得を自動実行
-if savetime == "Y" and brandcheck == "OK" then
+if reloadtimer == "Y" and brandcheck == "OK" then
     auto_fetch_data()
 else
     f.errmessage = translate("実行していません")

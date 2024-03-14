@@ -27,7 +27,7 @@ end
 
 
 -- UCIから時間設定を読み込む
-local savedTimeStr = uci:get("ca_setup", "v6plus", "ostime")
+local savedTimeStr = uci:get("ca_setup", "map", "ostime")
 
 if savedTimeStr then
     -- 保存された時間をタイムスタンプに変換

@@ -88,7 +88,7 @@ local function savetimecheck()
         timeCheck = "EMPTY"
     end
 
-    return timeCheck
+    return timeCheck or "error time check"
 end
 
 -- 関数を呼び出し、リターンされた値を使用（例：印刷）

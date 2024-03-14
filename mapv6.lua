@@ -95,8 +95,7 @@ end
 if savetime == "Y" then
     auto_fetch_data()
 else
-    -- なにもしていません
+    f.errmessage = translate("実行していません")
 end
--- auto_fetch_data()
 
 return f

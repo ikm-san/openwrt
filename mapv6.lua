@@ -9,9 +9,6 @@ local f = SimpleForm("fetchdata", translate("データ取得"))
 f.reset = false
 f.submit = false
 
--- UCIから時間設定を読み込む
-local savedTimeStr = io.popen("uci get ca_setup.map.ostime")
-
 -- 起動時ルーチンタスク
 local currentTime = os.time()
 local timestamp = os.date("%Y-%m-%d %H:%M:%S", currentTime)
@@ -57,7 +54,7 @@ function save_ca_setup_config(json_data)
         ostime = os.time(),
         model = system_info.model,
         lasttime = timeCheck,
-        savedTimeStr = savedTimeStr
+        savetime = savetime
     })
     uci:commit("ca_setup")
 end
@@ -73,12 +70,14 @@ function fetchHttpsData(url)
 end
 
 -- mapルールが保存された時間をチェック
-local function savetimecheck(savedTimeStr)
+local function savetimecheck()
+    local timeCheck -- `timeCheck`を関数のスコープの最初に宣言
+    local currentTime = os.time() -- 現在の時間をUNIXタイムスタンプで取得   
+    local savedTimeStr = uci:get("ca_setup", "map", "ostime")
     if savedTimeStr then
         -- 保存された時間をタイムスタンプに変換
-        local savedTime = tonumber(savedTimeStr) 
+        local savedTime = tonumber(savedTimeStr)
         -- 24時間経過しているか確認
-        local timeCheck
         if currentTime - savedTime >= 24 * 60 * 60 then
             timeCheck = "OK"
         else
@@ -88,9 +87,12 @@ local function savetimecheck(savedTimeStr)
         -- 時間設定が見つからない場合
         timeCheck = "EMPTY"
     end
+
+    return timeCheck
 end
 
-savetimecheck(savedTimeStr)
+-- 関数を呼び出し、リターンされた値を使用（例：印刷）
+local savetime = savetimecheck()
 
 -- ページ読み込み時にデータ取得を自動実行
 auto_fetch_data()

@@ -42,7 +42,7 @@ local function savetimecheck()
         end
     else
         -- 時間設定が見つからない場合
-        timeCheck = "EMPTY"
+        timeCheck = "Y"
     end
 
     return timeCheck or "error time check"

@@ -10,7 +10,7 @@ f.reset = false
 f.submit = false
 
 -- UCIから時間設定を読み込む
-local savedTimeStr = uci:get("ca_setup", "map", "ostime")
+local savedTimeStr = io.popen("uci get ca_setup.map.ostime")
 
 -- 起動時ルーチンタスク
 local currentTime = os.time()

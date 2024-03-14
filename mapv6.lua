@@ -45,7 +45,7 @@ local function savetimecheck()
         timeCheck = "Y"
     end
 
-    return timeCheck or "error time check"
+    return timeCheck or "Y"
 end
 
 local savetime = savetimecheck()

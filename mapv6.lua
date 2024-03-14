@@ -9,6 +9,9 @@ local f = SimpleForm("fetchdata", translate("データ取得"))
 f.reset = false
 f.submit = false
 
+-- UCIから時間設定を読み込む
+local savedTimeStr = uci:get("ca_setup", "map", "ostime")
+
 -- 起動時ルーチンタスク
 local currentTime = os.time()
 local timestamp = os.date("%Y-%m-%d %H:%M:%S", currentTime)
@@ -25,24 +28,6 @@ else
     brandCheck = "NG"
 end
 
-
--- UCIから時間設定を読み込む
-savedTimeStr = uci:get("ca_setup", "map", "ostime")
-
-if savedTimeStr then
-    -- 保存された時間をタイムスタンプに変換
-    local savedTime = tonumber(savedTimeStr) 
-    -- 24時間経過しているか確認
-    local timeCheck
-    if currentTime - savedTime >= 24 * 60 * 60 then
-        timeCheck = "OK"
-    else
-        timeCheck = "NG"
-    end
-else
-    -- 時間設定が見つからない場合
-    timeCheck = "EMPTY"
-end
 
 
 
@@ -85,6 +70,26 @@ function fetchHttpsData(url)
         return nil, status
     end
 end
+
+-- mapルールが保存された時間をチェック
+local function savetimecheck(savedTimeStr)
+    if savedTimeStr then
+        -- 保存された時間をタイムスタンプに変換
+        local savedTime = tonumber(savedTimeStr) 
+        -- 24時間経過しているか確認
+        local timeCheck
+        if currentTime - savedTime >= 24 * 60 * 60 then
+            timeCheck = "OK"
+        else
+            timeCheck = "NG"
+        end
+    else
+        -- 時間設定が見つからない場合
+        timeCheck = "EMPTY"
+    end
+end
+
+savetimecheck(savedTimeStr)
 
 -- ページ読み込み時にデータ取得を自動実行
 auto_fetch_data()

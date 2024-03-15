@@ -28,14 +28,14 @@ function get_mapconfig()
         local ealen = matching_fmr.ea_length
         local offset = matching_fmr.psid_offset
         local psidlen = ealen - (32 - ipv4_prefix_length)
-        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset
+        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, fmr, wan_ipv6
     else
         error("No matching FMR entry found.")
     end
 end
 
 
-local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset = get_mapconfig()
+local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, fmr, wan_ipv6 = get_mapconfig()
 
 
 

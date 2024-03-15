@@ -274,7 +274,7 @@ end
 
 
 -- map configを出力する関数 --
-function M.get_mapconfig()
+function M.get_mapconfig(fmr)
     local wan_ipv6 = M.get_wan_ipv6_global()
     local sections = M.split_ipv6(wan_ipv6)
     local wan32_ipv6, wan40_ipv6 = M.wan32_40(wan_ipv6)

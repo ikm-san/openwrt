@@ -18,10 +18,10 @@ local peeraddr = uci:get("ca_setup", "map", "dmr")
 local ipv6_fixlen = uci:get("ca_setup", "map", "ipv6_fixlen")
 
 -- fmrの読み込みと解析
-local fmr_json = uci:get("ca_setup", "map", "fmr")
-local fmr = jsonc.parse(fmr_json)
+-- local fmr_json = uci:get("ca_setup", "map", "fmr")
+-- local fmr = jsonc.parse(fmr_json)
 
--- local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset = calib.get_mapconfig()
+local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset = calib.get_mapconfig()
 -- wan_ipv6アドレスにマッチするfmrエントリを検索する関数
 --local function find_matching_fmr(wan_ipv6, fmr_list)
 --    for _, entry in ipairs(fmr_list) do

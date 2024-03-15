@@ -29,20 +29,20 @@ function get_mapconfig(wan_ipv6)
         local ealen = matching_fmr.ea_length
         local offset = matching_fmr.psid_offset
         local psidlen = ealen - (32 - ipv4_prefix_length)
-        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6, ipv6_56
+        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6
     else
         error("No matching FMR entry found.")
     end
 end
 
 
-local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6, ipv6_56 = get_mapconfig(wan_ipv6)
+local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = get_mapconfig(wan_ipv6)
 
 
     s:option(DummyValue, "_wan_ipv6", translate("wan_ipv6")).value = wan_ipv6
     s:option(DummyValue, "_peeraddr", translate("peeraddr")).value = peeraddr
-    s:option(DummyValue, "_ipv6_fixlen", translate("ipv6_fixlen")).value = ipv6_fixlen
     s:option(DummyValue, "_ipv6_56", translate("IPv6 56")).value = ipv6_56
+    s:option(DummyValue, "_ipv6_fixlen", translate("ipv6_fixlen")).value = ipv6_fixlen
     s:option(DummyValue, "_ipv6_prefix", translate("IPv6 Prefix")).value = ipv6_prefix
     s:option(DummyValue, "_ipv6_prefix_length", translate("IPv6 Prefix Length")).value = ipv6_prefix_length
     s:option(DummyValue, "_ipv4_prefix", translate("IPv4 Prefix")).value = ipv4_prefix

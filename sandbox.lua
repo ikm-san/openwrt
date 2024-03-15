@@ -21,6 +21,7 @@ local ipv6_fixlen = uci:get("ca_setup", "map", "ipv6_fixlen")
 local fmr_json = uci:get("ca_setup", "map", "fmr")
 local fmr = jsonc.parse(fmr_json)
 
+local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset = calib.get_mapconfig()
 -- wan_ipv6アドレスにマッチするfmrエントリを検索する関数
 --local function find_matching_fmr(wan_ipv6, fmr_list)
 --    for _, entry in ipairs(fmr_list) do
@@ -40,9 +41,9 @@ local fmr = jsonc.parse(fmr_json)
 --end
 
 -- 該当するfmrエントリの情報を出力
-if matching_fmr then
-    local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
-    local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
+--if matching_fmr then
+    -- local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
+    -- local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
 
     s:option(DummyValue, "_wan_ipv6", translate("wan_ipv6")).value = wan_ipv6
     s:option(DummyValue, "_peeraddr", translate("peeraddr")).value = peeraddr
@@ -55,10 +56,10 @@ if matching_fmr then
     s:option(DummyValue, "_psid_offset", translate("PSID Offset")).value = matching_fmr.psid_offset
     s:option(DummyValue, "_wan32", translate("wan32")).value = wan32_ipv6
     s:option(DummyValue, "_wan40", translate("wan40")).value = wan40_ipv6
-else
-    s:option(DummyValue, "_error", translate("Error")).value = translate("No matching FMR entry found.")
-        s:option(DummyValue, "_wan32", translate("wan32")).value = wan32_ipv6
-    s:option(DummyValue, "_wan40", translate("wan40")).value = wan40_ipv6
-end
+-- else
+--    s:option(DummyValue, "_error", translate("Error")).value = translate("No matching FMR entry found.")
+--        s:option(DummyValue, "_wan32", translate("wan32")).value = wan32_ipv6
+--    s:option(DummyValue, "_wan40", translate("wan40")).value = wan40_ipv6
+--end
 
 return m

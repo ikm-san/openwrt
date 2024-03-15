@@ -21,6 +21,7 @@ opkg install luci-compat
 opkg install map
 opkg install ds-lite 
 opkg install luasec
+opkg install ip6tables
 mkdir -p /usr/lib/lua/luci/controller/
 mkdir -p /usr/lib/lua/luci/model/cbi/ca_setup/
 wget -O /etc/config/ca_setup https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup
@@ -39,3 +40,14 @@ reboot
 
 chmod 755 /usr/lib/lua/luci/controller/ca_setup.lua
 chmod -R 755 /usr/lib/lua/luci/model/cbi/ca_setup/
+
+# ICMPv6フィルタリング設定
+ip6tables -A INPUT -p icmpv6 --icmpv6-type echo-request -j ACCEPT
+ip6tables -A INPUT -p icmpv6 --icmpv6-type router-advertisement -j ACCEPT
+ip6tables -A INPUT -p icmpv6 --icmpv6-type neighbour-solicitation -j ACCEPT
+ip6tables -A INPUT -p icmpv6 --icmpv6-type neighbour-advertisement -j ACCEPT
+ip6tables -A INPUT -p icmpv6 -j DROP
+
+# すべてのインターフェースに対してプライバシーエクステンションを有効にする
+sysctl -w net.ipv6.conf.all.use_tempaddr=2
+sysctl -w net.ipv6.conf.default.use_tempaddr=2

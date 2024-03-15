@@ -255,13 +255,12 @@ end
 
 -- map configを出力する関数 --
 function M.get_mapconfig()
-    -- local wan_ipv6 = M.get_wan_ipv6_global()
-    local wan_ipv6 = "240b:10:af40:100:6a:48af:4000:100"
+    local wan_ipv6 = M.get_wan_ipv6_global()
     local sections = M.split_ipv6(wan_ipv6)
-    local wan32_ipv6, wan40_ipv6 = M.generate_ipv6_prefixes(sections)
-    local peeraddr = uci:get("ca_setup", "@settings[0]", "dmr")
-    local ipv6_fixlen = uci:get("ca_setup", "@settings[0]", "ipv6_fixlen")
-    local fmr_json = uci:get("ca_setup", "@settings[0]", "fmr")
+    local wan32_ipv6, wan40_ipv6 = M.wan32_40(wan_ipv6)
+    local peeraddr = uci:get("ca_setup", "map", "dmr")
+    local ipv6_fixlen = uci:get("ca_setup", "map", "ipv6_fixlen")
+    local fmr_json = uci:get("ca_setup", "map", "fmr")
     local fmr = jsonc.parse(fmr_json)
     local matching_fmr = M.find_matching_fmr(wan40_ipv6, fmr) or M.find_matching_fmr(wan32_ipv6, fmr)
 
@@ -276,6 +275,27 @@ function M.get_mapconfig()
         error("No matching FMR entry found.")
     end
 end
+
+
+-- wan_ipv6アドレスにマッチするfmrエントリを検索する関数
+local function find_matching_fmr(wan_ipv6, fmr_list)
+    for _, entry in ipairs(fmr_list) do
+        local ipv6_prefix = entry.ipv6:match("^(.-)/")
+        if wan_ipv6:find(ipv6_prefix) == 1 then
+            return entry
+        end
+    end
+    return nil
+end
+
+-- 第3セクションまでを考慮したパターンで検索
+local matching_fmr = find_matching_fmr(wan40_ipv6, fmr)
+-- 見つからなければ、第2セクションまでのパターンで検索
+if not matching_fmr then
+    matching_fmr = find_matching_fmr(wan32_ipv6, fmr)
+end
+
+
 
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html RulePrefix31, 38, 38_20
 function M.getRulePrefix31()

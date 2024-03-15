@@ -278,7 +278,7 @@ end
 
 
 -- wan_ipv6アドレスにマッチするfmrエントリを検索する関数
-local function find_matching_fmr(wan_ipv6, fmr_list)
+function M.find_matching_fmr(wan_ipv6, fmr_list)
     for _, entry in ipairs(fmr_list) do
         local ipv6_prefix = entry.ipv6:match("^(.-)/")
         if wan_ipv6:find(ipv6_prefix) == 1 then
@@ -287,14 +287,6 @@ local function find_matching_fmr(wan_ipv6, fmr_list)
     end
     return nil
 end
-
--- 第3セクションまでを考慮したパターンで検索
-local matching_fmr = find_matching_fmr(wan40_ipv6, fmr)
--- 見つからなければ、第2セクションまでのパターンで検索
-if not matching_fmr then
-    matching_fmr = find_matching_fmr(wan32_ipv6, fmr)
-end
-
 
 
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html RulePrefix31, 38, 38_20

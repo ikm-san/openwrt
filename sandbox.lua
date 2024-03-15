@@ -10,7 +10,6 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
-
 -- map configを出力する関数 --
 function get_mapconfig()
     local wan_ipv6 = calib.get_wan_ipv6_global()
@@ -28,16 +27,14 @@ function get_mapconfig()
         local ealen = matching_fmr.ea_length
         local offset = matching_fmr.psid_offset
         local psidlen = ealen - (32 - ipv4_prefix_length)
-        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, fmr, wan_ipv6
+        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 
     else
         error("No matching FMR entry found.")
     end
 end
 
 
-local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, fmr, wan_ipv6 = get_mapconfig()
-
-
+local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = get_mapconfig()
 
 
     s:option(DummyValue, "_wan_ipv6", translate("wan_ipv6")).value = wan_ipv6
@@ -51,8 +48,8 @@ local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length
     s:option(DummyValue, "_psid_offset", translate("PSID Offset")).value = offset
     s:option(DummyValue, "_wan32", translate("wan32")).value = wan32_ipv6
     s:option(DummyValue, "_wan40", translate("wan40")).value = wan40_ipv6
-s:option(DummyValue, "_fmr_json", translate("fmr_json")).value = fmr_json
-s:option(DummyValue, "_fmr", translate("fmr")).value = fmr
+    s:option(DummyValue, "_fmr_json", translate("fmr_json")).value = fmr_json
+    s:option(DummyValue, "_fmr", translate("fmr")).value = fmr
 
 
 return m

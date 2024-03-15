@@ -253,6 +253,18 @@ function M.wan32_40(wan_ipv6)
 end
 
 
+-- wan_ipv6アドレスにマッチするfmrエントリを検索する関数
+function M.find_matching_fmr(wan_ipv6, fmr_list)
+    for _, entry in ipairs(fmr_list) do
+        local ipv6_prefix = entry.ipv6:match("^(.-)/")
+        if wan_ipv6:find(ipv6_prefix) == 1 then
+            return entry
+        end
+    end
+    return nil
+end
+
+
 -- map configを出力する関数 --
 function M.get_mapconfig()
     local wan_ipv6 = M.get_wan_ipv6_global()
@@ -274,18 +286,6 @@ function M.get_mapconfig()
     else
         error("No matching FMR entry found.")
     end
-end
-
-
--- wan_ipv6アドレスにマッチするfmrエントリを検索する関数
-function M.find_matching_fmr(wan_ipv6, fmr_list)
-    for _, entry in ipairs(fmr_list) do
-        local ipv6_prefix = entry.ipv6:match("^(.-)/")
-        if wan_ipv6:find(ipv6_prefix) == 1 then
-            return entry
-        end
-    end
-    return nil
 end
 
 

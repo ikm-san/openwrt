@@ -179,6 +179,24 @@ function M.extract_ipv6_56(wan_ipv6)
     return ipv6_56
 end
 
+-- brand 判定関数
+function M.brandcheck()
+    local conn = ubus.connect()
+    if not conn then
+        error("Failed to connect to ubus")
+    end
+
+    local system_info = conn:call("system", "board", {})
+    conn:close()
+
+    if system_info.model and string.find(system_info.model, "Linksys") then
+        return "OK"
+    else
+        return "NG"
+    end
+end
+
+
 -- VNE切り分け判定用関数 --
 function M.dtermineVNE(wan_ipv6)
     local prefix = wan_ipv6:sub(1, 5) -- IPv6アドレスの最初の5文字を取得

@@ -10,9 +10,10 @@ m.submit = false
 
 s = m:section(SimpleSection, translate("Settings"))
 
+local wan_ipv6 = calib.get_wan_ipv6_global()
+
 -- map configを出力する関数 --
-function get_mapconfig()
-    local wan_ipv6 = calib.get_wan_ipv6_global()
+function get_mapconfig(wan_ipv6)
     local sections = calib.split_ipv6(wan_ipv6)
     local wan32_ipv6, wan40_ipv6 = calib.wan32_40(wan_ipv6)
     local peeraddr = uci:get("ca_setup", "map", "dmr")
@@ -34,7 +35,7 @@ function get_mapconfig()
 end
 
 
-local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = get_mapconfig()
+local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = get_mapconfig(wan_ipv6)
 
 
     s:option(DummyValue, "_wan_ipv6", translate("wan_ipv6")).value = wan_ipv6

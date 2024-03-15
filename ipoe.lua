@@ -10,7 +10,7 @@ local wan_ipv6 = calib.get_wan_ipv6_global()
 local VNE = calib.dtermineVNE(wan_ipv6)
 
 -- BRANDの判定 --
-local brandcheck = brandcheck()
+local brandcheck = calib.brandcheck()
 
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。")

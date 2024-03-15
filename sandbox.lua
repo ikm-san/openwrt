@@ -22,22 +22,22 @@ local fmr_json = uci:get("ca_setup", "map", "fmr")
 local fmr = jsonc.parse(fmr_json)
 
 -- wan_ipv6アドレスにマッチするfmrエントリを検索する関数
-local function find_matching_fmr(wan_ipv6, fmr_list)
-    for _, entry in ipairs(fmr_list) do
-        local ipv6_prefix = entry.ipv6:match("^(.-)/")
-        if wan_ipv6:find(ipv6_prefix) == 1 then
-            return entry
-        end
-    end
-    return nil
-end
+--local function find_matching_fmr(wan_ipv6, fmr_list)
+--    for _, entry in ipairs(fmr_list) do
+--        local ipv6_prefix = entry.ipv6:match("^(.-)/")
+--        if wan_ipv6:find(ipv6_prefix) == 1 then
+--            return entry
+--        end
+--    end
+--    return nil
+--end
 
 -- 第3セクションまでを考慮したパターンで検索
-local matching_fmr = find_matching_fmr(wan40_ipv6, fmr)
+--local matching_fmr = find_matching_fmr(wan40_ipv6, fmr)
 -- 見つからなければ、第2セクションまでのパターンで検索
-if not matching_fmr then
-    matching_fmr = find_matching_fmr(wan32_ipv6, fmr)
-end
+--if not matching_fmr then
+--    matching_fmr = find_matching_fmr(wan32_ipv6, fmr)
+--end
 
 -- 該当するfmrエントリの情報を出力
 if matching_fmr then

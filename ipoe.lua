@@ -3,13 +3,16 @@ local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
 local calib = require "calib" 
 
--- WANのグローバルIPv6を取得
+-- WANのグローバルIPv6を取得 --
 local wan_ipv6 = calib.get_wan_ipv6_global() 
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
 
--- WAN設定選択リスト
+-- BRANDの判定 --
+local brandcheck = brandcheck()
+
+-- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。")
 
 s = m:section(TypedSection, "ipoe", "")

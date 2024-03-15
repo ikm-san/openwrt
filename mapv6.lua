@@ -84,6 +84,7 @@ function save_ca_setup_config(json_data)
         time = timestamp,
         ostime = os.time(),
         model = system_info.model,
+        VNE = VNE
     })
     uci:commit("ca_setup")
 end

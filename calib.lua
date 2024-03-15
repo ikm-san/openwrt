@@ -29,6 +29,14 @@ function M.get_wan_ipv6_global()
     end
 end
 
+-- wan_ipv6をセクション毎に分割する関数 --
+function M.split_ipv6(wan_ipv6)
+    local sections = {}
+    for section in wan_ipv6:gmatch("([^:]+)") do
+        table.insert(sections, section)
+    end
+    return sections
+end
 
 -- 10進数を2進数に変換する関数
 function M.dec_to_bin(dec)

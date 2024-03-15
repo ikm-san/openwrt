@@ -4,6 +4,7 @@ local https = require("ssl.https")
 local lucihttp = require("luci.http")
 local sys = require "luci.sys"
 local ubus = require "ubus"
+local calib = require "calib"
 
 
 -- フォームの初期化
@@ -12,60 +13,10 @@ f.reset = false
 f.submit = false
 
 -- WANのグローバルIPv6を取得
--- WANインターフェースのIPv6アドレス（scope global）を取得
-function get_wan_ipv6_global()
-    -- WANインターフェースの状態を確認
-    local interface_up = sys.exec("ip link show dev wan | grep 'state UP'")
-
-    -- インターフェースがダウンしているか確認
-    if interface_up == nil or interface_up == '' then
-        return '0000:0000:0000:0000:0000:0000:0000:0000' -- インターフェースがダウンしている場合、'0' を返す
-    end
-
-    -- WANインターフェースのIPv6アドレス（scope global）を取得
-    local ipv6_global = sys.exec("ip -6 addr show dev wan | awk '/inet6/ && /scope global/ {print $2}' | cut -d'/' -f1 | head -n 1")
-    local normalized_ipv6 = ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
-
-    -- IPv6アドレスが見つからない場合は0を返す
-    if normalized_ipv6 == nil or normalized_ipv6 == '' then
-        return '0000:0000:0000:0000:0000:0000:0000:0000'
-    else
-        return normalized_ipv6
-    end
-end
-
-local wan_ipv6 = get_wan_ipv6_global() 
+local wan_ipv6 = calib.get_wan_ipv6_global() 
 
 -- VNEの判定 --
-
--- VNE切り分け判定用関数 --
-function dtermineVNE(wan_ipv6)
-    local prefix = wan_ipv6:sub(1, 5) -- IPv6アドレスの最初の5文字を取得
-    local vne_map = {
-        ["240b:"] = "v6プラス",
-        ["2404:"] = "IPv6オプション",
-        ["2400:"] = "OCNバーチャルコネクト",
-        ["2409:"] = "transix",
-        ["2405:"] = "v6コネクト",        
-        -- "2001:f"のケースは特別扱いが必要なため、後で処理します。
-        ["2408:"] = "NTT東日本フレッツ",
-        ["2001:"] = "NTT西日本フレッツ"
-    }
-
-    -- 特別なケース "2001:f" の処理
-    if prefix == "2001:" and wan_ipv6:sub(6, 6) == "f" then
-        return "クロスパス"
-    end
-
-    -- プレフィックスに基づいてVNE名を返す
-    if vne_map[prefix] then
-        return vne_map[prefix]
-    else
-        return "判定できません"
-    end
-end
-
-local VNE = dtermineVNE(wan_ipv6)
+local VNE = calib.dtermineVNE(wan_ipv6)
 
 -- 起動時ルーチンタスク
 local currentTime = os.time()

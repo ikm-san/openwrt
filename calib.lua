@@ -280,6 +280,7 @@ function M.get_mapconfig()
     local wan32_ipv6, wan40_ipv6 = M.wan32_40(wan_ipv6)
     local peeraddr = uci:get("ca_setup", "map", "dmr")
     local ipv6_fixlen = uci:get("ca_setup", "map", "ipv6_fixlen")
+    local fmr_json = {}
     local fmr_json = uci:get("ca_setup", "map", "fmr")
     local fmr = jsonc.parse(fmr_json)
     local matching_fmr = M.find_matching_fmr(wan40_ipv6, fmr) or M.find_matching_fmr(wan32_ipv6, fmr)

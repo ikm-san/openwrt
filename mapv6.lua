@@ -127,7 +127,8 @@ local function reloadtimer()
         -- 保存された時間をタイムスタンプに変換
         local savedTime = tonumber(savedTimeStr)
         -- 24時間経過しているか確認
-        if currentTime - savedTime >= 24 * 60 * 60 then
+        -- if currentTime - savedTime >= 24 * 60 * 60 then
+        if currentTime - savedTime >= 15 then  --デバッグ用15秒ルーチン
             timeCheck = "Y"
         else
             timeCheck = "N"
@@ -189,7 +190,7 @@ end
 if reloadtimer == "Y" and brandcheck == "OK" and VNE == "v6プラス" then
     auto_fetch_data()
     if samewancheck = "N" then
-    print("WANが前回起動時と違うので設定変更ルーチンをいれる")
+    print("WANが前回起動時と違うので設定変更ルーチンが実行する想定")
     else
     end
 else

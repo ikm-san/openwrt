@@ -1,5 +1,5 @@
 local uci = require("luci.model.uci").cursor()
-local json = require("luci.jsonc")
+local jsonc = require("luci.jsonc")
 local https = require("ssl.https")
 local lucihttp = require("luci.http")
 local sys = require "luci.sys"
@@ -161,11 +161,11 @@ end
 
 -- 設定を保存する関数
 function save_ca_setup_config(json_data)
-    local data = json.parse(json_data)
+    local data = jsonc.parse(json_data)
     uci:section("ca_setup", "settings", "map", {
         dmr = data.dmr,
         ipv6_fixlen = data.ipv6_fixlen,
-        fmr = json.stringify(data.fmr),
+        fmr = jsonc.stringify(data.fmr),
         time = timestamp,
         ostime = os.time(),
         model = system_info.model,

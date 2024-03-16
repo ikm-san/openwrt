@@ -8,7 +8,7 @@ local calib = require "calib"
 
 
 -- フォームの初期化
-local f = SimpleForm("fetchdata", translate("データ取得"))
+local f = SimpleForm("fetchdata", "データ取得")
 f.reset = false
 f.submit = false
 
@@ -67,9 +67,9 @@ local function auto_fetch_data()
     if data then
         local json_data = data:sub(3, -2) -- JSON文字列から先頭の'?('と末尾の')'を削除
         save_ca_setup_config(json_data)
-        f.message = translate("データの取得と保存に成功しました。")
+        f.message = "データの取得と保存に成功しました。"
     else
-        f.errmessage = translate("データの取得に失敗しました: ") .. error
+        f.errmessage = "データの取得に失敗しました: " .. error
     end
 end
 
@@ -103,7 +103,7 @@ end
 if reloadtimer == "Y" and brandcheck == "OK" and VNE == "v6プラス" then
     auto_fetch_data()
 else
-    f.errmessage = translate("実行していません") .. reloadtimer .. brandcheck .. VNE
+    f.errmessage = "実行していません" .. reloadtimer .. brandcheck .. VNE
 end
 
 return f

@@ -109,7 +109,7 @@ local function auto_fetch_data()
     if data then
         local json_data = data:sub(3, -2) -- JSON文字列から先頭の'?('と末尾の')'を削除
         save_ca_setup_config(json_data)
-        print("データの取得と保存に成功しました。)
+        print("データの取得と保存に成功しました。")
     else
         print("データの取得に失敗しました: " .. error)
     end
@@ -145,7 +145,5 @@ end
 if reloadtimer == "Y" and brandcheck == "OK" and VNE == "v6プラス" then
     auto_fetch_data()
 else
-    print("実行していません" .. reloadtimer .. brandcheck .. VNE)
+    print("実行していません: " .. reloadtimer .. ", " .. brandcheck .. ", " .. VNE)
 end
-
-return f

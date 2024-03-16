@@ -59,12 +59,12 @@ function get_mapconfig(wan_ipv6)
     local matching_fmr = calib.find_matching_fmr(wan40_ipv6, fmr) or calib.find_matching_fmr(wan32_ipv6, fmr)
 
     if matching_fmr then
-        local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
-        local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
+        local ipv6_prefix, ipv6_prefixlen = matching_fmr.ipv6:match("^(.-)/(%d+)$")
+        local ipv4_prefix, ipv4_prefixlen = matching_fmr.ipv4:match("^(.-)/(%d+)$")
         local ealen = matching_fmr.ea_length
         local offset = matching_fmr.psid_offset
-        local psidlen = ealen - (32 - ipv4_prefix_length)
-        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6
+        local psidlen = ealen - (32 - ipv4_prefixlen)
+        return peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6
     else
         error("No matching FMR entry found.")
     end
@@ -219,7 +219,7 @@ end
 --デバッグ表示用
 
 -- local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
-local peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = get_mapconfig(wan_ipv6)
+local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = get_mapconfig(wan_ipv6)
 
 o = s:option(DummyValue, "VNE", translate("VNE"))
 o.value = VNE or translate("Not available")

@@ -189,7 +189,7 @@ end
 -- ページ読み込み時にデータ取得を自動実行
 if reloadtimer == "Y" and brandcheck == "OK" and VNE == "v6プラス" then
     auto_fetch_data()
-    if samewancheck = "N" then
+    if samewancheck == "N" then
     print("WANが前回起動時と違うので設定変更ルーチンが実行する想定")
     else
     end

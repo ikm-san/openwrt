@@ -2,6 +2,7 @@ local fs = require "nixio.fs"
 local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
 local calib = require "calib" 
+local json = require("luci.jsonc")
 
 -- WANのグローバルIPv6を取得 --
 local wan_ipv6 = calib.get_wan_ipv6_global() 

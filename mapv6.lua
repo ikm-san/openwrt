@@ -186,11 +186,161 @@ function fetchHttpsData(url)
     end
 end
 
+
+-- wan_ipv6をセクション毎に分割する関数 --
+function split_ipv6(wan_ipv6)
+    local sections = {}
+    for section in wan_ipv6:gmatch("([^:]+)") do
+        table.insert(sections, section)
+    end
+    return sections
+end
+
+
+-- IPv6アドレスの最初の4セクションを抜き出して::/56化する関数
+function extract_ipv6_56(wan_ipv6)
+    -- IPv6アドレスをセクションに分割する
+    local sections = {}
+    for section in wan_ipv6:gmatch("[^:]+") do
+        local hex_section = tonumber(section, 16)
+        if hex_section ~= nil then
+            table.insert(sections, section)
+        else
+            table.insert(sections, "0")
+        end
+    end
+
+    local ipv6_56 = table.concat(sections, ":", 1, 4).. "::"
+    
+    return ipv6_56
+end
+
+
+-- map wan先頭32bit 40bitを抽出する関数 --
+function wan32_40(wan_ipv6)
+    -- IPv6アドレスをセクションに分割
+    local sections = {}
+    for section in wan_ipv6:gmatch("([^:]+)") do
+        table.insert(sections, section)
+    end
+
+    -- wan32_ipv6の生成
+    local wan32_ipv6 = table.concat({sections[1], sections[2]}, ":").. "::"
+
+    -- wan40_ipv6の生成
+    -- 第3セクションを4桁に正規化
+    local third_section_normalized = sections[3]
+    if #third_section_normalized < 4 then
+        third_section_normalized = string.format("%04x", tonumber(third_section_normalized, 16))
+    end
+    -- 第3セクションの先頭2桁を取得し、後ろ2桁を00で置き換え
+    local third_section_modified = third_section_normalized:sub(1, 2) .. "00"
+    local wan40_ipv6 = table.concat({sections[1], sections[2], third_section_modified}, ":").. "::"
+
+    return wan32_ipv6, wan40_ipv6
+end
+
+
+-- wan_ipv6アドレスにマッチするfmrエントリを検索する関数
+function find_matching_fmr(wan_ipv6, fmr_list)
+    for _, entry in ipairs(fmr_list) do
+        local ipv6_prefix = entry.ipv6:match("^(.-)/")
+        if wan_ipv6:find(ipv6_prefix) == 1 then
+            return entry
+        end
+    end
+    return nil
+end
+
+
+-- map configを出力する関数 --
+function get_mapconfig(wan_ipv6)
+    local sections = split_ipv6(wan_ipv6)
+    local wan32_ipv6, wan40_ipv6 = wan32_40(wan_ipv6)
+    local ipv6_56 = extract_ipv6_56(wan_ipv6)
+    local peeraddr = uci:get("ca_setup", "map", "dmr")
+    local ipv6_fixlen = uci:get("ca_setup", "map", "ipv6_fixlen")
+    local fmr_json = uci:get("ca_setup", "map", "fmr")
+    local fmr = jsonc.parse(fmr_json)
+    local matching_fmr = find_matching_fmr(wan40_ipv6, fmr) or find_matching_fmr(wan32_ipv6, fmr)
+
+    if matching_fmr then
+        local ipv6_prefix, ipv6_prefix_length = matching_fmr.ipv6:match("^(.-)/(%d+)$")
+        local ipv4_prefix, ipv4_prefix_length = matching_fmr.ipv4:match("^(.-)/(%d+)$")
+        local ealen = matching_fmr.ea_length
+        local offset = matching_fmr.psid_offset
+        local psidlen = ealen - (32 - ipv4_prefix_length)
+        return peeraddr, ipv4_prefix, ipv4_prefix_length, ipv6_prefix, ipv6_prefix_length, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6
+    else
+        error("No matching FMR entry found.")
+    end
+end
+
+-- map-e v6 plus 接続設定関数
+function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+      
+    -- DHCP LAN settings
+    uci:set("dhcp", "lan", "dhcp")
+    uci:set("dhcp", "lan", "dhcpv6", "server")
+    uci:set("dhcp", "lan", "ra", "relay")
+    uci:set("dhcp", "lan", "ndp", "relay")
+    uci:set("dhcp", "lan", "force", "1")
+
+    -- DHCP WAN6 settings
+    uci:set("dhcp", "wan6", "dhcp")
+    uci:set("dhcp", "wan6", "interface", "wan6")
+    uci:set("dhcp", "wan6", "ignore", "1")
+    uci:set("dhcp", "wan6", "master", "1")
+    uci:set("dhcp", "wan6", "ra", "relay")
+    uci:set("dhcp", "wan6", "dhcpv6", "relay")
+    uci:set("dhcp", "wan6", "ndp", "relay")
+    uci:commit("dhcp")  
+
+    -- WAN settings
+    uci:set("network", "wan", "auto", "0")
+    
+    -- WAN6 settings
+    uci:set("network", "wan6", "proto", "dhcpv6")
+    uci:set("network", "wan6", "reqaddress", "try")
+    uci:set("network", "wan6", "reqprefix", "auto")
+    uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "/56")
+    
+    -- WANMAP settings
+    uci:section("network", "interface", "wanmap", {
+        proto = "map",
+        maptype = "map-e",
+        peeraddr = peeraddr,
+        ipaddr = ipv4_prefix,
+        ip4prefixlen = ipv4_prefixlen,
+        ip6prefix = ipv6_prefix,
+        ip6prefixlen = ipv6_prefixlen,
+        ealen = ealen,
+        psidlen = psidlen,
+        offset = offset,
+        legacymap = "1",
+        mtu = "1460",
+        tunlink= "wan6",
+        encaplimit = "ignore" --v6プラスのみ？
+    })
+    uci:commit("network") 
+
+    -- Firewall settings
+    uci:delete("firewall", "@zone[1]", "network", "wan")
+    uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap"})
+    uci:commit("firewall")
+end
+
+
 -- ページ読み込み時にデータ取得を自動実行
 if reloadtimer == "Y" and brandcheck == "OK" and VNE == "v6プラス" then
     auto_fetch_data()
         if samewancheck == "N" then
             print("WANが前回起動時と違うので設定変更ルーチンが実行する想定")
+            local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = get_mapconfig(wan_ipv6)
+            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+            print("map設定を変更しました。10秒後にリブートします...")
+            os.execute("sleep 10") 
+            os.execute("reboot")
         end
 else
     print("実行していません: " .. reloadtimer .. ", " .. brandcheck .. ", " .. VNE)

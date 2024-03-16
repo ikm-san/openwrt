@@ -7,11 +7,6 @@ local ubus = require "ubus"
 local calib = require "calib"
 
 
--- フォームの初期化
-local f = SimpleForm("fetchdata", "データ取得")
-f.reset = false
-f.submit = false
-
 -- WANのグローバルIPv6を取得
 local wan_ipv6 = calib.get_wan_ipv6_global() 
 
@@ -67,9 +62,9 @@ local function auto_fetch_data()
     if data then
         local json_data = data:sub(3, -2) -- JSON文字列から先頭の'?('と末尾の')'を削除
         save_ca_setup_config(json_data)
-        f.message = "データの取得と保存に成功しました。"
+        print("データの取得と保存に成功しました。)
     else
-        f.errmessage = "データの取得に失敗しました: " .. error
+        print("データの取得に失敗しました: " .. error)
     end
 end
 
@@ -103,7 +98,7 @@ end
 if reloadtimer == "Y" and brandcheck == "OK" and VNE == "v6プラス" then
     auto_fetch_data()
 else
-    f.errmessage = "実行していません" .. reloadtimer .. brandcheck .. VNE
+    print("実行していません" .. reloadtimer .. brandcheck .. VNE)
 end
 
 return f

@@ -88,6 +88,27 @@ else
     brandcheck = "NG"
 end
 
+
+function samewancheck(wan_ipv6)
+    local last_ipv6 = uci:get("ca_setup", "map", "wan_ipv6")
+    local samewan
+
+    if last_ipv6 == nil then
+        samewan = "N"
+    else
+        if last_ipv6 == wan_ipv6 then
+            samewan = "Y"
+        else
+            samewan = "N"
+        end
+    end
+
+    return samewan
+end
+
+local samewancheck = samewancheck(wan_ipv6)
+
+
 -- mapルール確認回数のカウント --
 local mapcount = uci:get("ca_setup", "map", "mapcount") -- mapcountの現在値を取得
 

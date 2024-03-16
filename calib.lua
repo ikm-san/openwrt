@@ -2,7 +2,7 @@ local fs = require "nixio.fs"
 local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
 local http = require "luci.http"
-local json = require("luci.jsonc")
+local jsonc = require("luci.jsonc")
 local io = require("io")
 local ubus = require "ubus"
 

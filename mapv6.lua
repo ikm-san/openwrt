@@ -88,7 +88,7 @@ else
     brandcheck = "NG"
 end
 
-
+-- 前回とWAN IPv6アドレスに変化がないかチェック --
 function samewancheck(wan_ipv6)
     local last_ipv6 = uci:get("ca_setup", "map", "wan_ipv6")
     local samewan
@@ -188,6 +188,10 @@ end
 -- ページ読み込み時にデータ取得を自動実行
 if reloadtimer == "Y" and brandcheck == "OK" and VNE == "v6プラス" then
     auto_fetch_data()
+    if samewancheck = "N" then
+    print("WANが前回起動時と違うので設定変更ルーチンをいれる")
+    else
+    end
 else
     print("実行していません: " .. reloadtimer .. ", " .. brandcheck .. ", " .. VNE)
 end

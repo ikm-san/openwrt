@@ -138,7 +138,8 @@ function save_ca_setup_config(json_data)
         time = timestamp,
         ostime = os.time(),
         model = system_info.model,
-        VNE = VNE
+        VNE = VNE,
+        wan_ipv6 = wan_ipv6
     })
     uci:commit("ca_setup")
 end

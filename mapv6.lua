@@ -16,7 +16,19 @@ function get_wan_ipv6_global()
     end
 
     -- WANインターフェースのIPv6アドレス（scope global）を取得
-    local ipv6_global = sys.exec("ip -6 addr show dev wan | awk '/inet6/ && /scope global/ {print $2}' | cut -d'/' -f1 | head -n 1")
+            local ipv6_list_raw = sys.exec("ip -6 addr show dev wan")
+            local ipv6_global = nil
+            for line in ipv6_list_raw:gmatch("[^\r\n]+") do
+                if line:find("inet6") and line:find("scope global") then
+                    -- IPv6アドレスを抽出
+                    local ipv6_addr = line:match("inet6 ([a-fA-F0-9:]+)/")
+                    if ipv6_addr then
+                        ipv6_global = ipv6_addr
+                        break -- 最初に見つかったグローバルアドレスを使用
+                    end
+                end
+            end
+    
     local normalized_ipv6 = ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
 
     -- IPv6アドレスが見つからない場合は0を返す

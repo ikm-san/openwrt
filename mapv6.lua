@@ -88,6 +88,15 @@ else
     brandcheck = "NG"
 end
 
+-- mapルール確認回数のカウント --
+local mapcount = uci:get("ca_setup", "map", "mapcount") -- mapcountの現在値を取得
+
+if mapcount == nil then
+    mapcount = 1 -- 初回はmapcountが存在しないため、1に設定
+else
+    mapcount = mapcount + 1 -- それ以降は、mapcountに1を加算
+end
+
 -- mapルールが保存された時間をチェック
 local function reloadtimer()
     local timeCheck
@@ -139,7 +148,8 @@ function save_ca_setup_config(json_data)
         ostime = os.time(),
         model = system_info.model,
         VNE = VNE,
-        wan_ipv6 = wan_ipv6
+        wan_ipv6 = wan_ipv6,
+        mapcount = mapcount
     })
     uci:commit("ca_setup")
 end

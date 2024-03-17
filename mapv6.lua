@@ -88,15 +88,15 @@ else
     brandcheck = "NG"
 end
 
--- 前回とWAN IPv6アドレスに変化がないかチェック --
-function samewancheck(wan_ipv6)
-    local last_ipv6 = uci:get("ca_setup", "map", "wan_ipv6")
+-- 前回のIPv6 56アドレスと違いがないかチェック --
+function samewancheck(current_ipv6_56)
+    local last_ipv6_56 = uci:get("ca_setup", "map", "ipv6_56")
     local samewan
 
-    if last_ipv6 == nil then
+    if last_ipv6_56 == nil then
         samewan = "N"
     else
-        if last_ipv6 == wan_ipv6 then
+        if last_ipv6_56 == current_ipv6_56 then
             samewan = "Y"
         else
             samewan = "N"
@@ -106,7 +106,8 @@ function samewancheck(wan_ipv6)
     return samewan
 end
 
-local samewancheck = samewancheck(wan_ipv6)
+local current_ipv6_56 = extract_ipv6_56(wan_ipv6)
+local samewancheck = samewancheck(current_ipv6_56)
 
 
 -- mapルール確認回数のカウント --
@@ -170,7 +171,7 @@ function save_ca_setup_config(json_data)
         ostime = os.time(),
         model = system_info.model,
         VNE = VNE,
-        wan_ipv6 = wan_ipv6,
+        ipv6_56 = ipv6_56,
         mapcount = mapcount
     })
     uci:commit("ca_setup")

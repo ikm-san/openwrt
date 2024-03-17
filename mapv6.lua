@@ -109,14 +109,14 @@ end
 
 
 -- 前回のIPv6 56アドレスと違いがないかチェック --
-function samewancheck(current_ipv6_56)
+function samewancheck(ipv6_56)
     local last_ipv6_56 = uci:get("ca_setup", "map", "ipv6_56")
     local samewan
 
     if last_ipv6_56 == nil then
         samewan = "N"
     else
-        if last_ipv6_56 == current_ipv6_56 then
+        if last_ipv6_56 == ipv6_56 then
             samewan = "Y"
         else
             samewan = "N"
@@ -126,8 +126,8 @@ function samewancheck(current_ipv6_56)
     return samewan
 end
 
-local current_ipv6_56 = extract_ipv6_56(wan_ipv6)
-local samewancheck = samewancheck(current_ipv6_56)
+local ipv6_56 = extract_ipv6_56(wan_ipv6)
+local samewancheck = samewancheck(ipv6_56)
 
 
 -- mapルール確認回数のカウント --

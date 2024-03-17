@@ -7,7 +7,7 @@ function index()
     -- IPoE設定タブ
     entry({"admin", "ca_setup", "ipoe"}, cbi("ca_setup/ipoe"), _("Internet接続設定"), 10)
 
-    -- IPoE設定タブ
+    -- WiFi設定タブ
     entry({"admin", "ca_setup", "wireless"}, cbi("ca_setup/wireless"), _("WiFi接続設定"), 20)
 
     -- アップデート処理
@@ -16,7 +16,5 @@ function index()
     -- デバッグ用
     entry({"admin", "ca_setup", "sandbox"}, cbi("ca_setup/sandbox"), _("テスト用"), 60)
 
-        -- デバッグ用
-    entry({"admin", "ca_setup", "mapv6"}, cbi("ca_setup/mapv6"), _("mapv6 reg"), 70)
     
 end

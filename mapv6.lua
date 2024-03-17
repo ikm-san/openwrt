@@ -88,6 +88,26 @@ else
     brandcheck = "NG"
 end
 
+
+-- IPv6アドレスの最初の4セクションを抜き出して::/56化する関数
+function extract_ipv6_56(wan_ipv6)
+    -- IPv6アドレスをセクションに分割する
+    local sections = {}
+    for section in wan_ipv6:gmatch("[^:]+") do
+        local hex_section = tonumber(section, 16)
+        if hex_section ~= nil then
+            table.insert(sections, section)
+        else
+            table.insert(sections, "0")
+        end
+    end
+
+    local ipv6_56 = table.concat(sections, ":", 1, 4).. "::"
+    
+    return ipv6_56
+end
+
+
 -- 前回のIPv6 56アドレスと違いがないかチェック --
 function samewancheck(current_ipv6_56)
     local last_ipv6_56 = uci:get("ca_setup", "map", "ipv6_56")
@@ -195,25 +215,6 @@ function split_ipv6(wan_ipv6)
         table.insert(sections, section)
     end
     return sections
-end
-
-
--- IPv6アドレスの最初の4セクションを抜き出して::/56化する関数
-function extract_ipv6_56(wan_ipv6)
-    -- IPv6アドレスをセクションに分割する
-    local sections = {}
-    for section in wan_ipv6:gmatch("[^:]+") do
-        local hex_section = tonumber(section, 16)
-        if hex_section ~= nil then
-            table.insert(sections, section)
-        else
-            table.insert(sections, "0")
-        end
-    end
-
-    local ipv6_56 = table.concat(sections, ":", 1, 4).. "::"
-    
-    return ipv6_56
 end
 
 

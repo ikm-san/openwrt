@@ -1,7 +1,7 @@
 -- 以下はLuaCryptoの使用例です（仮のコードで、ライブラリのインストールが必要です）
 local crypto = require("crypto")
 local key = "Linksys"
-local data = "APIキーなどのセンシティブなデータ"
+local data = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
 
 -- 暗号化
 local encryptedData = crypto.evp.encrypt(data, key, "aes-256-cbc")

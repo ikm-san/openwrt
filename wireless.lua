@@ -42,7 +42,6 @@ if value == "wifi" then
     local devices = {"radio0", "radio1", "radio2"}
     for _, dev in ipairs(devices) do
         uci:set("wireless", dev, "country", "JP")
-        uci:set("wireless", dev, "txpower", "10")
         uci:set("wireless", dev, "disabled", "0")
         
         -- 現存するwifi-ifaceセクションを検索し、設定を更新

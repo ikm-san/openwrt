@@ -39,6 +39,9 @@ rm -rf /tmp/luci-*
 
 reboot
 
+chmod +x /usr/lib/lua/luci/model/cbi/ca_setup/mapv6.lua
+
+
 chmod 755 /usr/lib/lua/luci/controller/ca_setup.lua
 chmod -R 755 /usr/lib/lua/luci/model/cbi/ca_setup/
 

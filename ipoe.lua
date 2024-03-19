@@ -32,6 +32,10 @@ choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
+msg_text = s:option(DummyValue, "smg_text", "【取扱注意】")
+msg_text.default = "完全なブリッジモードとなり管理画面にアクセスできなくなるため、元に戻したい場合は初期化してください。"
+msg_text:depends("wan_setup", "bridge_mode")
+
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
 username = s:option(Value, "username", "PPPoE ユーザー名")
 password = s:option(Value, "password", "PPPoE パスワード")
@@ -344,9 +348,7 @@ function choice.write(self, section, value)
             uci:commit()
             
             -- ファイアウォールの設定を削除する
-            os.execute("mv /etc/config/firewall /etc/config/firewall.unused")
-            http.write("<script>alert('完全なブリッジモードとなり管理画面にアクセスできなくなるため、元に戻したい場合は初期化してください。');</script>")
-            luci.sys.reboot()        
+            os.execute("mv /etc/config/firewall /etc/config/firewall.unused")    
     end
 
 

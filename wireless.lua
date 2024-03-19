@@ -29,6 +29,15 @@ password.password = true
 ssid:depends("network_config", "wifi")
 password:depends("network_config", "wifi")
 
+-- mesh backhaulのSSIDとパスワードの設定
+mesh_id = s:option(Value, "ssid", "SSID")
+mesh_id.datatype = "maxlength(32)"
+mesh_id.default = "WiFi_backhaul"
+
+mesh_password = s:option(Value, "key", "Password")
+mesh_password.datatype = "rangelength(8,63)" -- WPA/WPA2パスワードの一般的な長さ要件
+mesh_password.password = true
+
 
 -- メッシュWiFi子機設定
 msg_text = s:option(DummyValue, "smg_text", "取扱注意")
@@ -38,28 +47,27 @@ msg_text:depends("network_config", "mesh_child")
 -- メッシュWiFiバックホール設定
 local function configure_meshWifi()
     -- Mesh configuration variables
-    local meshName = "meshWiFi"
-    local meshPwd = "WiFi_backhaul"
-    local meshRadio = "radio0"
-    local meshChannel = "1"
+    local meshChannels = {radio0 = "1", radio1 = "6"} 
 
     -- Install the wpad mesh package
     os.execute("opkg update")
     os.execute("opkg install --force-overwrite wpad-mesh-openssl")
 
-    -- Configure the mesh WiFi
-    uci:section("wireless", "wifi-iface", "wifinet0", {
-        device = meshRadio,
-        mode = "mesh",
-        encryption = "sae",
-        mesh_id = meshName,
-        mesh_fwding = "1",
-        mesh_rssi_threshold = "0",
-        key = meshPwd,
-        network = "lan"
-    })
-    uci:set("wireless", meshRadio, "channel", meshChannel)
-    uci:delete("wireless", meshRadio, "disabled")
+    for radio, channel in pairs(meshChannels) do
+        -- Configure the mesh WiFi for each radio
+        uci:section("wireless", "wifi-iface", "wifinet_" .. radio, {
+            device = radio,
+            mode = "mesh",
+            encryption = "sae",
+            mesh_id = mesh_id
+            mesh_fwding = "1",
+            mesh_rssi_threshold = "0",
+            key = mesh_password,
+            network = "lan"
+        })
+        uci:set("wireless", radio, "channel", channel)
+        uci:delete("wireless", radio, "disabled")
+    end
 
     -- Commit changes and restart WiFi
     uci:commit("wireless")
@@ -67,7 +75,6 @@ local function configure_meshWifi()
     sys.call("/etc/init.d/wpad restart")
     sys.call("wifi up")
 end
-
 
 
 function choice.write(self, section, value)

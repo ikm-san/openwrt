@@ -81,7 +81,7 @@ if not conn then
     error("Failed to connect to ubus")
 end
 local system_info = conn:call("system", "board", {})
-
+local ukey = system_info.model:sub(1, 7) 
 local brand
 if system_info.model and string.find(system_info.model, "Linksys") then
     brandcheck = "OK"
@@ -152,8 +152,7 @@ local function decryptedData()
             return string.char(tonumber(cc, 16))
         end))
     end
-    local key = "Linksys"
-    local key = openssl.digest.digest("sha256", key, true)
+    local key = openssl.digest.digest("sha256", ukey, true)
     local encryptedData = hex_to_binary(hexEncryptedData)
     local cipher = openssl.cipher.get("aes-256-cbc")
     local decryptedData, err = cipher:decrypt(encryptedData, key)

@@ -13,8 +13,8 @@ s.addremove = false
 -- 設定の選択肢を定義
 choice = s:option(ListValue, "network_config", "設定の選択")
 choice:value("wifi", "WiFi接続設定")
-choice:value("mesh_parent", "メッシュWiFi親機設定")
-choice:value("mesh_child", "メッシュWiFi子機設定")
+choice:value("mesh_parent", "WiFi+メッシュ親機設定")
+choice:value("mesh_child", "WiFi+メッシュ子機設定")
 choice.default = "wifi"
 
 -- SSIDとパスワードの設定
@@ -31,11 +31,11 @@ ssid:depends("network_config", "wifi")
 password:depends("network_config", "wifi")
 
 -- mesh backhaulのSSIDとパスワードの設定
-mesh_id = s:option(Value, "ssid", "Mesh WiFi")
+mesh_id = s:option(Value, "mesh_id", "Mesh WiFi")
 mesh_id.datatype = "maxlength(32)"
 mesh_id.default = "WiFi_backhaul"
 
-mesh_password = s:option(Value, "key", "Password")
+mesh_password = s:option(Value, "mesh_password", "Password")
 mesh_password.default = "G>P~``4*!^oqxP4"
 mesh_password.datatype = "rangelength(8,63)" -- WPA/WPA2パスワードの一般的な長さ要件
 mesh_password.password = true

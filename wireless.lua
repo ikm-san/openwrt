@@ -77,6 +77,36 @@ local function configure_meshWifi()
 end
 
 
+-- ブリッジモード設定の適用
+local function dumb_ap()
+
+        -- ルーター用のサービス停止
+            local services = {"firewall", "dnsmasq", "odhcpd"}
+            for _, service in ipairs(services) do
+                if sys.init.enabled(service) then
+                    sys.init.stop(service)
+                    sys.init.disable(service)
+                end
+            end
+            
+            -- LANインターフェースをDHCPクライアントに切り替える
+            uci:set("network", "lan", "proto", "dhcp")
+            uci:delete("network", "wan")
+            uci:delete("network", "wan6")
+            uci:delete("network", "lan", "ipaddr")
+            uci:delete("network", "lan", "netmask")
+            
+            -- ホスト名を"WifiAP"に変更する
+            uci:set("system", "@system[0]", "hostname", "WifiAP")
+            
+            -- すべての変更をコミットする
+            uci:commit()
+            
+            -- ファイアウォールの設定を削除する
+            os.execute("mv /etc/config/firewall /etc/config/firewall.unused")
+end
+
+
 function choice.write(self, section, value)
     
 if value == "wifi" then
@@ -116,6 +146,8 @@ if value == "wifi" then
     elseif value == "mesh_child" then
         -- メッシュWiFi子機設定を適用する処理
         configure_meshWifi()
+        http.write("<script>alert('設定変更が完了しました。再起動後は子機モードになります。');</script>")
+        dumb_ap()
     end
 
 end

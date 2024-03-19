@@ -1,13 +1,19 @@
--- 以下はLuaCryptoの使用例です（仮のコードで、ライブラリのインストールが必要です）
-local crypto = require("crypto")
+local openssl = require("openssl")
+local cipher = openssl.cipher.get("aes-256-cbc")
 local key = "Linksys"
+
+-- 暗号化のためのキーを適切な長さに調整
+local key = openssl.digest.digest("sha256", key, true)
+
 local data = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
 
 -- 暗号化
-local encryptedData = crypto.evp.encrypt(data, key, "aes-256-cbc")
+local encryptedData, err = cipher:encrypt(data, key)
+assert(encryptedData, err)
 
--- 復号化（必要な場合）
-local decryptedData = crypto.evp.decrypt(encryptedData, key, "aes-256-cbc")
+-- 復号化
+local decryptedData, err = cipher:decrypt(encryptedData, key)
+assert(decryptedData, err)
 
-print("暗号化されたデータ: ", encryptedData)
+print("暗号化されたデータ: ", openssl.hex(encryptedData))
 print("復号化されたデータ: ", decryptedData)

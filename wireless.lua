@@ -53,7 +53,7 @@ msg_text:depends("network_config", "mesh_child")
 -- メッシュWiFiバックホール設定
 local function configure_meshWifi()
     -- Mesh configuration variables
-    local meshChannels = {radio0 = "1", radio1 = "6"} 
+    local meshChannels = {radio0 = "1", radio1 = "36"} 
 
     -- Install the wpad mesh package
     os.execute("opkg update")

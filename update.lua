@@ -1,5 +1,6 @@
 local fs = require "nixio.fs"
 local sys = require "luci.sys"
+local http = require "luci.http"
 
 m = Map("ca_setup", translate("CA Setup"),
         translate("This page allows you to update CA setup files."))

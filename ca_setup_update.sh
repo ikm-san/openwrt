@@ -22,6 +22,7 @@ opkg install map
 opkg install ds-lite 
 opkg install luasec
 opkg install ip6tables
+opkg install lua-openssl
 mkdir -p /usr/lib/lua/luci/controller/
 mkdir -p /usr/lib/lua/luci/model/cbi/ca_setup/
 wget -O /etc/config/ca_setup https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup

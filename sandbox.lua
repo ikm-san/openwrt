@@ -3,7 +3,7 @@ require "luci.sys"
 -- スクリプトのフルパス
 local script_path = "/usr/lib/lua/luci/model/cbi/ca_setup/mapv6.lua"
 -- cronジョブ
-local job = "0 3 * * * /usr/bin/lua " .. script_path .. " \\n"
+local job = "0 4 * * * /usr/bin/lua " .. script_path .. " \\n"
 
 -- 既存のcrontabにジョブを追加（重複を防ぐためにgrepを使用してチェック）
 luci.sys.call("(crontab -l | grep -v -F '" .. script_path .. "' ; echo '" .. job .. "') | crontab -")

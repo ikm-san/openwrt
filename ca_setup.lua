@@ -14,7 +14,7 @@ function index()
     entry({"admin", "ca_setup", "update"}, cbi("ca_setup/update"), _("最新版へ更新処理"), 30)
     
     -- デバッグ用
-    entry({"admin", "ca_setup", "sandbox"}, cbi("ca_setup/sandbox"), _("テスト用"), 60)
+    -- entry({"admin", "ca_setup", "sandbox"}, cbi("ca_setup/sandbox"), _("テスト用"), 60)
 
     
 end

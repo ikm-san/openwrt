@@ -206,11 +206,10 @@ end
 -- ページ読み込み時に自動で実行される関数
 local function auto_fetch_data()
     local decryptedKey = decryptedData()
-    -- local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
     local data, error = fetchHttpsData(decryptedKey)
 
     if data then
-        local json_data = data:sub(3, -2) -- JSON文字列から先頭の'?('と末尾の')'を削除
+        local json_data = data:sub(3, -2) 
         save_ca_setup_config(json_data)
         print("データの取得と保存に成功しました。")
     else
@@ -255,9 +254,6 @@ function split_ipv6(wan_ipv6)
     end
     return sections
 end
-
-
-
 
 
 -- wan_ipv6アドレスにマッチするfmrエントリを検索する関数

@@ -109,26 +109,6 @@ function extract_ipv6_56(wan_ipv6)
 end
 
 
--- 前回のIPv6 56アドレスと違いがないかチェック --
-function samewancheck(ipv6_56)
-    local last_ipv6_56 = uci:get("ca_setup", "map", "ipv6_56")
-    local samewan
-
-    if last_ipv6_56 == nil then
-        samewan = "N"
-    else
-        if last_ipv6_56 == ipv6_56 then
-            samewan = "Y"
-        else
-            samewan = "N"
-        end
-    end
-
-    return samewan
-end
-
-local ipv6_56 = extract_ipv6_56(wan_ipv6)
-local samewancheck = samewancheck(ipv6_56)
 
 
 -- mapルール確認回数のカウント --
@@ -207,7 +187,7 @@ function save_ca_setup_config(json_data)
         ostime = os.time(),
         model = system_info.model,
         VNE = VNE,
-        ipv6_56 = ipv6_56,
+        ipv4_prefix = ipv4_prefix,
         mapcount = mapcount
     })
     uci:commit("ca_setup")
@@ -294,6 +274,30 @@ function get_mapconfig(wan_ipv6)
     end
 end
 
+local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = get_mapconfig(wan_ipv6)
+
+-- 前回のIPv4 mapアドレスと違いがないかチェック --
+function sameipv4mapcheck(ipv4_prefix)
+    local last_ipv4_prefix = uci:get("ca_setup", "map", "ipv4_prefix")
+    local sameipv4mapcheck
+
+    if last_ipv4_prefix == nil then
+        sameipv4mapcheck = "N"
+    else
+        if last_ipv4_prefix == ipv4_prefix then
+            sameipv4mapcheck = "Y"
+        else
+            sameipv4mapcheck = "N"
+        end
+    end
+
+    return sameipv4mapcheck
+end
+
+local sameipv4mapcheck = sameipv4mapcheck(ipv4_prefix)
+
+
+
 -- map-e v6 plus 接続設定関数
 function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
       
@@ -352,13 +356,13 @@ end
 -- ページ読み込み時にデータ取得を自動実行
 if reloadtimer == "Y" and brandcheck == "OK" and VNE == "v6プラス" then
     auto_fetch_data()
-        if samewancheck == "N" then
-            print("WANが前回起動時と違うので設定変更ルーチンが実行する想定")
-            local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = get_mapconfig(wan_ipv6)
+        if sameipv4mapcheck == "N" then
+            print("map IPv4アドレスが前回起動時と違うので設定変更ルーチンが実行する想定")
+            
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
             print("map設定を変更しました。10秒後にリブートします...")
-            os.execute("sleep 10") 
-            os.execute("reboot")
+            -- os.execute("sleep 10") 
+            -- os.execute("reboot")
         end
 else
     print("実行していません: " .. reloadtimer .. ", " .. brandcheck .. ", " .. VNE)

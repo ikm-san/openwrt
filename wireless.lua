@@ -23,6 +23,7 @@ ssid.datatype = "maxlength(32)"
 ssid.default = "OpenWrt"
 
 password = s:option(Value, "key", "Password")
+password.default = "SmartWiFi123-/"
 password.datatype = "rangelength(8,63)" -- WPA/WPA2パスワードの一般的な長さ要件
 password.password = true
 
@@ -30,11 +31,12 @@ ssid:depends("network_config", "wifi")
 password:depends("network_config", "wifi")
 
 -- mesh backhaulのSSIDとパスワードの設定
-mesh_id = s:option(Value, "ssid", "SSID")
+mesh_id = s:option(Value, "ssid", "Mesh WiFi")
 mesh_id.datatype = "maxlength(32)"
 mesh_id.default = "WiFi_backhaul"
 
 mesh_password = s:option(Value, "key", "Password")
+mesh_password.default = "G>P~``4*!^oqxP4"
 mesh_password.datatype = "rangelength(8,63)" -- WPA/WPA2パスワードの一般的な長さ要件
 mesh_password.password = true
 
@@ -63,10 +65,10 @@ local function configure_meshWifi()
             device = radio,
             mode = "mesh",
             encryption = "sae",
-            mesh_id = mesh_id,
+            mesh_id = mesh_id:formvalue(section),
             mesh_fwding = "1",
             mesh_rssi_threshold = "0",
-            key = mesh_password,
+            key = mesh_password:formvalue(section),
             network = "lan"
         })
         uci:set("wireless", radio, "channel", channel)

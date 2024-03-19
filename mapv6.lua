@@ -4,6 +4,7 @@ local https = require("ssl.https")
 local lucihttp = require("luci.http")
 local sys = require "luci.sys"
 local ubus = require "ubus"
+local openssl = require("openssl")
 
 -- WANインターフェースのIPv6アドレス（scope global）を取得
 function get_wan_ipv6_global()
@@ -164,11 +165,26 @@ end
 
 local reloadtimer = reloadtimer()
 
+local function decryptedData()
+    local hexEncryptedData = "bf502ae10c4b83e034891e62626c01d4b70f48e5e361eb75fcb4fc0d2fa774ea4a331c285cb59d9f5a11c46b0a0368ca1253283d891df54962778c225d79fd25ae9d688614ebef0a30e961e1153ad5ca"
+    local function hex_to_binary(hex)
+        return (hex:gsub('..', function (cc)
+            return string.char(tonumber(cc, 16))
+        end))
+    end
+    local key = "Linksys"
+    local key = openssl.digest.digest("sha256", key, true)
+    local encryptedData = hex_to_binary(hexEncryptedData)
+    local cipher = openssl.cipher.get("aes-256-cbc")
+    local decryptedData, err = cipher:decrypt(encryptedData, key)
+    return decryptedData
+end
 
 -- ページ読み込み時に自動で実行される関数
 local function auto_fetch_data()
-    local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
-    local data, error = fetchHttpsData(url)
+    local decryptedKey = decryptedData()
+    -- local url = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rules"
+    local data, error = fetchHttpsData(decryptedKey)
 
     if data then
         local json_data = data:sub(3, -2) -- JSON文字列から先頭の'?('と末尾の')'を削除

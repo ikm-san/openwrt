@@ -108,16 +108,40 @@ function extract_ipv6_56(wan_ipv6)
     return ipv6_56
 end
 
+-- map wan先頭32bit 40bitを抽出する関数 --
+function wan32_40(wan_ipv6)
+    -- IPv6アドレスをセクションに分割
+    local sections = {}
+    for section in wan_ipv6:gmatch("([^:]+)") do
+        table.insert(sections, section)
+    end
 
--- 前回のIPv6 56アドレスと違いがないかチェック --
-function samewancheck(ipv6_56)
-    local last_ipv6_56 = uci:get("ca_setup", "map", "ipv6_56")
+    -- wan32_ipv6の生成
+    local wan32_ipv6 = table.concat({sections[1], sections[2]}, ":").. "::"
+
+    -- wan40_ipv6の生成
+    -- 第3セクションを4桁に正規化
+    local third_section_normalized = sections[3]
+    if #third_section_normalized < 4 then
+        third_section_normalized = string.format("%04x", tonumber(third_section_normalized, 16))
+    end
+    -- 第3セクションの先頭2桁を取得し、後ろ2桁を00で置き換え
+    local third_section_modified = third_section_normalized:sub(1, 2) .. "00"
+    local wan40_ipv6 = table.concat({sections[1], sections[2], third_section_modified}, ":").. "::"
+
+    return wan32_ipv6, wan40_ipv6
+end
+
+
+-- 前回のIPv6 32アドレスと違いがないかチェック --
+function samewancheck(wan32_ipv6)
+    local last_wan32_ipv6 = uci:get("ca_setup", "map", "wan32_ipv6")
     local samewan
 
-    if last_ipv6_56 == nil then
+    if last_wan32_ipv6 == nil then
         samewan = "N"
     else
-        if last_ipv6_56 == ipv6_56 then
+        if last_wan32_ipv6 == wan32_ipv6 then
             samewan = "Y"
         else
             samewan = "N"
@@ -127,8 +151,8 @@ function samewancheck(ipv6_56)
     return samewan
 end
 
-local ipv6_56 = extract_ipv6_56(wan_ipv6)
-local samewancheck = samewancheck(ipv6_56)
+local wan32_ipv6 = wan32_40(wan_ipv6)
+local samewancheck = samewancheck(wan32_ipv6)
 
 
 -- mapルール確認回数のカウント --
@@ -207,7 +231,7 @@ function save_ca_setup_config(json_data)
         ostime = os.time(),
         model = system_info.model,
         VNE = VNE,
-        ipv6_56 = ipv6_56,
+        wan32_ipv6 = wan32_ipv6,
         mapcount = mapcount
     })
     uci:commit("ca_setup")
@@ -234,29 +258,7 @@ function split_ipv6(wan_ipv6)
 end
 
 
--- map wan先頭32bit 40bitを抽出する関数 --
-function wan32_40(wan_ipv6)
-    -- IPv6アドレスをセクションに分割
-    local sections = {}
-    for section in wan_ipv6:gmatch("([^:]+)") do
-        table.insert(sections, section)
-    end
 
-    -- wan32_ipv6の生成
-    local wan32_ipv6 = table.concat({sections[1], sections[2]}, ":").. "::"
-
-    -- wan40_ipv6の生成
-    -- 第3セクションを4桁に正規化
-    local third_section_normalized = sections[3]
-    if #third_section_normalized < 4 then
-        third_section_normalized = string.format("%04x", tonumber(third_section_normalized, 16))
-    end
-    -- 第3セクションの先頭2桁を取得し、後ろ2桁を00で置き換え
-    local third_section_modified = third_section_normalized:sub(1, 2) .. "00"
-    local wan40_ipv6 = table.concat({sections[1], sections[2], third_section_modified}, ":").. "::"
-
-    return wan32_ipv6, wan40_ipv6
-end
 
 
 -- wan_ipv6アドレスにマッチするfmrエントリを検索する関数

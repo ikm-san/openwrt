@@ -5,7 +5,7 @@ local key = "Linksys"
 -- 暗号化のためのキーを適切な長さに調整
 local key = openssl.digest.digest("sha256", key, true)
 
-local data = "https://api.enabler.ne.jp/6823228689437e773f260662947d6239/get_rulesbf502ae10c4b83e034891e62626c01d4b70f48e5e361eb75fcb4fc0d2fa774ea4a331c285cb59d9f5a11c46b0a0368ca1253283d891df54962778c225d79fd25ae9d688614ebef0a30e961e1153ad5ca"
+local data = "bf502ae10c4b83e034891e62626c01d4b70f48e5e361eb75fcb4fc0d2fa774ea4a331c285cb59d9f5a11c46b0a0368ca1253283d891df54962778c225d79fd25ae9d688614ebef0a30e961e1153ad5ca"
 
 -- 暗号化
 -- local encryptedData, err = cipher:encrypt(data, key)

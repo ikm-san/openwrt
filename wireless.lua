@@ -59,7 +59,7 @@ local function configure_meshWifi()
             device = radio,
             mode = "mesh",
             encryption = "sae",
-            mesh_id = mesh_id
+            mesh_id = mesh_id,
             mesh_fwding = "1",
             mesh_rssi_threshold = "0",
             key = mesh_password,

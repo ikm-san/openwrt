@@ -345,7 +345,8 @@ function choice.write(self, section, value)
             
             -- ファイアウォールの設定を削除する
             os.execute("mv /etc/config/firewall /etc/config/firewall.unused")
-            
+            http.write("<script>alert('完全なブリッジモードとなり管理画面にアクセスできなくなるため、元に戻したい場合は初期化してください。');</script>")
+            luci.sys.reboot()        
     end
 
 

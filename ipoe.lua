@@ -353,7 +353,7 @@ end
 
 function m.on_after_commit(self)
         -- デバイスを再起動する
-        http.write("<script>alert('更新が完了しました。再起動します。');</script>")
+        http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
         luci.sys.reboot()
         -- luci.http.redirect(luci.dispatcher.build_url("admin/"))
 end

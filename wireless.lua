@@ -78,7 +78,7 @@ if value == "wifi" then
 end
 
 function m.on_after_commit(self)
-    http.write("<script>alert('設定変更が完了しました。10秒後に再起動します。');</script>")
+    http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
 end
 
 return m

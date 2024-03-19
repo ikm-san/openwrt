@@ -3,6 +3,7 @@ local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
 local calib = require "calib" 
 local jsonc = require("luci.jsonc")
+local http = require "luci.http"
 
 -- WANのグローバルIPv6を取得 --
 local wan_ipv6 = calib.get_wan_ipv6_global() 

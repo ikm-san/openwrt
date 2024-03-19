@@ -35,6 +35,41 @@ msg_text = s:option(DummyValue, "smg_text", "取扱注意")
 msg_text.default = "※メッシュWiFiバックホールつきのDumb APになります。元に戻したい場合は初期化してください。"
 msg_text:depends("network_config", "mesh_child")
 
+-- メッシュWiFiバックホール設定
+local function configure_meshWifi()
+    -- Mesh configuration variables
+    local meshName = "meshWiFi"
+    local meshPwd = "WiFi_backhaul"
+    local meshRadio = "radio0"
+    local meshChannel = "1"
+
+    -- Install the wpad mesh package
+    os.execute("opkg update")
+    os.execute("opkg install --force-overwrite wpad-mesh-openssl")
+
+    -- Configure the mesh WiFi
+    uci:section("wireless", "wifi-iface", "wifinet0", {
+        device = meshRadio,
+        mode = "mesh",
+        encryption = "sae",
+        mesh_id = meshName,
+        mesh_fwding = "1",
+        mesh_rssi_threshold = "0",
+        key = meshPwd,
+        network = "lan"
+    })
+    uci:set("wireless", meshRadio, "channel", meshChannel)
+    uci:delete("wireless", meshRadio, "disabled")
+
+    -- Commit changes and restart WiFi
+    uci:commit("wireless")
+    sys.call("wifi down")
+    sys.call("/etc/init.d/wpad restart")
+    sys.call("wifi up")
+end
+
+
+
 function choice.write(self, section, value)
     
 if value == "wifi" then
@@ -70,8 +105,10 @@ if value == "wifi" then
       
     elseif value == "mesh_parent" then
         -- メッシュWiFi親機設定を適用する処理
+        configure_meshWifi()
     elseif value == "mesh_child" then
         -- メッシュWiFi子機設定を適用する処理
+        configure_meshWifi()
     end
 
 end

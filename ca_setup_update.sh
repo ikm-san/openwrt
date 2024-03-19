@@ -33,7 +33,7 @@ wget -O /usr/lib/lua/luci/model/cbi/ca_setup/ipoe.lua https://raw.githubusercont
 wget -O /usr/lib/lua/luci/model/cbi/ca_setup/wireless.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/wireless.lua
 wget -O /usr/lib/lua/luci/model/cbi/ca_setup/update.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/update.lua
 wget -O /usr/lib/lua/luci/model/cbi/ca_setup/sandbox.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/sandbox.lua
-wget -O /usr/lib/lua/luci/model/cbi/ca_setup/mapv6.luac https://raw.githubusercontent.com/ikm-san/openwrt/main/mapv6.luac
+wget -O /usr/lib/lua/luci/model/cbi/ca_setup/mapv6.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/mapv6.lua
 rm -rf /tmp/luci-*
 /etc/init.d/uhttpd restart
 

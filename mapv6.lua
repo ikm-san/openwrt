@@ -359,8 +359,8 @@ if reloadtimer == "Y" and brandcheck == "OK" and VNE == "v6プラス" then
             local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = get_mapconfig(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
             print("map設定を変更しました。10秒後にリブートします...")
-            os.execute("sleep 10") 
-            os.execute("reboot")
+            -- os.execute("sleep 10") 
+            -- os.execute("reboot")
         end
 else
     print("実行していません: " .. reloadtimer .. ", " .. brandcheck .. ", " .. VNE)

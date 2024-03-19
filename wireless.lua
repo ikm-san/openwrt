@@ -32,7 +32,7 @@ password:depends("network_config", "wifi")
 
 -- メッシュWiFi子機設定
 msg_text = s:option(DummyValue, "smg_text", "取扱注意")
-msg_text.default = "※メッシュWiFiバックホールつきのDumb APになります。元に戻したい場合は初期化。"
+msg_text.default = "※メッシュWiFiバックホールつきのDumb APになります。元に戻したい場合は初期化してください。"
 msg_text:depends("network_config", "mesh_child")
 
 function choice.write(self, section, value)

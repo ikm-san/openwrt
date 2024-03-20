@@ -29,6 +29,10 @@ password.password = true
 
 ssid:depends("network_config", "wifi")
 password:depends("network_config", "wifi")
+ssid:depends("network_config", "mesh_parent")
+password:depends("network_config", "mesh_parent")
+ssid:depends("network_config", "mesh_child")
+password:depends("network_config", "mesh_child")
 
 -- mesh backhaulのSSIDとパスワードの設定
 mesh_id = s:option(Value, "mesh_id", "Mesh WiFi")

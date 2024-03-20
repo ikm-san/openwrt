@@ -104,16 +104,16 @@ end
             
 -- メッシュWiFiバックホール設定
 local function configure_meshWiFi(section)
-    -- Mesh configuration variables
-   local devices = {"radio0", "radio1"} 
+    local devices = {"radio0", "radio1"}
 
     -- Install the wpad mesh package
     os.execute("opkg update")
     os.execute("opkg install --force-overwrite wpad-mesh-openssl")
 
-    for radio, channel in pairs(devices) do
+    for index, radio in ipairs(devices) do
         -- Configure the mesh WiFi for each radio
-        uci:section("wireless", "wifi-iface", "wifinet" .. radio, {
+        local wifinet = "wifinet" .. tostring(index - 1) 
+        uci:section("wireless", "wifi-iface", wifinet, {
             device = radio,
             mode = "mesh",
             encryption = "sae",
@@ -124,15 +124,18 @@ local function configure_meshWiFi(section)
             network = "lan"
         })
         uci:set("wireless", radio, "channel", "auto")
-        uci:set("wireless", "radio0", "channels", "1 6 11")
-        uci:set("wireless", "radio1", "channels", "36 40 44 48 52 56 60 64")
+        -- デバイス固有のチャネル設定
+        if radio == "radio0" then
+            uci:set("wireless", radio, "channels", "1 6 11")
+        elseif radio == "radio1" then
+            uci:set("wireless", radio, "channels", "36 40 44 48 52 56 60 64")
+        end
         uci:delete("wireless", radio, "disabled")
     end
 
-    -- Commit changes and restart WiFi
     uci:commit("wireless")
+    -- WiFi設定の適用
     sys.call("wifi down")
-    sys.call("/etc/init.d/wpad restart")
     sys.call("wifi up")
 end
 

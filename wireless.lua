@@ -61,47 +61,42 @@ local function configure_WiFi(section)
     uci:delete("wireless", "default_radio1")
     uci:commit("wireless")
 
-    -- 特定の無線デバイスに対して設定を適用
     local devices = {"radio0", "radio1"}
-    for _, dev in ipairs(devices) do
+    for index, dev in ipairs(devices) do
+        local wifinet = "wifinet" .. index - 1 -- wifinet0 と wifinet1 を作成
+
+        -- 無線デバイスの基本設定を設定
         uci:set("wireless", dev, "country", "JP")
         uci:set("wireless", dev, "disabled", "0")
-    
-        local found = false
-    
-        -- 現存するwifi-ifaceセクションを検索し、設定を更新
-        uci:foreach("wireless", "wifi-iface",
-            function(s)
-                if s.device == dev then
-                    -- 既存のセクションを更新
-                    uci:set("wireless", s['.name'], "mode", "ap")
-                    uci:set("wireless", s['.name'], "channel", "auto")
-                    uci:set("wireless", s['.name'], "ssid", ssid:formvalue(section))
-                    uci:set("wireless", s['.name'], "encryption", "sae-mixed")
-                    uci:set("wireless", s['.name'], "key", password:formvalue(section))
-                    uci:set("wireless", s['.name'], "disabled", "0") -- Enable wireless
-                    found = true
-                    return false -- 一致する最初のセクションのみを更新
-                end
-            end)
-    
-        if not found then
-            -- 一致するセクションが見つからない場合は新しいセクションを作成
-            local section_name = uci:add("wireless", "wifi-iface")
-            uci:set("wireless", section_name, "device", dev)
-            uci:set("wireless", section_name, "mode", "ap")
-            uci:set("wireless", section_name, "channel", "auto")
-            uci:set("wireless", section_name, "ssid", ssid:formvalue(section))
-            uci:set("wireless", section_name, "encryption", "sae-mixed")
-            uci:set("wireless", section_name, "key", password:formvalue(section))
-            uci:set("wireless", section_name, "disabled", "0")
+        
+        -- 既存のセクションを確認または新規作成
+        local section_exists = false
+        uci:foreach("wireless", "wifi-iface", function(s)
+            if s['.name'] == wifinet then
+                section_exists = true -- セクションが存在する
+            end
+        end)
+
+        -- セクションが存在しない場合は新規作成
+        if not section_exists then
+            uci:section("wireless", "wifi-iface", wifinet, {})
         end
+
+        -- セクションの設定を更新
+        uci:set("wireless", wifinet, "device", dev)
+        uci:set("wireless", wifinet, "mode", "ap")
+        uci:set("wireless", wifinet, "channel", "auto")
+        uci:set("wireless", wifinet, "ssid", ssid:formvalue(section))
+        uci:set("wireless", wifinet, "encryption", "sae-mixed")
+        uci:set("wireless", wifinet, "key", password:formvalue(section))
+        uci:set("wireless", wifinet, "disabled", "0")
     end
     
+    -- 設定をコミット
     uci:commit("wireless")
-
 end
-            
+
+
 -- メッシュWiFiバックホール設定
 local function configure_meshWiFi(section)
     local devices = {"radio0", "radio1"}

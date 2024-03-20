@@ -172,12 +172,12 @@ if value == "wifi" then
         -- WiFi AP設定
             configure_WiFi(section)   
         -- メッシュWiFi親機設定を適用する処理
-        -- configure_meshWiFi(section)
+            configure_meshWiFi(section)
     elseif value == "mesh_child" then
         -- WiFi AP設定
             configure_WiFi(section)   
         -- メッシュWiFi子機設定を適用する処理
-        -- configure_meshWiFi(section)
+            onfigure_meshWiFi(section)
         http.write("<script>alert('設定変更が完了しました。再起動後は子機モードになります。');</script>")
         -- dumb_ap()
         -- luci.sys.reboot()

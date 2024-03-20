@@ -51,7 +51,7 @@ msg_text.default = "完全なブリッジモードとなり管理画面にアク
 msg_text:depends("network_config", "mesh_child")
 
 --WiFiの設定用関数 --
-local function configure_WiFi()
+local function configure_WiFi(section)
     -- 特定の無線デバイスに対して設定を適用
     local devices = {"radio0", "radio1"}
     for _, dev in ipairs(devices) do
@@ -94,7 +94,7 @@ local function configure_WiFi()
 end
             
 -- メッシュWiFiバックホール設定
-local function configure_meshWiFi()
+local function configure_meshWiFi(section)
     -- Mesh configuration variables
    local devices = {"radio0", "radio1"} 
 
@@ -162,18 +162,18 @@ function choice.write(self, section, value)
     
 if value == "wifi" then
         -- WiFi AP設定
-            configure_WiFi()   
+            configure_WiFi(section)   
       
     elseif value == "mesh_parent" then
         -- WiFi AP設定
-            configure_WiFi()   
+            configure_WiFi(section)   
         -- メッシュWiFi親機設定を適用する処理
-        -- configure_meshWiFi()
+        -- configure_meshWiFi(section)
     elseif value == "mesh_child" then
         -- WiFi AP設定
-            configure_WiFi()   
+            configure_WiFi(section)   
         -- メッシュWiFi子機設定を適用する処理
-        -- configure_meshWiFi()
+        -- configure_meshWiFi(section)
         http.write("<script>alert('設定変更が完了しました。再起動後は子機モードになります。');</script>")
         -- dumb_ap()
         -- luci.sys.reboot()

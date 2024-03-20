@@ -29,7 +29,9 @@ function get_wan_ipv6_global()
                     end
                 end
             end
-    
+    if ipv6_global == nil then
+    return '0000:0000:0000:0000:0000:0000:0000:0000' -- IPv6アドレスが見つからない場合は0を返す
+    end
     local normalized_ipv6 = ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
 
     -- IPv6アドレスが見つからない場合は0を返す

@@ -145,6 +145,8 @@ if value == "wifi" then
         uci:commit("wireless")
     -- 設定の保存と適用
     uci:commit("wireless")
+    sys.call("wifi down")
+    sys.call("wifi up")
             
     end
     
@@ -164,7 +166,7 @@ end
 function m.on_after_commit(self)
     http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
         -- ネットワークの再起動をここで行う
-    sys.exec("/etc/init.d/network restart")
+    -- sys.exec("/etc/init.d/network restart")
 end
 
 return m

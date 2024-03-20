@@ -50,8 +50,51 @@ msg_text = s:option(DummyValue, "smg_text", "【取扱注意】")
 msg_text.default = "完全なブリッジモードとなり管理画面にアクセスできなくなるため、元に戻したい場合は初期化してください。"
 msg_text:depends("network_config", "mesh_child")
 
+--WiFiの設定用関数 --
+local function configure_WiFi()
+    -- 特定の無線デバイスに対して設定を適用
+    local devices = {"radio0", "radio1"}
+    for _, dev in ipairs(devices) do
+        uci:set("wireless", dev, "country", "JP")
+        uci:set("wireless", dev, "disabled", "0")
+    
+        local found = false
+    
+        -- 現存するwifi-ifaceセクションを検索し、設定を更新
+        uci:foreach("wireless", "wifi-iface",
+            function(s)
+                if s.device == dev then
+                    -- 既存のセクションを更新
+                    uci:set("wireless", s['.name'], "mode", "ap")
+                    uci:set("wireless", s['.name'], "channel", "auto")
+                    uci:set("wireless", s['.name'], "ssid", ssid:formvalue(section))
+                    uci:set("wireless", s['.name'], "encryption", "sae-mixed")
+                    uci:set("wireless", s['.name'], "key", password:formvalue(section))
+                    uci:set("wireless", s['.name'], "disabled", "0") -- Enable wireless
+                    found = true
+                    return false -- 一致する最初のセクションのみを更新
+                end
+            end)
+    
+        if not found then
+            -- 一致するセクションが見つからない場合は新しいセクションを作成
+            local section_name = uci:add("wireless", "wifi-iface")
+            uci:set("wireless", section_name, "device", dev)
+            uci:set("wireless", section_name, "mode", "ap")
+            uci:set("wireless", section_name, "channel", "auto")
+            uci:set("wireless", section_name, "ssid", ssid:formvalue(section))
+            uci:set("wireless", section_name, "encryption", "sae-mixed")
+            uci:set("wireless", section_name, "key", password:formvalue(section))
+            uci:set("wireless", section_name, "disabled", "0")
+        end
+    end
+    
+    uci:commit("wireless")
+
+end
+            
 -- メッシュWiFiバックホール設定
-local function configure_meshWifi()
+local function configure_meshWiFi()
     -- Mesh configuration variables
    local devices = {"radio0", "radio1"} 
 
@@ -118,55 +161,30 @@ end
 function choice.write(self, section, value)
     
 if value == "wifi" then
-    -- 特定の無線デバイスに対して設定を適用
-    local devices = {"radio0", "radio1"}
-    for _, dev in ipairs(devices) do
-        uci:set("wireless", dev, "country", "JP")
-        uci:set("wireless", dev, "disabled", "0")
-        
-        -- 現存するwifi-ifaceセクションを検索し、設定を更新
-        uci:foreach("wireless", "wifi-iface",
-            function(s)
-                if s.device == dev then
-                    -- 既存のセクションを更新
-                    uci:set("wireless", s['.name'], "mode", "ap")
-                    uci:set("wireless", s['.name'], "channel", "auto")
-                    uci:set("wireless", s['.name'], "ssid", ssid:formvalue(section))
-                    uci:set("wireless", s['.name'], "encryption", "sae-mixed")
-                    uci:set("wireless", s['.name'], "key", password:formvalue(section))
-                    uci:set("wireless", s['.name'], "disabled", "0") -- Enable wireless
-                    
-                    return false -- 一致する最初のセクションのみを更新
-                    
-                end
-            end)
-             uci:set("wireless", "radio0", "channels", "1 6 11")
-             uci:set("wireless", "radio1", "channels", "36 40 44 48 52 56 60 64")
-        uci:commit("wireless")
-    -- 設定の保存と適用
-    uci:commit("wireless")
-    sys.call("wifi down")
-    sys.call("wifi up")
-            
-    end
-    
+        -- WiFi AP設定
+            configure_WiFi()   
       
     elseif value == "mesh_parent" then
+        -- WiFi AP設定
+            configure_WiFi()   
         -- メッシュWiFi親機設定を適用する処理
-        -- configure_meshWifi()
+        -- configure_meshWiFi()
     elseif value == "mesh_child" then
+        -- WiFi AP設定
+            configure_WiFi()   
         -- メッシュWiFi子機設定を適用する処理
-        -- configure_meshWifi()
+        -- configure_meshWiFi()
         http.write("<script>alert('設定変更が完了しました。再起動後は子機モードになります。');</script>")
         -- dumb_ap()
+        luci.sys.reboot()
     end
 
 end
 
 function m.on_after_commit(self)
-    http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-        -- ネットワークの再起動をここで行う
-    -- sys.exec("/etc/init.d/network restart")
+    http.write("<script>alert('設定変更が完了しました。ネットワークを再起動します。');</script>")
+    sys.call("wifi down")
+    sys.call("wifi up")
 end
 
 return m

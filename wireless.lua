@@ -110,7 +110,7 @@ local function configure_meshWiFi(section)
     local devices = {"radio0", "radio1"}
     for index, radio in ipairs(devices) do
         -- Configure the mesh WiFi for each radio
-        local wifinet = "wifinet" .. tostring(index - 1) 
+        local wifinet = "wifinet" .. tostring(9 + index)
         uci:section("wireless", "wifi-iface", wifinet, {
             device = radio,
             mode = "mesh",

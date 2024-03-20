@@ -179,8 +179,8 @@ if value == "wifi" then
         -- メッシュWiFi子機設定を適用する処理
             onfigure_meshWiFi(section)
         http.write("<script>alert('設定変更が完了しました。再起動後は子機モードになります。');</script>")
-        -- dumb_ap()
-        -- luci.sys.reboot()
+            dumb_ap()
+            luci.sys.reboot()
     end
 
 end

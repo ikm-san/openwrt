@@ -176,7 +176,7 @@ if value == "wifi" then
         -- configure_meshWiFi()
         http.write("<script>alert('設定変更が完了しました。再起動後は子機モードになります。');</script>")
         -- dumb_ap()
-        luci.sys.reboot()
+        -- luci.sys.reboot()
     end
 
 end

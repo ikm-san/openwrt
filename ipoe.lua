@@ -15,7 +15,7 @@ local VNE = calib.dtermineVNE(wan_ipv6)
 local brandcheck = calib.brandcheck()
 
 -- WAN設定選択リスト --
-m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。")
+m = Map("ca_setup", "WAN接続設定", "IPoE接続の場合は回線情報取得のためONU直下に設置してから実行してください。")
 
 s = m:section(TypedSection, "ipoe", "")
 s.addremove = false

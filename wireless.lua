@@ -113,7 +113,7 @@ local function configure_meshWiFi(section)
 
     for radio, channel in pairs(devices) do
         -- Configure the mesh WiFi for each radio
-        uci:section("wireless", "wifi-iface", "wifinet_" .. radio, {
+        uci:section("wireless", "wifi-iface", "wifinet" .. radio, {
             device = radio,
             mode = "mesh",
             encryption = "sae",

@@ -56,6 +56,11 @@ msg_text:depends("network_config", "mesh_child")
 
 --WiFiの設定用関数 --
 local function configure_WiFi(section)
+    -- 初期設定の削除
+    uci:delete("wireless", "default_radio0")
+    uci:delete("wireless", "default_radio1")
+    uci:commit("wireless")
+
     -- 特定の無線デバイスに対して設定を適用
     local devices = {"radio0", "radio1"}
     for _, dev in ipairs(devices) do

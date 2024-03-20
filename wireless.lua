@@ -53,13 +53,13 @@ msg_text:depends("network_config", "mesh_child")
 -- メッシュWiFiバックホール設定
 local function configure_meshWifi()
     -- Mesh configuration variables
-    local meshChannels = {radio0 = "1", radio1 = "36"} 
+   local devices = {"radio0", "radio1", "radio2"} 
 
     -- Install the wpad mesh package
     os.execute("opkg update")
     os.execute("opkg install --force-overwrite wpad-mesh-openssl")
 
-    for radio, channel in pairs(meshChannels) do
+    for radio, channel in pairs(devices) do
         -- Configure the mesh WiFi for each radio
         uci:section("wireless", "wifi-iface", "wifinet_" .. radio, {
             device = radio,
@@ -71,7 +71,7 @@ local function configure_meshWifi()
             key = mesh_password:formvalue(section),
             network = "lan"
         })
-        uci:set("wireless", radio, "channel", channel)
+        uci:set("wireless", radio, "channel", "auto")
         uci:delete("wireless", radio, "disabled")
     end
 
@@ -128,6 +128,7 @@ if value == "wifi" then
                 if s.device == dev then
                     -- 既存のセクションを更新
                     uci:set("wireless", s['.name'], "mode", "ap")
+                    uci:set("wireless", s['.name'], "channel", "auto")
                     uci:set("wireless", s['.name'], "ssid", ssid:formvalue(section))
                     uci:set("wireless", s['.name'], "encryption", "sae-mixed")
                     uci:set("wireless", s['.name'], "key", password:formvalue(section))

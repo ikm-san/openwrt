@@ -72,8 +72,8 @@ local function configure_meshWifi()
             network = "lan"
         })
         uci:set("wireless", radio, "channel", "auto")
-        uci:set("wireless", "radio0", "channnels", "1 6 11")
-        uci:set("wireless", "radio1", "channnels", "36 40 44 48 52 56 60 64")
+        uci:set("wireless", "radio0", "channels", "1 6 11")
+        uci:set("wireless", "radio1", "channels", "36 40 44 48 52 56 60 64")
         uci:delete("wireless", radio, "disabled")
     end
 
@@ -140,8 +140,8 @@ if value == "wifi" then
                     
                 end
             end)
-             uci:set("wireless", "radio0", "channnels", "1 6 11")
-             uci:set("wireless", "radio1", "channnels", "36 40 44 48 52 56 60 64")
+             uci:set("wireless", "radio0", "channels", "1 6 11")
+             uci:set("wireless", "radio1", "channels", "36 40 44 48 52 56 60 64")
         uci:commit("wireless")
     -- 設定の保存と適用
     uci:commit("wireless")

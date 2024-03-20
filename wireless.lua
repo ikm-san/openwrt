@@ -53,7 +53,7 @@ msg_text:depends("network_config", "mesh_child")
 -- メッシュWiFiバックホール設定
 local function configure_meshWifi()
     -- Mesh configuration variables
-   local devices = {"radio0", "radio1", "radio2"} 
+   local devices = {"radio0", "radio1"} 
 
     -- Install the wpad mesh package
     os.execute("opkg update")
@@ -72,6 +72,8 @@ local function configure_meshWifi()
             network = "lan"
         })
         uci:set("wireless", radio, "channel", "auto")
+        uci:set("wireless", "radio0", "channnels", "1 6 11")
+        uci:set("wireless", "radio1", "channnels", "36 40 44 48 52 56 60 64")
         uci:delete("wireless", radio, "disabled")
     end
 
@@ -117,7 +119,7 @@ function choice.write(self, section, value)
     
 if value == "wifi" then
     -- 特定の無線デバイスに対して設定を適用
-    local devices = {"radio0", "radio1", "radio2"}
+    local devices = {"radio0", "radio1"}
     for _, dev in ipairs(devices) do
         uci:set("wireless", dev, "country", "JP")
         uci:set("wireless", dev, "disabled", "0")
@@ -138,6 +140,8 @@ if value == "wifi" then
                     
                 end
             end)
+             uci:set("wireless", "radio0", "channnels", "1 6 11")
+             uci:set("wireless", "radio1", "channnels", "36 40 44 48 52 56 60 64")
         uci:commit("wireless")
     -- 設定の保存と適用
     uci:commit("wireless")

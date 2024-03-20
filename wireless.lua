@@ -13,8 +13,8 @@ s.addremove = false
 -- 設定の選択肢を定義
 choice = s:option(ListValue, "network_config", "設定の選択")
 choice:value("wifi", "WiFi接続設定")
-choice:value("mesh_parent", "WiFi+メッシュ親機設定")
-choice:value("mesh_child", "WiFi+メッシュ子機設定")
+-- choice:value("mesh_parent", "WiFi+メッシュ親機設定")
+-- choice:value("mesh_child", "WiFi+メッシュ子機設定")
 choice.default = "wifi"
 
 -- SSIDとパスワードの設定
@@ -91,6 +91,7 @@ local function configure_WiFi(section)
         uci:set("wireless", wifinet, "encryption", "sae-mixed")
         uci:set("wireless", wifinet, "key", password:formvalue(section))
         uci:set("wireless", wifinet, "disabled", "0")
+        uci:set("wireless", wifinet, "network", "lan")
     end
 
         -- デバイス固有のチャネル設定

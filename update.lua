@@ -3,9 +3,9 @@ local sys = require "luci.sys"
 local http = require "luci.http"
 
 m = Map("ca_setup", translate("CA Setup"),
-        translate("CA接続設定ソフトウェアのアップデートをします。"))
+        translate("CA設定ソフトウェアのアップデートをします。"))
 
-s = m:section(TypedSection, "ca_setup", "Files")
+s = m:section(TypedSection, "ca_setup")
 s.anonymous = true
 
 function s.cfgsections()

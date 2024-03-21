@@ -352,6 +352,9 @@ function choice.write(self, section, value)
             
             -- ファイアウォールの設定を削除する
             os.execute("mv /etc/config/firewall /etc/config/firewall.unused")    
+
+    else
+        http.write("<script>alert('接続環境が違うようです。適切なものを選んでください。');</script>")    
     end
 
 
@@ -360,8 +363,8 @@ end
 function m.on_after_commit(self)
         -- デバイスを再起動する
         http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-        luci.sys.reboot()
-        -- luci.http.redirect(luci.dispatcher.build_url("admin/"))
+    -- luci.sys.reboot()
+
 end
 
 return m

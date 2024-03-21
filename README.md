@@ -4,17 +4,17 @@ OpenWrt搭載ルーターを日本のIPoE環境で接続できるようにする
 簡易mapデータは https://ipv4.web.fc2.com/map-e.html より参照しました。
 
 ■IPoE設定
-*v6プラス（動作検証済）
-*OCNバーチャルコネクト
-*IPv6オプション
-*transix
-*クロスパス
-*v6コネクト
+* v6プラス（動作検証済）
+* OCNバーチャルコネクト
+* IPv6オプション
+* transix
+* クロスパス
+* v6コネクト
 
 ■その他の設定
-*DHCP自動設定
-*PPPoE設定
-*アクセスポイント・ブリッジモード設定 ※dumb AP化しますので、元に戻したい場合はハードウェアリセットで初期化してください。
+* DHCP自動設定
+* PPPoE設定
+* アクセスポイント・ブリッジモード設定 ※dumb AP化しますので、元に戻したい場合はハードウェアリセットで初期化してください。
 
 # 事前準備
 OpenWrtは初期値で192.168.1.1を利用しようとしてほかのルーターと競合する場合が多いので、
@@ -42,10 +42,10 @@ ssh-keygen -R 192.168.10.1
 # スクリプト
 以下のコマンドを丸ごとコピペしてterminalに貼り付けてもらえれば順番に実行して数十秒で完了します。
 
-opkg update
-opkg install luci-lua-runtime
-opkg install luci-proto-ipv6
-opkg install luci-compat
+'opkg update'
+'opkg install luci-lua-runtime'
+'opkg install luci-proto-ipv6'
+'opkg install luci-compat'
 opkg install map
 opkg install ds-lite 
 opkg install luasec

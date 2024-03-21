@@ -311,7 +311,7 @@ function choice.write(self, section, value)
             local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
         
-    elseif value == "ipoe_transix and VNE == "transix" then
+    elseif value == "ipoe_transix" and VNE == "transix" then
         -- transix (ds-lite)
             gw_aftr = m.uci:get("ca_setup", "ipoe_transix", "gw_aftr")
             configure_dslite_connection(gw_aftr)

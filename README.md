@@ -1,7 +1,7 @@
 # CA接続設定ソフトウェア
-OpenWrt搭載ルーターを日本のIPoE環境で接続できるようにする簡易map機能を提供するソフトです。  
+OpenWrt搭載ルーターを日本のIPoE環境でIPv4 over IPv6接続を実現するソフトです。  
 インストールが済むと、Luciの管理画面にCA接続設定というメニューが追加されます。  
-簡易mapデータは https://ipv4.web.fc2.com/map-e.html より参照しました。  
+本ソフトウェアのmapデータは https://ipv4.web.fc2.com/map-e.html より参照した簡易mapデータです。
 
 ■IPoE設定
 * v6プラス（動作検証済）
@@ -63,8 +63,15 @@ wget -O /usr/lib/lua/luci/model/cbi/ca_setup/update.lua https://raw.githubuserco
 rm -rf /tmp/luci-*  
 /etc/init.d/uhttpd restart  
 
-# おわりに
 再起動したほうが良いです。  
 reboot  
+
+# CA接続設定メニュー
+ブラウザから192.168.10.1と入力してLuciの管理画面からCA接続設定メニューを選びます。  
+IPoE接続については、各VNEサービスの判定をIPv6アドレスをもとに行って誤ったVNEサービスが選べないようにしてありますので、  
+OpenWrtルーターをONU直下に接続してから適切なものを選んで実行してください。設定完了後再起動したらIPoEで使えるようになります。
+
+# おわりに
+すべてのVNEで検証できていませので、動作報告や不具合報告はGitHubかXでご連絡いただけると嬉しいです。
 当ソフトウェアの利用に関して、当方はいかなる責任も負いかねますのであらかじめ了承の上お使いください。  
 

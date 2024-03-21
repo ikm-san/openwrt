@@ -42,13 +42,13 @@ ssh-keygen -R 192.168.10.1
 # スクリプト
 以下のコマンドを丸ごとコピペしてterminalに貼り付けてもらえれば順番に実行して数十秒で完了します。
 
-'opkg update'
-'opkg install luci-lua-runtime'
-'opkg install luci-proto-ipv6'
-'opkg install luci-compat'
-opkg install map
-opkg install ds-lite 
-opkg install luasec
+opkg update  
+opkg install luci-lua-runtime  
+opkg install luci-proto-ipv6  
+opkg install luci-compat  
+opkg install map  
+opkg install ds-lite  
+opkg install luasec  
 opkg install ip6tables
 opkg install lua-openssl
 opkg install wpad-mesh-openssl

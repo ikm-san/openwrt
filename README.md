@@ -1,5 +1,5 @@
-# CA接続設定ソフトウェア
-OpenWrt搭載ルーターを日本のIPoE環境でIPv4 over IPv6接続を実現するソフトです。  
+# IPoE IPv4 over IPv6接続設定ソフトウェア
+OpenWrt搭載ルーターを日本のIPoE環境でIPv4 over IPv6接続を実現するソフトウェアです。  
 インストールが済むと、Luciの管理画面にCA接続設定というメニューが追加されます。  
 
 ■IPoE設定
@@ -22,8 +22,8 @@ Interface - LAN を192.168.10.1に変更してほかのルーター下に置け�
 
 # ターミナルへのの入り方
 Terminalをまず起動する  
-Winの場合 - Win + X -> A で立ち上がります  
-Macの場合 - CMD + Space -> terminalと入力して立ち上げるのが一番早いかも  
+* Winの場合 - Win + X -> A で立ち上がります  
+* Macの場合 - CMD + Space -> terminalと入力して立ち上げるのが一番早いかも  
 
 OpenWrtルーターにSSHログインする  
 ssh root@192.168.10.1と入力してエンター  

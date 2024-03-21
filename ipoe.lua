@@ -33,7 +33,7 @@ choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
 msg_text = s:option(DummyValue, "smg_text", "【取扱注意】")
-msg_text.default = "完全なブリッジモードとなり管理画面にアクセスできなくなるため、元に戻したい場合は初期化してください。"
+msg_text.default = "完全なブリッジモードとなり管理画面にアクセスできなくなります。元に戻すときはハードウェアを初期化してください。"
 msg_text:depends("wan_setup", "bridge_mode")
 
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
@@ -198,7 +198,7 @@ function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, 
     uci:commit("firewall")
 end
 
---デバッグ表示用
+--mapデータ表示用
 if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
 local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
 -- local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = calib.get_mapconfig(wan_ipv6)

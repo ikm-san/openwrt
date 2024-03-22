@@ -245,35 +245,28 @@ function choice.write(self, section, value)
     
     if value == "dhcp_auto" then
         -- DHCP自動設定を適用
-        -- wan および wan6 インターフェースの設定を削除
-        uci:delete("network", "wan")
-        uci:delete("network", "wan6")
-        uci:delete("dhcp", "wan") 
+        uci:set("network", "wan", "proto", "dhcp")
+        uci:set("network", "wan", "auto", "1")
         
-        -- 新しい wan インターフェース設定を追加
-        uci:section("network", "interface", "wan", {
-            ifname = "wan", 
-            proto = "dhcp"
-        })
+        -- wan6 インターフェースの設定を変更
+        uci:set("network", "wan6", "proto", "dhcpv6")
+        uci:set("network", "wan6", "reqaddress", "try")
+        uci:set("network", "wan6", "reqprefix", "auto")
         
-        -- 新しい wan6 インターフェースの設定を追加
-        uci:section("network", "interface", "wan6", {
-            ifname = "wan", 
-            proto = "dhcpv6",
-            reqaddress = "try",
-            reqprefix = "auto"
-        })
-
-        -- Firewall settings
-        uci:set_list("firewall", "@zone[1]", "network",  {"wan", "wan6"})
-
+        -- Firewall settingsの更新は必要に応じて行う
+        uci:foreach("firewall", "zone", function(s)
+            if s.name == "wan" then
+                uci:set_list("firewall", s['.name'], "network", {"wan", "wan6"})
+            end
+        end)
+        
         -- 設定をコミット
         uci:commit("network")
-        uci:commit("dhcp")
-        uci:commit("firewall") 
-
+        uci:commit("firewall")
+        
+        -- ブラウザにJavaScriptアラートを表示し、再起動を実行
         http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-        luci.sys.reboot()
+        sys.reboot()
         
     elseif value == "pppoe_ipv4" then        
         -- PPPoE設定を適用

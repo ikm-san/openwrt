@@ -22,14 +22,13 @@ s.addremove = false
 s.anonymous = true
 
 choice = s:option(ListValue, "wan_setup", "操作")
-choice:value("dhcp_auto", "DHCP自動")
-choice:value("pppoe_ipv4", "PPPoE接続")
 choice:value("ipoe_v6plus", "v6プラス")
 choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
 choice:value("ipoe_biglobe", "IPv6オプション")
 choice:value("ipoe_transix", "transix")
 choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
+choice:value("pppoe_ipv4", "PPPoE接続")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
 msg_text = s:option(DummyValue, "smg_text", "【取扱注意】")
@@ -234,29 +233,7 @@ end
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function choice.write(self, section, value)
 
-    if value == "dhcp_auto" then
-        -- DHCP自動設定を適用
-        uci:set("network", "wan", "proto", "dhcp")
-        uci:delete("network", "wan", "auto")
-        
-        -- wan6 インターフェースの設定を変更
-        uci:set("network", "wan6", "proto", "dhcpv6")
-        uci:set("network", "wan6", "reqaddress", "try")
-        uci:set("network", "wan6", "reqprefix", "auto")
-        
-        -- Firewall settingsの更新は必要に応じて行う
-        uci:foreach("firewall", "zone", function(s)
-            if s.name == "wan" then
-                uci:set_list("firewall", s['.name'], "network", {"wan", "wan6"})
-            end
-        end)
-        
-        -- 設定をコミット
-        uci:commit("network")
-        uci:commit("firewall")
-        
-        
-    elseif value == "pppoe_ipv4" then        
+    if value == "pppoe_ipv4" then        
         -- PPPoE設定を適用
         -- user = m.uci:get("ca_setup", "ipoe", "username")
         -- pass = m.uci:get("ca_setup", "ipoe", "password")

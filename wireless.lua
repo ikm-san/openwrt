@@ -92,6 +92,10 @@ local function configure_WiFi(section)
         uci:set("wireless", wifinet, "key", password:formvalue(section))
         uci:set("wireless", wifinet, "disabled", "0")
         uci:set("wireless", wifinet, "network", "lan")
+        uci:set("wireless", wifinet, "ieee80211r", "1")
+        uci:set("wireless", wifinet, "mobility_domain", "1234")
+        uci:set("wireless", wifinet, "ft_over_ds", "0")
+        uci:set("wireless", wifinet, "ft_psk_generate_local", "1")
     end
 
         -- デバイス固有のチャネル設定

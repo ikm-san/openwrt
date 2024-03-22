@@ -290,42 +290,42 @@ function choice.write(self, section, value)
         http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
         luci.sys.reboot()
         
-    elseif value == "ipoe_v6plus" and VNE == "v6プラス" then      
+    elseif value == "ipoe_v6plus" then      
         -- v6プラス
             local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
             http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
             luci.sys.reboot()
     
-    elseif value == "ipoe_ocnvirtualconnect" and VNE == "OCNバーチャルコネクト" then
+    elseif value == "ipoe_ocnvirtualconnect" then
         -- OCNバーチャルコネクト
             local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
             http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
             luci.sys.reboot()
         
-    elseif value == "ipoe_biglobe" and VNE == "IPv6オプション" then
+    elseif value == "ipoe_biglobe" then
         -- BIGLOBE IPv6オプション
             local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
             http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
             luci.sys.reboot()
         
-    elseif value == "ipoe_transix" and VNE == "transix" then
+    elseif value == "ipoe_transix" then
         -- transix (ds-lite)
             gw_aftr = m.uci:get("ca_setup", "ipoe_transix", "gw_aftr")
             configure_dslite_connection(gw_aftr)
             http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
             luci.sys.reboot()
     
-    elseif value == "ipoe_xpass" and VNE == "クロスパス" then
+    elseif value == "ipoe_xpass" then
         -- クロスパス (ds-lite)
             gw_aftr = m.uci:get("ca_setup", "ipoe_xpass", "gw_aftr")
             configure_dslite_connection(gw_aftr)
             http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
             luci.sys.reboot()
         
-    elseif value == "ipoe_v6connect" and VNE == "v6コネクト" then
+    elseif value == "ipoe_v6connect" then
         -- v6コネクト
             gw_aftr = m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr")
             configure_dslite_connection(gw_aftr)

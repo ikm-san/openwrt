@@ -268,9 +268,6 @@ function choice.write(self, section, value)
         uci:commit("network")
         uci:commit("firewall")
         
-        -- ブラウザにJavaScriptアラートを表示し、再起動を実行
-        http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-        sys.reboot()
         
     elseif value == "pppoe_ipv4" then        
         -- PPPoE設定を適用
@@ -291,50 +288,36 @@ function choice.write(self, section, value)
 
         uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
         uci:commit("firewall")
-        http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-        luci.sys.reboot()
         
     elseif value == "ipoe_v6plus" then      
         -- v6プラス
             local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-            http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-            luci.sys.reboot()
     
     elseif value == "ipoe_ocnvirtualconnect" then
         -- OCNバーチャルコネクト
             local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-            http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-            luci.sys.reboot()
         
     elseif value == "ipoe_biglobe" then
         -- BIGLOBE IPv6オプション
             local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
             configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-            http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-            luci.sys.reboot()
         
     elseif value == "ipoe_transix" then
         -- transix (ds-lite)
             gw_aftr = m.uci:get("ca_setup", "ipoe_transix", "gw_aftr")
             configure_dslite_connection(gw_aftr)
-            http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-            luci.sys.reboot()
     
     elseif value == "ipoe_xpass" then
         -- クロスパス (ds-lite)
             gw_aftr = m.uci:get("ca_setup", "ipoe_xpass", "gw_aftr")
             configure_dslite_connection(gw_aftr)
-            http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-            luci.sys.reboot()
         
     elseif value == "ipoe_v6connect" then
         -- v6コネクト
             gw_aftr = m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr")
             configure_dslite_connection(gw_aftr)
-            http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-            luci.sys.reboot()
         
     elseif value == "bridge_mode" then
         -- ブリッジモード設定の適用
@@ -362,11 +345,8 @@ function choice.write(self, section, value)
             
             -- ファイアウォールの設定を削除する
             os.execute("mv /etc/config/firewall /etc/config/firewall.unused")    
-            http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
-            luci.sys.reboot()
 
-    else
-        http.write("<script>alert('接続環境が違うようです。適切なものを選んでください。');</script>")    
+ 
     end
 
 
@@ -374,6 +354,8 @@ end
 
 function m.on_after_commit(self)
         -- 更新完了後の動作を入れる
+            http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
+            luci.sys.reboot()
 end
 
 return m

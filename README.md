@@ -46,7 +46,7 @@ ssh-keygen -R 192.168.10.1
 以下のコマンドを丸ごとコピペしてterminalに貼り付けてもらえれば順番に実行して数十秒で完了します。  
 
 opkg update  
-opkg remove wpad-basic-mbedtls
+opkg remove wpad-basic-mbedtls  
 opkg install luci-lua-runtime  
 opkg install luci-proto-ipv6  
 opkg install luci-compat  

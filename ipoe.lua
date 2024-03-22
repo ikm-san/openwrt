@@ -296,14 +296,10 @@ function choice.write(self, section, value)
             
             -- LANインターフェースをDHCPクライアントに切り替える
             uci:set("network", "lan", "proto", "dhcp")
-            uci:set("network", "lan", "ifname", "eth0 lan1 lan2 lan3 lan4 wan wan6")
+            uci:set("network", "lan", "ifname", "eth0 lan1 lan2 lan3 lan4")
 
-            uci:set("network", "wan", "proto", "none")
-            uci:set("network", "wan", "device", "eth0")
-            uci:set("network", "wan6", "proto", "none")
-            uci:set("network", "wan6", "device", "eth0")
-            -- uci:delete("network", "wan")
-            -- uci:delete("network", "wan6")
+            uci:delete("network", "wan")
+            uci:delete("network", "wan6")
             uci:delete("network", "lan", "ipaddr")
             uci:delete("network", "lan", "netmask")
             

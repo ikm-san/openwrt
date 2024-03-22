@@ -192,7 +192,6 @@ if value == "wifi" then
 end
 
 function m.on_after_commit(self)
-    http.write("<script>alert('設定変更が完了しました。ネットワークを再起動します。');</script>")
     sys.call("wifi down")
     sys.call("wifi up")
 end

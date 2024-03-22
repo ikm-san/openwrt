@@ -43,14 +43,6 @@ password.password = true
 username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
--- インターフェース設定を削除する関数
-local function deleteInterfaces()
-    local interfaces = {"wanmap", "dslite", "map-e", "map6ra"}
-    for _, interface in ipairs(interfaces) do
-        uci:delete("network", interface)
-        uci:commit("network")
-    end
-end
 
 -- ds-lite接続設定関数
 local function configure_dslite_connection(gw_aftr)
@@ -241,21 +233,16 @@ end
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function choice.write(self, section, value)
-        deleteInterfaces()
-    
+
     if value == "dhcp_auto" then
         -- DHCP自動設定を適用
         uci:set("network", "wan", "proto", "dhcp")
-        uci:set("network", "wan", "auto", "1")
+        uci:delete("network", "wan", "auto")
         
         -- wan6 インターフェースの設定を変更
         uci:set("network", "wan6", "proto", "dhcpv6")
         uci:set("network", "wan6", "reqaddress", "try")
         uci:set("network", "wan6", "reqprefix", "auto")
-
-        uci:delete("network", "wanmap")
-        uci:delete("network", "map6ra")
-        uci:delete("network", "dslite")
         
         -- Firewall settingsの更新は必要に応じて行う
         uci:foreach("firewall", "zone", function(s)

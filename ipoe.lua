@@ -320,7 +320,7 @@ end
 
 function m.on_after_commit(self)
         -- 更新完了後の動作を入れる
-            http.write("<script>alert('設定変更が完了しました。再起動します。');</script>")
+            http.write("<script>alert('設定変更後、再起動します。');</script>")
             luci.sys.reboot()
 end
 

@@ -133,7 +133,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
         legacymap = "1",
         mtu = "1460",
         tunlink= "wan6",
-        encaplimit = "ignore" --v6プラスのみ？
+        encaplimit = "ignore"
     })
     uci:commit("network") 
 
@@ -252,6 +252,10 @@ function choice.write(self, section, value)
         uci:set("network", "wan6", "proto", "dhcpv6")
         uci:set("network", "wan6", "reqaddress", "try")
         uci:set("network", "wan6", "reqprefix", "auto")
+
+        uci:delete("network", "wanmap")
+        uci:delete("network", "map6ra")
+        uci:delete("network", "dslite")
         
         -- Firewall settingsの更新は必要に応じて行う
         uci:foreach("firewall", "zone", function(s)

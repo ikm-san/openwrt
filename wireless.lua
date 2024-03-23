@@ -86,7 +86,7 @@ local function configure_WiFi(section)
         -- セクションの設定を更新
         uci:set("wireless", wifinet, "device", dev)
         uci:set("wireless", wifinet, "mode", "ap")
-        uci:set("wireless", wifinet, "channel", "auto")
+        -- uci:set("wireless", wifinet, "channel", "auto")
         uci:set("wireless", wifinet, "ssid", ssid:formvalue(section))
         uci:set("wireless", wifinet, "encryption", "sae-mixed")
         uci:set("wireless", wifinet, "key", password:formvalue(section))
@@ -97,6 +97,8 @@ local function configure_WiFi(section)
         uci:set("wireless", wifinet, "ft_over_ds", "0")
         uci:set("wireless", wifinet, "ft_psk_generate_local", "1")
     end
+        uci:set("wireless", "radio0", "channel", "auto")
+        uci:set("wireless", "radio1", "channel", "auto")
         uci:set("wireless", "radio0", "channels", "1 6 11")
         uci:set("wireless", "radio1", "channels", "36 40 44 48 52 56 60 64")
         

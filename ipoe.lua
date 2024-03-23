@@ -297,6 +297,8 @@ function choice.write(self, section, value)
             
             -- ホスト名を"WifiAP"に変更する
             uci:set("system", "@system[0]", "hostname", "WifiAP")
+
+            uci:set("dhcp", "lan", "ignore", "1")
             
             -- すべての変更をコミットする
             uci:commit()

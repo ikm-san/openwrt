@@ -31,8 +31,8 @@ choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("pppoe_ipv4", "PPPoE接続")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
-msg_text = s:option(DummyValue, "smg_text", "【取扱注意】")
-msg_text.default = "完全なブリッジモードとなり管理画面にアクセスできなくなります。元に戻すときはハードウェアを初期化してください。"
+msg_text = s:option(DummyValue, "smg_text", "【注意】")
+msg_text.default = "元に戻すときはハードウェアリセットをしてください。"
 msg_text:depends("wan_setup", "bridge_mode")
 
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
@@ -285,18 +285,10 @@ function choice.write(self, section, value)
         
     elseif value == "bridge_mode" then
         -- ブリッジモード設定の適用
-            -- ルーター用のサービス停止
-            local services = {"firewall", "dnsmasq", "odhcpd"}
-            for _, service in ipairs(services) do
-                if sys.init.enabled(service) then
-                    sys.init.stop(service)
-                    sys.init.disable(service)
-                end
-            end
             
             -- LANインターフェースをDHCPクライアントに切り替える
             uci:set("network", "lan", "proto", "dhcp")
-            uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 eth0")
+            uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 wan")
 
             uci:delete("network", "wan")
             uci:delete("network", "wan6")
@@ -309,9 +301,6 @@ function choice.write(self, section, value)
             -- すべての変更をコミットする
             uci:commit()
             
-            -- ファイアウォールの設定を削除する
-            os.execute("mv /etc/config/firewall /etc/config/firewall.unused")    
-
  
     end
 

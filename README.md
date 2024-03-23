@@ -56,7 +56,7 @@ opkg install luasec
 opkg install ip6tables  
 opkg install lua-openssl
 opkg install wpad-mesh-openssl  
-opkg install luci-proto-batman-adv
+opkg install luci-proto-batman-adv  
 mkdir -p /usr/lib/lua/luci/controller/  
 mkdir -p /usr/lib/lua/luci/model/cbi/ca_setup/  
 wget -O /etc/config/ca_setup https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup  

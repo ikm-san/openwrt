@@ -97,16 +97,11 @@ local function configure_WiFi(section)
         uci:set("wireless", wifinet, "ft_over_ds", "0")
         uci:set("wireless", wifinet, "ft_psk_generate_local", "1")
     end
-
-        -- デバイス固有のチャネル設定
-        if radio == "radio0" then
-            uci:set("wireless", radio, "channels", "1 6 11")
-        elseif radio == "radio1" then
-            uci:set("wireless", radio, "channels", "36 40 44 48 52 56 60 64")
-        end
-    
-    -- 設定をコミット
-    uci:commit("wireless")
+        uci:set("wireless", "radio0", "channels", "1 6 11")
+        uci:set("wireless", "radio1", "channels", "36 40 44 48 52 56 60 64")
+        
+        -- 設定をコミット
+        uci:commit("wireless")
 end
 
 

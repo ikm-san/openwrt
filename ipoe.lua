@@ -32,7 +32,7 @@ choice:value("pppoe_ipv4", "PPPoE接続")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
 msg_text = s:option(DummyValue, "smg_text", "【注意】")
-msg_text.default = "元に戻すときはハードウェアリセットをしてください。"
+msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
 msg_text:depends("wan_setup", "bridge_mode")
 
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示

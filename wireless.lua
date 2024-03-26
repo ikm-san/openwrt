@@ -167,7 +167,7 @@ local function ap_mode()
         
             -- ホスト名を"WifiAP"に変更する
             uci:set("system", "@system[0]", "hostname", "AP")
-            uci:set("system", "@system[0]", "zonename", "'Asia/Tokyo")
+            uci:set("system", "@system[0]", "zonename", "Asia/Tokyo")
             uci:set("system", "@system[0]", "timezone", "JST-9")
             uci:commit("system")
         

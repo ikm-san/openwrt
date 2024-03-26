@@ -49,7 +49,7 @@ opkg install luci-lua-runtime
 opkg install luci-proto-ipv6  
 opkg install luci-compat  
 opkg install map  
-opkg install ds-lite 
+opkg install ds-lite  
 mkdir -p /usr/lib/lua/luci/controller/  
 mkdir -p /usr/lib/lua/luci/model/cbi/ca_setup/  
 wget -O /etc/config/ca_setup https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup  

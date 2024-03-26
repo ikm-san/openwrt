@@ -136,32 +136,42 @@ end
 
 
 -- ブリッジモード設定の適用
-local function dumb_ap()
+local function ap_mode()
 
-        -- ルーター用のサービス停止
-            local services = {"firewall", "dnsmasq", "odhcpd"}
-            for _, service in ipairs(services) do
-                if sys.init.enabled(service) then
-                    sys.init.stop(service)
-                    sys.init.disable(service)
-                end
-            end
+        -- ブリッジモード設定の適用
+
+            -- /etc/config/dhcp の設定変更
+            uci:delete("dhcp", "lan", "ra_slaac")
+            uci:set("dhcp", "lan", "ignore", "1")
+            uci:commit("dhcp")
             
-            -- LANインターフェースをDHCPクライアントに切り替える
-            uci:set("network", "lan", "proto", "dhcp")
-            uci:delete("network", "wan")
-            uci:delete("network", "wan6")
+            -- /etc/config/network の設定変更
             uci:delete("network", "lan", "ipaddr")
             uci:delete("network", "lan", "netmask")
-            
+            uci:delete("network", "lan", "ip6assign")
+            uci:set("network", "lan", "proto", "dhcp")
+            uci:commit("network")
+    
+            -- /etc/config/dhcp の設定変更
+            uci:delete("dhcp", "wan")
+            uci:commit("dhcp")
+
+
+            uci:delete("network", "wan")
+            uci:delete("network", "wan6")
+            uci:commit("network")
+        
+            -- wanインターフェースをbr-lanに接続
+            uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 wan")
+            uci:commit("network")
+        
             -- ホスト名を"WifiAP"に変更する
-            uci:set("system", "@system[0]", "hostname", "WifiAP")
-            
+            uci:set("system", "@system[0]", "hostname", "AP")
+            uci:set("system", "@system[0]", "zonename", "'Asia/Tokyo")
+            uci:set("system", "@system[0]", "timezone", "JST-9")
+            uci:commit("system")
+        
             -- すべての変更をコミットする
-            uci:commit()
-            
-            -- ファイアウォールの設定を削除する
-            os.execute("mv /etc/config/firewall /etc/config/firewall.unused")
 end
 
 
@@ -182,7 +192,7 @@ if value == "wifi" then
         -- メッシュWiFi子機設定を適用する処理
             onfigure_meshWiFi(section)
         http.write("<script>alert('設定変更が完了しました。再起動後は子機モードになります。');</script>")
-            dumb_ap()
+            ap_mode()
             luci.sys.reboot()
     end
 

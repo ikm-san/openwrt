@@ -284,26 +284,41 @@ function choice.write(self, section, value)
             configure_dslite_connection(gw_aftr)
         
     elseif value == "bridge_mode" then
-        -- ブリッジモード設定の適用
+            -- ブリッジモード設定の適用
+
+            -- /etc/config/dhcp の設定変更
+            uci:delete("dhcp", "lan", "ra_slaac")
+            uci:set("dhcp", "lan", "ignore", "1")
+            uci:commit("dhcp")
             
-            -- LANインターフェースをDHCPクライアントに切り替える
+            -- /etc/config/network の設定変更
+            uci:delete("network", "lan", "ipaddr")
+            uci:delete("network", "lan", "netmask")
+            uci:delete("network", "lan", "ip6assign")
             uci:set("network", "lan", "proto", "dhcp")
-            uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 wan")
+            uci:commit("network")
+    
+            -- /etc/config/dhcp の設定変更
+            uci:delete("dhcp", "wan")
+            uci:commit("dhcp")
+
 
             uci:delete("network", "wan")
             uci:delete("network", "wan6")
-            uci:delete("network", "lan", "ipaddr")
-            uci:delete("network", "lan", "netmask")
-            
+            uci:commit("network")
+        
+            -- wanインターフェースをbr-lanに接続
+            uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 wan")
+            uci:commit("network")
+        
             -- ホスト名を"WifiAP"に変更する
             uci:set("system", "@system[0]", "hostname", "WifiAP")
-
-            uci:set("dhcp", "lan", "ignore", "1")
-            
+            uci:set("system", "@system[0]", "zonename", "'Asia/Tokyo")
+            uci:set("system", "@system[0]", "timezone", "JST-9")
+            uci:commit("system")
+        
             -- すべての変更をコミットする
             uci:commit()
-            
- 
     end
 
 

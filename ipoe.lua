@@ -234,7 +234,7 @@ end
 function choice.write(self, section, value)
 
         -- 日本時間に時計をセット --
-            uci:set("system", "@system[0]", "zonename", "'Asia/Tokyo")
+            uci:set("system", "@system[0]", "zonename", "Asia/Tokyo")
             uci:set("system", "@system[0]", "timezone", "JST-9")
             uci:commit("system")
     

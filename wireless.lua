@@ -51,7 +51,7 @@ mesh_password:depends("network_config", "mesh_child")
 
 -- メッシュWiFi子機設定
 msg_text = s:option(DummyValue, "smg_text", "【取扱注意】")
-msg_text.default = "完全なブリッジモードとなり管理画面にアクセスできなくなるため、元に戻したい場合は初期化してください。"
+msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
 msg_text:depends("network_config", "mesh_child")
 
 --WiFiの設定用関数 --

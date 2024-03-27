@@ -237,6 +237,8 @@ function choice.write(self, section, value)
             uci:set("system", "@system[0]", "zonename", "Asia/Tokyo")
             uci:set("system", "@system[0]", "timezone", "JST-9")
             uci:commit("system")
+
+            http.write("<script>alert('本体は設定変更、再起動中です。ブラウザは閉じて数分お待ちください。');</script>")    
     
     if value == "pppoe_ipv4" then        
         -- PPPoE設定を適用
@@ -329,7 +331,6 @@ end
 
 function m.on_after_commit(self)
         -- 更新完了後の動作を入れる
-            http.write("<script>alert('設定変更後、再起動します。');</script>")
             luci.sys.reboot()
 end
 

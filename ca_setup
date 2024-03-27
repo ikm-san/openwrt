@@ -1,12 +1,13 @@
 config backup
     option network_config 'save'
     option network_config 'restore'
+    option network_config 'dummy'
 
 config wifi-iface
     option network_config 'wifi'
     option network_config 'mesh_parent'
     option network_config 'mesh_child'
-
+    option network_config 'dummy'
 
 config ipoe
     option wan_setup 'pppoe_ipv4'
@@ -18,7 +19,7 @@ config ipoe
     option wan_setup 'ipoe_xpass'
     option wan_setup 'ipoe_v6connect'
     option wan_setup 'bridge_mode'
-    option wan_setup 'dhcp_auto'
+    option wan_setup 'dummy'
 
 config ds-lite 'ipoe_transix'
     option gw_aftr 'gw.transix.jp'

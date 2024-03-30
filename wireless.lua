@@ -123,9 +123,8 @@ local function configure_meshWiFi(section)
             key = mesh_password:formvalue(section),
             network = "lan"
         })
-        uci:set("wireless", radio, "channel", "auto")
-
-        uci:delete("wireless", radio, "disabled")
+        -- uci:set("wireless", radio, "channel", "auto")
+        -- uci:delete("wireless", radio, "disabled")
     end
 
     uci:commit("wireless")

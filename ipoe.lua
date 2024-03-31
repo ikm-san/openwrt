@@ -189,6 +189,57 @@ function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, 
     uci:commit("firewall")
 end
 
+-- トレーサートの最初のホップのIPアドレスを取得
+local function get_first_hop_ip()
+    local traceroute_output = sys.exec("traceroute -m 1 8.8.8.8")
+    -- 最初のホップのIPアドレスを抽出する正規表現を調整
+    local ip = traceroute_output:match(" 1%s+(%d+%.%d+%.%d+%.%d+)")
+    return ip
+end
+
+-- 最初のホップがプライベートIPかどうかをチェック
+local function check_under_router()
+    local first_hop_ip = get_first_hop_ip()
+    if first_hop_ip and (first_hop_ip:match("^192%.168%.") or first_hop_ip:match("^10%.") or first_hop_ip:match("^172%.(1[6-9]|2[0-9]|3[0-1])%.")) then
+        return true
+    else
+        return false
+    end
+end
+
+-- NTTのHGWの存在を確認
+local function check_ntt_hgw()
+    local ntturls = {
+        "http://192.168.1.1:8888/t/",
+        "http://ntt.setup:8888/t/"
+    }
+
+    for _, url in ipairs(ntturls) do
+        local command = string.format("curl -m 5 --silent --head %s", url)
+        local result = sys.call(command)
+        if result == 0 then
+            return true
+        end
+    end
+
+    return false
+end
+
+-- チェック結果の表示
+under_router_flag = s:option(DummyValue, "under_router", translate("Router Connection Status"))
+if check_under_router() then
+    under_router_flag.default = "Private IPに繋がっているようです。既存のルーターに接続していませんか？"
+else
+    under_router_flag.default = "Global IPに直接繋がっているようです。"
+end
+
+hgw_detected_flag = s:option(DummyValue, "hgw_detected", translate("NTT HGW Detection Status"))
+if check_ntt_hgw() then
+    hgw_detected_flag.default = "NTTのHGWは見つかりませんでした。"
+else
+    hgw_detected_flag.default = "NTTのHGWが見つかりました。"
+end
+
 --mapデータ表示用
 if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
 local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)

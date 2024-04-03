@@ -74,6 +74,8 @@ local function configure_dslite_connection(gw_aftr)
     uci:set("dhcp", "wan6", "ndp", "relay")
     uci:commit("dhcp")
 
+    os.execute([[sed -i -e 's/mtu:-1280/mtu:-1460/g' /lib/netifd/proto/dslite.sh]])
+
     -- DS-LiteインターフェースをWANゾーンに追加
     uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
     uci:commit("firewall")

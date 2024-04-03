@@ -68,7 +68,6 @@ end
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
 function M.find_ipv4_prefix()
     local wan_ipv6 = M.get_wan_ipv6_global() 
-    -- local wan_ipv6 = "2400:4050:28a0:200::"
     local segments = {}
     for seg in wan_ipv6:gmatch("[a-fA-F0-9]+") do
         table.insert(segments, string.format("%04x", tonumber(seg, 16)))
@@ -121,7 +120,8 @@ function M.find_ipv4_prefix()
                                                         -- 10進数値を関数で2進数に変換
                                                     local bin_value = M.dec_to_bin(dec_value)
                                                         -- ビット数を算出
-                                                    ipv6_prefixlen = #bin_value + 32
+                                                    -- ipv6_prefixlen = #bin_value + 32
+                                                    ipv6_prefixlen = 38
                                             else
                                                     -- 3セクション目が存在しない場合、先頭2セクションのみを使用
                                                     prefix = prefix .. ":" .. ipv6_sections[2]
@@ -155,19 +155,20 @@ function M.find_ipv4_prefix()
                             end
                 local third_octet = tonumber(ipv4_prefix:match("^%d+%.%d+%.(%d+)")) -- 第3セクションを数値として抽出
                 local binary_string = to_binary(third_octet)
-                ipv4_prefixlen = string.len(binary_string) + 16
+                -- ipv4_prefixlen = string.len(binary_string) + 16
+                ipv4_prefixlen = 20
                 ipv6_prefix , ipv6_prefixlen = extract_ipv6_prefix(wan_ipv6)
-                            
+                offset = 6            
         elseif ruleprefix31[hex_prefix_32] then
             ipv6_prefixlen = 32
             ipv4_prefixlen = 16
             ipv6_prefix = wan_ipv6:sub(1, 8) .. ":"
+            offset = 4
         end
 
         ealen = 56 - ipv6_prefixlen
         psidlen = ealen - (32 - ipv4_prefixlen)
         ipv6_56 = M.extract_ipv6_56(wan_ipv6)
-        offset = 4
         peeraddr = M.peeraddrVNE(wan_ipv6)
      
         

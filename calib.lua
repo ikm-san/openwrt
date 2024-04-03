@@ -141,7 +141,7 @@ function M.find_ipv4_prefix()
                                     end                
                                     
                             -- 最後にプレフィックスの省略形を生成
-                            return prefix .. ":", ipv6_prefixlen
+                            return prefix .. "::", ipv6_prefixlen
                         end
             
                             function to_binary(n)

@@ -230,16 +230,16 @@ end
 -- チェック結果の表示
 under_router_flag = s:option(DummyValue, "under_router", translate("Router Connection Status"))
 if check_under_router() then
-    under_router_flag.default = "Private IPに繋がっているようです。既存のルーターに接続していませんか？"
+    under_router_flag.default = "NG: Private IPに繋がっているようですが、既存のルーターに接続していませんか？"
 else
-    under_router_flag.default = "Global IPに直接繋がっているようです。"
+    under_router_flag.default = "OK: Global IPに直接繋がっているようです。"
 end
 
 hgw_detected_flag = s:option(DummyValue, "hgw_detected", translate("NTT HGW Detection Status"))
 if check_ntt_hgw() then
-    hgw_detected_flag.default = "NTTのHGWは見つかりませんでした。"
+    hgw_detected_flag.default = "NG: NTTのHGWが存在するようです。"
 else
-    hgw_detected_flag.default = "NTTのHGWが見つかりました。"
+    hgw_detected_flag.default = "OK: NTTのHGWは存在しないようです。"
 end
 
 --mapデータ表示用

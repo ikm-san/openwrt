@@ -5,27 +5,47 @@ local http = require "luci.http"
 -- 'ca_setup'設定ファイルを扱うMapを作成
 m = Map("ca_setup", "WiFi各種設定")
 
--- 'wifi-iface'セクションを操作するためのSectionを定義
-s = m:section(TypedSection, "wifi-iface", "Settings")
-s.anonymous = true
+s = m:section(TypedSection, "wifi-iface")
 s.addremove = false
+s.anonymous = true
 
 -- 設定の選択肢を定義
 choice = s:option(ListValue, "network_config", "設定の選択")
 choice:value("wifi", "WiFi接続設定")
--- choice:value("mesh_parent", "WiFi+メッシュ親機設定")
--- choice:value("mesh_child", "WiFi+メッシュ子機設定")
+choice:value("mesh_parent", "WiFi+メッシュ親機設定")
+choice:value("mesh_child", "WiFi+メッシュ子機設定")
 choice.default = "wifi"
+
+
+-- UCIから現在のSSIDとパスワードを取得する関数
+function getCurrentWifiSettings()
+    local uci = require "luci.model.uci".cursor()
+    local ssid = uci:get("wireless", "@wifi-iface[0]", "ssid")
+    local password = uci:get("wireless", "@wifi-iface[0]", "key")
+    return ssid, password
+end
+
+-- 現在のSSIDとパスワードを取得
+local current_ssid, current_password = getCurrentWifiSettings()
 
 -- SSIDとパスワードの設定
 ssid = s:option(Value, "ssid", "SSID")
 ssid.datatype = "maxlength(32)"
-ssid.default = "OpenWrt"
+if current_ssid ~= nil then
+    ssid.default = current_ssid
+else
+    ssid.default = "OpenWrt"
+end
 
 password = s:option(Value, "key", "Password")
-password.default = "SmartWiFi123-/"
-password.datatype = "rangelength(8,63)" -- WPA/WPA2パスワードの一般的な長さ要件
+if current_password ~= nil then
+    password.default = current_password
+else
+    password.default = "SmartWiFi123-/"
+end
+password.datatype = "rangelength(8,63)"
 password.password = true
+
 
 ssid:depends("network_config", "wifi")
 password:depends("network_config", "wifi")
@@ -49,10 +69,6 @@ mesh_password:depends("network_config", "mesh_parent")
 mesh_id:depends("network_config", "mesh_child")
 mesh_password:depends("network_config", "mesh_child")
 
--- メッシュWiFi子機設定
-msg_text = s:option(DummyValue, "smg_text", "【取扱注意】")
-msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
-msg_text:depends("network_config", "mesh_child")
 
 --WiFiの設定用関数 --
 local function configure_WiFi(section)
@@ -96,14 +112,17 @@ local function configure_WiFi(section)
         uci:set("wireless", wifinet, "mobility_domain", "1234")
         uci:set("wireless", wifinet, "ft_over_ds", "0")
         uci:set("wireless", wifinet, "ft_psk_generate_local", "1")
+        uci:set("wireless", wifinet, "wps_pushbutton", "1")
     end
-        uci:set("wireless", "radio0", "channel", "auto")
-        uci:set("wireless", "radio1", "channel", "auto")
+        uci:set("wireless", "radio0", "channel", "11")
+        uci:set("wireless", "radio1", "channel", "36")
         uci:set("wireless", "radio0", "channels", "1 6 11")
         uci:set("wireless", "radio1", "channels", "36 40 44 48 52 56 60 64")
         
         -- 設定をコミット
-        uci:commit("wireless")
+        uci:commit("wireless")  
+        sys.call("wifi down")
+        sys.call("wifi up")
 end
 
 
@@ -128,11 +147,81 @@ local function configure_meshWiFi(section)
     end
 
     uci:commit("wireless")
-    -- WiFi設定の適用
-    sys.call("wifi down")
-    sys.call("wifi up")
+
 end
 
+-- batmesh親機設定
+local function configure_bat_parent(setion)
+        
+        -- B.A.T.M.A.N.の設定
+        uci:section("network", "interface", "bat0", {
+            proto = "batadv",
+            routing_algo = "BATMAN_IV",
+            bridge_loop_avoidance = "1",
+            gw_mode = "server",
+            hop_penalty = "30"
+        })
+        uci:commit("network")
+    
+        -- メッシュインターフェイスの設定
+        uci:section("network", "interface", "batmesh", {
+            proto = "batadv_hardif",
+            master = "bat0"
+        })
+        uci:commit("network")
+
+        -- firewallのzone[0]のnetworkオプションに'lan'と'batmesh'を設定
+        uci:set_list("firewall", "@zone[0]", "network", {"lan", "batmesh"})
+        uci:commit("firewall")
+
+    
+        -- ワイヤレス設定
+        uci:set("wireless", "wifinet10", "mesh_fwding", "0")
+        uci:set("wireless", "wifinet10", "network", "batmesh")
+        uci:set("wireless", "wifinet11", "mesh_fwding", "0")
+        uci:set("wireless", "wifinet11", "network", "batmesh")
+        uci:commit("wireless")
+
+        -- LANポートとB.A.T.M.A.N.インターフェイスのブリッジ設定
+        uci:set("network", "batmesh", "device", "br-lan")
+        uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 bat0")
+        uci:commit("network")
+       
+end
+
+-- batmesh子機設定
+local function configure_bat_child(setion)
+        
+        -- B.A.T.M.A.N.の設定
+        uci:section("network", "interface", "bat0", {
+            proto = "batadv",
+            routing_algo = "BATMAN_IV",
+            bridge_loop_avoidance = "1",
+            gw_mode = "client",
+            hop_penalty = "30"
+        })
+        uci:commit("network")
+    
+        -- メッシュインターフェイスの設定
+        uci:section("network", "interface", "batmesh", {
+            proto = "batadv_hardif",
+            master = "bat0"
+        })
+        uci:commit("network")
+    
+        -- ワイヤレス設定
+        uci:set("wireless", "wifinet10", "mesh_fwding", "0")
+        uci:set("wireless", "wifinet10", "network", "batmesh")
+        uci:set("wireless", "wifinet11", "mesh_fwding", "0")
+        uci:set("wireless", "wifinet11", "network", "batmesh")
+        uci:commit("wireless")
+
+        -- LANポートとB.A.T.M.A.N.インターフェイスのブリッジ設定
+        uci:set("network", "batmesh", "device", "br-lan")
+        uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 bat0")
+        uci:commit("network")
+        
+end
 
 -- ブリッジモード設定の適用
 local function ap_mode()
@@ -161,45 +250,52 @@ local function ap_mode()
             uci:commit("network")
         
             -- wanインターフェースをbr-lanに接続
-            uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 wan")
+            uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 bat0 wan")
             uci:commit("network")
         
-            -- ホスト名を"WifiAP"に変更する
+            -- ホスト名を"AP"に変更する
             uci:set("system", "@system[0]", "hostname", "AP")
             uci:set("system", "@system[0]", "zonename", "Asia/Tokyo")
             uci:set("system", "@system[0]", "timezone", "JST-9")
             uci:commit("system")
-        
+
+            os.execute('/etc/init.d/firewall disable && /etc/init.d/firewall stop')
+            os.execute('/etc/init.d/dnsmasq disable && /etc/init.d/dnsmasq stop')
+            os.execute('/etc/init.d/odhcpd disable && /etc/init.d/odhcpd stop')
+            os.rename("/etc/config/firewall", "/etc/config/firewall.unused")
             -- すべての変更をコミットする
 end
 
 
 function choice.write(self, section, value)
+        
+    http.write("<script>alert('設定変更後、本体のLEDランプが消灯して再起動が完了するまで数分お待ちください。');</script>")    
     
-if value == "wifi" then
+    if value == "wifi" then
         -- WiFi AP設定
             configure_WiFi(section)   
-      
+                
     elseif value == "mesh_parent" then
         -- WiFi AP設定
             configure_WiFi(section)   
         -- メッシュWiFi親機設定を適用する処理
             configure_meshWiFi(section)
+            configure_bat_parent(section)
+
     elseif value == "mesh_child" then
         -- WiFi AP設定
             configure_WiFi(section)   
         -- メッシュWiFi子機設定を適用する処理
-            onfigure_meshWiFi(section)
-        http.write("<script>alert('設定変更が完了しました。再起動後は子機モードになります。');</script>")
+            configure_meshWiFi(section)
+            configure_bat_child(section)
             ap_mode()
-            luci.sys.reboot()
     end
 
 end
 
 function m.on_after_commit(self)
-    sys.call("wifi down")
-    sys.call("wifi up")
+        -- 再起動して設定を反映
+        luci.sys.reboot()
 end
 
 return m

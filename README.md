@@ -44,12 +44,19 @@ ssh-keygen -R 192.168.10.1
 以下のコマンドを丸ごとコピペしてterminalに貼り付けてもらえれば順番に実行して数十秒で完了します。  
 
 opkg update  
+opkg install curl  
 opkg remove wpad-basic-mbedtls  
 opkg install luci-lua-runtime  
 opkg install luci-proto-ipv6  
 opkg install luci-compat  
 opkg install map  
 opkg install ds-lite  
+opkg install luasec  
+opkg install luasocket  
+opkg install lua-openssl  
+opkg remove wpad-basic-mbedtls  
+opkg install wpad-mesh-openssl  
+opkg install luci-proto-batman-adv  
 mkdir -p /usr/lib/lua/luci/controller/  
 mkdir -p /usr/lib/lua/luci/model/cbi/ca_setup/  
 wget -O /etc/config/ca_setup https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup  

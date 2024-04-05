@@ -96,6 +96,6 @@ wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubuserco
 当ソフトウェアの利用に関して、当方はいかなる責任も負いかねますのであらかじめ了承の上お使いください。  
 
 # スペシャルサンクス
-https://ipv4.web.fc2.com/map-e.html -- 簡易マップの道を切り開いてくれた偉人
-https://qiita.com/site_u -- 日本のOpenWrtコミュニティに多大な貢献をされている偉人、心の師匠
-https://github.com/fakemanhk/openwrt-jp-ipoe -- map.shをv6プラスに合わせてアップデートしてくれたすばらしき偉人
+https://ipv4.web.fc2.com/map-e.html -- 簡易マップの道を切り開いてくれた偉人  
+https://qiita.com/site_u -- 日本のOpenWrtコミュニティに多大な貢献をされている偉人、心の師匠  
+https://github.com/fakemanhk/openwrt-jp-ipoe -- map.shをv6プラスに合わせてアップデートしてくれたすばらしき偉人  

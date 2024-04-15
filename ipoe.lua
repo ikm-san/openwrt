@@ -242,45 +242,44 @@ else
     hgw_detected_flag.default = "OK: NTTのHGWは存在しないようです。"
 end
 
---mapデータ表示用
+-- mapデータ表示用フォーム
 if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
-local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
--- local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = calib.get_mapconfig(wan_ipv6)
+    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
 
-o = s:option(DummyValue, "VNE", translate("VNE"))
-o.value = VNE or translate("Not available")
+    o = s:option(Value, "VNE", translate("VNE"))
+    o.value = VNE or translate("Not available")
 
-o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))
-o.value = wan_ipv6 or translate("Not available")
+    o = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
+    o.value = wan_ipv6 or translate("Not available")
 
-o = s:option(DummyValue, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
-o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
+    o = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
+    o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
 
-o = s:option(DummyValue, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
-o.value = ipv4_prefixlen or translate("Not available")
+    o = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
+    o.value = ipv4_prefixlen or translate("Not available")
 
-o = s:option(DummyValue, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
-o.value = ipv6_prefixlen or translate("Not available")
+    o = s:option(Value, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
+    o.value = ipv6_prefixlen or translate("Not available")
 
-o = s:option(DummyValue, "ipv6_prefix", translate("IPv6 Prefix"))
-o.value = ipv6_prefix
+    o = s:option(Value, "ipv6_prefix", translate("IPv6 Prefix"))
+    o.value = ipv6_prefix
 
-o = s:option(DummyValue, "ealen", translate("EA Length"))
-o.value = ealen
+    o = s:option(Value, "ealen", translate("EA Length"))
+    o.value = ealen
 
-o = s:option(DummyValue, "psidlen", translate("PSID Length"))
-o.value = psidlen
+    o = s:option(Value, "psidlen", translate("PSID Length"))
+    o.value = psidlen
 
-o = s:option(DummyValue, "offset", translate("Offset"))
-o.value = offset
+    o = s:option(Value, "offset", translate("Offset"))
+    o.value = offset
 
-o = s:option(DummyValue, "ipv6_56", translate("IPv6_56"))
-o.value = ipv6_56
+    o = s:option(Value, "ipv6_56", translate("IPv6_56"))
+    o.value = ipv6_56
 
-o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
-o.value = peeraddr
-
+    o = s:option(Value, "peeraddr", translate("Peer Address"))
+    o.value = peeraddr
 end
+
 
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作
@@ -313,21 +312,48 @@ function choice.write(self, section, value)
         uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
         uci:commit("firewall")
         
-    elseif value == "ipoe_v6plus" then      
+   if value == "ipoe_v6plus" then
         -- v6プラス
-            local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
-            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+        local ipv4_prefix = s:cfgvalue("ipv4_prefix")
+        local ipv4_prefixlen = s:cfgvalue("ipv4_prefixlen")
+        local ipv6_prefix = s:cfgvalue("ipv6_prefix")
+        local ipv6_prefixlen = s:cfgvalue("ipv6_prefixlen")
+        local ealen = s:cfgvalue("ealen")
+        local psidlen = s:cfgvalue("psidlen")
+        local offset = s:cfgvalue("offset")
+        local ipv6_56 = s:cfgvalue("ipv6_56")
+        local peeraddr = s:cfgvalue("peeraddr")
+
+        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
     
     elseif value == "ipoe_ocnvirtualconnect" then
         -- OCNバーチャルコネクト
-            local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
-            configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-        
+        local ipv4_prefix = s:cfgvalue("ipv4_prefix")
+        local ipv4_prefixlen = s:cfgvalue("ipv4_prefixlen")
+        local ipv6_prefix = s:cfgvalue("ipv6_prefix")
+        local ipv6_prefixlen = s:cfgvalue("ipv6_prefixlen")
+        local ealen = s:cfgvalue("ealen")
+        local psidlen = s:cfgvalue("psidlen")
+        local offset = s:cfgvalue("offset")
+        local ipv6_56 = s:cfgvalue("ipv6_56")
+        local peeraddr = s:cfgvalue("peeraddr")
+
+        configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+    
     elseif value == "ipoe_biglobe" then
         -- BIGLOBE IPv6オプション
-            local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
-            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-        
+        local ipv4_prefix = s:cfgvalue("ipv4_prefix")
+        local ipv4_prefixlen = s:cfgvalue("ipv4_prefixlen")
+        local ipv6_prefix = s:cfgvalue("ipv6_prefix")
+        local ipv6_prefixlen = s:cfgvalue("ipv6_prefixlen")
+        local ealen = s:cfgvalue("ealen")
+        local psidlen = s:cfgvalue("psidlen")
+        local offset = s:cfgvalue("offset")
+        local ipv6_56 = s:cfgvalue("ipv6_56")
+        local peeraddr = s:cfgvalue("peeraddr")
+
+        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+    
     elseif value == "ipoe_transix" then
         -- transix (ds-lite)
             gw_aftr = m.uci:get("ca_setup", "ipoe_transix", "gw_aftr")

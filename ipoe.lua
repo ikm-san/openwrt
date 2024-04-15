@@ -329,7 +329,16 @@ password:depends("wan_setup", "pppoe_ipv4")
         function o.cfgvalue(self, section)
             return offset
         end
-              
+
+        -- IPv6_56
+        o = s:option(Value, "ipv6_56", translate("IPv6_56"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return ipv6_56
+        end
+
         -- Peer Addr
         o = s:option(Value, "peeraddr", translate("Peer Address"))
         o:depends("wan_setup", "ipoe_v6plus")

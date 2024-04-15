@@ -354,13 +354,6 @@ end
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function choice.write(self, section, value)
-
-        -- 日本時間に時計をセット --
-            uci:set("system", "@system[0]", "zonename", "Asia/Tokyo")
-            uci:set("system", "@system[0]", "timezone", "JST-9")
-            uci:commit("system")
-
-            http.write("<script>alert('本体は設定変更後ネットワークのリスタートをします。ブラウザは閉じてください。');</script>")    
     
     if value == "pppoe_ipv4" then        
         -- PPPoE設定を適用

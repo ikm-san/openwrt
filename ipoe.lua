@@ -39,154 +39,6 @@ local VNE = calib.dtermineVNE(wan_ipv6)
 -- BRANDの判定 --
 local brandcheck = calib.brandcheck()
 
--- ds-lite接続設定関数
-local function configure_dslite_connection(gw_aftr)
-    -- DHCP LAN設定
-    uci:set("dhcp", "lan", "dhcp")
-    uci:set("dhcp", "lan", "ra", "relay")
-    uci:set("dhcp", "lan", "dhcpv6", "server")
-    uci:set("dhcp", "lan", "ndp", "relay")
-    uci:set("dhcp", "lan", "force", "1")
-
-    -- WAN設定の無効化
-    uci:set("network", "wan", "auto", "0")
-
-    -- DS-Liteインターフェースの設定
-    uci:section("network", "interface", "dslite", {
-        proto = 'dslite',
-        peeraddr = gw_aftr, 
-        tunlink = 'wan6',
-        mtu = '1460'
-    })
-    uci:commit("network")
-    
-    -- DHCP関連設定
-    uci:set("dhcp", "wan6", "dhcp")
-    uci:set("dhcp", "wan6", "interface", "wan6")
-    uci:set("dhcp", "wan6", "master", "1")
-    uci:set("dhcp", "wan6", "ignore", "1")
-    uci:set("dhcp", "wan6", "dhcpv6", "relay")
-    uci:set("dhcp", "wan6", "ra", "relay")
-    uci:set("dhcp", "wan6", "ndp", "relay")
-    uci:commit("dhcp")
-
-    os.execute([[sed -i -e 's/mtu:-1280/mtu:-1460/g' /lib/netifd/proto/dslite.sh]])
-
-    -- DS-LiteインターフェースをWANゾーンに追加
-    uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
-    uci:commit("firewall")
-
-end
-
--- map-e v6 plus 接続設定関数
-function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-      
-    -- DHCP LAN settings
-    uci:set("dhcp", "lan", "dhcp")
-    uci:set("dhcp", "lan", "dhcpv6", "server")
-    uci:set("dhcp", "lan", "ra", "relay")
-    uci:set("dhcp", "lan", "ndp", "relay")
-    uci:set("dhcp", "lan", "force", "1")
-
-    -- DHCP WAN6 settings
-    uci:set("dhcp", "wan6", "dhcp")
-    uci:set("dhcp", "wan6", "interface", "wan6")
-    uci:set("dhcp", "wan6", "ignore", "1")
-    uci:set("dhcp", "wan6", "master", "1")
-    uci:set("dhcp", "wan6", "ra", "relay")
-    uci:set("dhcp", "wan6", "dhcpv6", "relay")
-    uci:set("dhcp", "wan6", "ndp", "relay")
-    uci:commit("dhcp")  
-
-    -- WAN settings
-    uci:set("network", "wan", "auto", "0")
-    
-    -- WAN6 settings
-    uci:set("network", "wan6", "proto", "dhcpv6")
-    uci:set("network", "wan6", "reqaddress", "try")
-    uci:set("network", "wan6", "reqprefix", "auto")
-    uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "/56")
-    
-    -- WANMAP settings
-    uci:section("network", "interface", "wanmap", {
-        proto = "map",
-        maptype = "map-e",
-        peeraddr = peeraddr,
-        ipaddr = ipv4_prefix,
-        ip4prefixlen = ipv4_prefixlen,
-        ip6prefix = ipv6_prefix,
-        ip6prefixlen = ipv6_prefixlen,
-        ealen = ealen,
-        psidlen = psidlen,
-        offset = offset,
-        legacymap = "1",
-        mtu = "1460",
-        tunlink= "wan6",
-        encaplimit = "ignore"
-    })
-    uci:commit("network") 
-
-    -- Firewall settings
-    uci:delete("firewall", "@zone[1]", "network", "wan")
-    uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap"})
-    uci:commit("firewall")
-end
-
--- map-e OCN Virtual Connect 接続設定関数
-function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-      
-    -- DHCP LAN settings
-    uci:set("dhcp", "lan", "dhcp")
-    uci:set("dhcp", "lan", "dhcpv6", "server")
-    uci:set("dhcp", "lan", "ra", "relay")
-    uci:set("dhcp", "lan", "ndp", "relay")
-    uci:set("dhcp", "lan", "force", "1")
-
-    -- DHCP WAN6 settings
-    uci:set("dhcp", "wan6", "dhcp")
-    uci:set("dhcp", "wan6", "interface", "wan6")
-    uci:set("dhcp", "wan6", "ignore", "1")
-    uci:set("dhcp", "wan6", "master", "1")
-    uci:set("dhcp", "wan6", "ra", "relay")
-    uci:set("dhcp", "wan6", "dhcpv6", "relay")
-    uci:set("dhcp", "wan6", "ndp", "relay")
-    uci:commit("dhcp")  
-
-    -- WAN settings
-    uci:set("network", "wan", "auto", "0")
-    
-    -- WAN6RA settings
-    uci:section("network", "interface", "map6ra", {
-        device = "wan",
-        proto = "static",
-        ip6gw = ipv6_56 .. "1",
-        ip6prefix = ipv6_56 .. "/56",
-        ip6addr = ipv6_56 .. "1001"
-    })
-    
-    -- WANMAP settings
-    uci:section("network", "interface", "wanmap", {
-        proto = "map",
-        maptype = "map-e",
-        peeraddr = peeraddr,
-        ipaddr = ipv4_prefix,
-        ip4prefixlen = ipv4_prefixlen,
-        ip6prefix = ipv6_prefix,
-        ip6prefixlen = ipv6_prefixlen,
-        ealen = ealen,
-        psidlen = psidlen,
-        offset = offset,
-        legacymap = "1",
-        mtu = "1460"
-    })
-    uci:commit("network") 
-
-    -- Firewall settings
-    uci:delete("firewall", "@zone[1]", "network", "wan")
-    uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap", "map6ra"})
-    uci:commit("firewall")
-end
-
 -- トレーサートの最初のホップのIPアドレスを取得
 local function get_first_hop_ip()
     local traceroute_output = sys.exec("traceroute -m 1 8.8.8.8")
@@ -349,6 +201,153 @@ password:depends("wan_setup", "pppoe_ipv4")
         end
 
 
+-- ds-lite接続設定関数
+local function configure_dslite_connection(gw_aftr)
+    -- DHCP LAN設定
+    uci:set("dhcp", "lan", "dhcp")
+    uci:set("dhcp", "lan", "ra", "relay")
+    uci:set("dhcp", "lan", "dhcpv6", "server")
+    uci:set("dhcp", "lan", "ndp", "relay")
+    uci:set("dhcp", "lan", "force", "1")
+
+    -- WAN設定の無効化
+    uci:set("network", "wan", "auto", "0")
+
+    -- DS-Liteインターフェースの設定
+    uci:section("network", "interface", "dslite", {
+        proto = 'dslite',
+        peeraddr = gw_aftr, 
+        tunlink = 'wan6',
+        mtu = '1460'
+    })
+    uci:commit("network")
+    
+    -- DHCP関連設定
+    uci:set("dhcp", "wan6", "dhcp")
+    uci:set("dhcp", "wan6", "interface", "wan6")
+    uci:set("dhcp", "wan6", "master", "1")
+    uci:set("dhcp", "wan6", "ignore", "1")
+    uci:set("dhcp", "wan6", "dhcpv6", "relay")
+    uci:set("dhcp", "wan6", "ra", "relay")
+    uci:set("dhcp", "wan6", "ndp", "relay")
+    uci:commit("dhcp")
+
+    os.execute([[sed -i -e 's/mtu:-1280/mtu:-1460/g' /lib/netifd/proto/dslite.sh]])
+
+    -- DS-LiteインターフェースをWANゾーンに追加
+    uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
+    uci:commit("firewall")
+
+end
+
+-- map-e v6 plus 接続設定関数
+function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+      
+    -- DHCP LAN settings
+    uci:set("dhcp", "lan", "dhcp")
+    uci:set("dhcp", "lan", "dhcpv6", "server")
+    uci:set("dhcp", "lan", "ra", "relay")
+    uci:set("dhcp", "lan", "ndp", "relay")
+    uci:set("dhcp", "lan", "force", "1")
+
+    -- DHCP WAN6 settings
+    uci:set("dhcp", "wan6", "dhcp")
+    uci:set("dhcp", "wan6", "interface", "wan6")
+    uci:set("dhcp", "wan6", "ignore", "1")
+    uci:set("dhcp", "wan6", "master", "1")
+    uci:set("dhcp", "wan6", "ra", "relay")
+    uci:set("dhcp", "wan6", "dhcpv6", "relay")
+    uci:set("dhcp", "wan6", "ndp", "relay")
+    uci:commit("dhcp")  
+
+    -- WAN settings
+    uci:set("network", "wan", "auto", "0")
+    
+    -- WAN6 settings
+    uci:set("network", "wan6", "proto", "dhcpv6")
+    uci:set("network", "wan6", "reqaddress", "try")
+    uci:set("network", "wan6", "reqprefix", "auto")
+    uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "/56")
+    
+    -- WANMAP settings
+    uci:section("network", "interface", "wanmap", {
+        proto = "map",
+        maptype = "map-e",
+        peeraddr = peeraddr,
+        ipaddr = ipv4_prefix,
+        ip4prefixlen = ipv4_prefixlen,
+        ip6prefix = ipv6_prefix,
+        ip6prefixlen = ipv6_prefixlen,
+        ealen = ealen,
+        psidlen = psidlen,
+        offset = offset,
+        legacymap = "1",
+        mtu = "1460",
+        tunlink= "wan6",
+        encaplimit = "ignore"
+    })
+    uci:commit("network") 
+
+    -- Firewall settings
+    uci:delete("firewall", "@zone[1]", "network", "wan")
+    uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap"})
+    uci:commit("firewall")
+end
+
+-- map-e OCN Virtual Connect 接続設定関数
+function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+      
+    -- DHCP LAN settings
+    uci:set("dhcp", "lan", "dhcp")
+    uci:set("dhcp", "lan", "dhcpv6", "server")
+    uci:set("dhcp", "lan", "ra", "relay")
+    uci:set("dhcp", "lan", "ndp", "relay")
+    uci:set("dhcp", "lan", "force", "1")
+
+    -- DHCP WAN6 settings
+    uci:set("dhcp", "wan6", "dhcp")
+    uci:set("dhcp", "wan6", "interface", "wan6")
+    uci:set("dhcp", "wan6", "ignore", "1")
+    uci:set("dhcp", "wan6", "master", "1")
+    uci:set("dhcp", "wan6", "ra", "relay")
+    uci:set("dhcp", "wan6", "dhcpv6", "relay")
+    uci:set("dhcp", "wan6", "ndp", "relay")
+    uci:commit("dhcp")  
+
+    -- WAN settings
+    uci:set("network", "wan", "auto", "0")
+    
+    -- WAN6RA settings
+    uci:section("network", "interface", "map6ra", {
+        device = "wan",
+        proto = "static",
+        ip6gw = ipv6_56 .. "1",
+        ip6prefix = ipv6_56 .. "/56",
+        ip6addr = ipv6_56 .. "1001"
+    })
+    
+    -- WANMAP settings
+    uci:section("network", "interface", "wanmap", {
+        proto = "map",
+        maptype = "map-e",
+        peeraddr = peeraddr,
+        ipaddr = ipv4_prefix,
+        ip4prefixlen = ipv4_prefixlen,
+        ip6prefix = ipv6_prefix,
+        ip6prefixlen = ipv6_prefixlen,
+        ealen = ealen,
+        psidlen = psidlen,
+        offset = offset,
+        legacymap = "1",
+        mtu = "1460"
+    })
+    uci:commit("network") 
+
+    -- Firewall settings
+    uci:delete("firewall", "@zone[1]", "network", "wan")
+    uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap", "map6ra"})
+    uci:commit("firewall")
+end
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function choice.write(self, section, value)

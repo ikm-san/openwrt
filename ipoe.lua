@@ -6,7 +6,8 @@ local jsonc = require("luci.jsonc")
 local http = require "luci.http"
 
 -- WANのグローバルIPv6を取得 --
-local wan_ipv6 = calib.get_wan_ipv6_global() 
+-- local wan_ipv6 = calib.get_wan_ipv6_global() 
+local wan_ipv6 = "240b:10:af40:100:0:0:0:0"
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)

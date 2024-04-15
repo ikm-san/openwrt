@@ -288,11 +288,12 @@ local ipv6_56 = wan_ipv6
         tunlink= "wan6",
         encaplimit = "ignore"
     })
-    uci:commit("network") 
 
     -- Firewall settings
     uci:delete("firewall", "@zone[1]", "network", "wan")
     uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap"})
+
+    uci:commit("network")     
     uci:commit("firewall")
 end
 
@@ -344,11 +345,13 @@ local ipv6_56 = wan_ipv6
         legacymap = "1",
         mtu = "1460"
     })
-    uci:commit("network") 
+
 
     -- Firewall settings
     uci:delete("firewall", "@zone[1]", "network", "wan")
     uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap", "map6ra"})
+
+    uci:commit("network")     
     uci:commit("firewall")
 end
 

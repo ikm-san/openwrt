@@ -234,11 +234,17 @@ username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
     
-    o = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
-    o:depends("wan_setup", "ipoe_v6plus")
-    o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-    o:depends("wan_setup", "ipoe_biglobe")
-    o.value = wan_ipv6 or translate("Not available")
+    wan_ipv6 = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
+    wan_ipv6:depends("wan_setup", "ipoe_v6plus")
+    wan_ipv6:depends("wan_setup", "ipoe_ocnvirtualconnect")
+    wan_ipv6:depends("wan_setup", "ipoe_biglobe")
+    -- o.value = wan_ipv6 or translate("Not available")
+if wan_ipv6 ~= nil then
+    wan_ipv6.default = wan_ipv6
+else
+    wan_ipv6.default = "OpenWrt"
+end
+
 
     o = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
     o:depends("wan_setup", "ipoe_v6plus")

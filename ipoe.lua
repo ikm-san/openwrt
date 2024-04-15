@@ -199,6 +199,11 @@ local function check_ntt_hgw()
 end
 
 
+-- mapデータ表示用フォーム
+if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
+    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
+end
+
 
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
@@ -228,10 +233,7 @@ password.password = true
 username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
--- mapデータ表示用フォーム
-if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
-    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
-
+    
     o = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
     o:depends("wan_setup", "ipoe_v6plus")
     o:depends("wan_setup", "ipoe_ocnvirtualconnect")
@@ -292,7 +294,6 @@ if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IP
     o:depends("wan_setup", "ipoe_biglobe")
     o.value = peeraddr
 
-end
 
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作

@@ -23,13 +23,14 @@ local function getIPv6PrefixInfo()
     return ipv6Prefix, prefixLength
 end
    
--- local ipv6Prefix, prefixLength = getIPv6PrefixInfo()
+local ipv6Prefix, prefixLength = getIPv6PrefixInfo()
 
 
 
 -- WANのグローバルIPv6を取得 --
 -- local wan_ipv6 = calib.get_wan_ipv6_global() 
-local wan_ipv6, ipv6_prefixlen = getIPv6PrefixInfo()
+local wan_ipv6 = ipv6Prefix
+local ipv6_prefixlen = prefixLength
 
 
 -- VNEの判定 --

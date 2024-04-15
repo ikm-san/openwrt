@@ -8,6 +8,23 @@ local ubus = require "ubus"
 
 local M = {}
 
+-- IPv6_56アドレスとprefixの取得 --
+local function M.getIPv6PrefixInfo()
+    local handle = io.popen("ubus call network.interface.wan6 status")
+    local result = handle:read("*a")
+    handle:close()
+
+    local data = json.parse(result)
+    local ipv6Prefix, prefixLength = "not found", "not found"
+    
+    if data["route"] and data["route"][1] then
+        ipv6Prefix = data["route"][1].target or ipv6Prefix
+        prefixLength = data["route"][1].mask or prefixLength
+    end
+
+    return ipv6Prefix, prefixLength
+end
+
 -- WANインターフェースのIPv6アドレス（scope global）を取得
 function M.get_wan_ipv6_global()
     -- WANインターフェースの状態を確認
@@ -168,7 +185,7 @@ function M.find_ipv4_prefix(wan_ipv6)
 
         ealen = 56 - ipv6_prefixlen
         psidlen = ealen - (32 - ipv4_prefixlen)
-        ipv6_56 = M.extract_ipv6_56(wan_ipv6)
+        ipv6_56 = M.getIPv6PrefixInfo()
         peeraddr = M.peeraddrVNE(wan_ipv6)
      
         

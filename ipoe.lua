@@ -233,61 +233,65 @@ if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IP
     local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
 
     o = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
+    wan_ipv6:depends("VNE", "v6プラス")
+    wan_ipv6:depends("VNE", "OCNバーチャルコネクト")
+    wan_ipv6:depends("VNE", "IPv6オプション")
     o.value = wan_ipv6 or translate("Not available")
 
     o = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
-    o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
     ipv4_prefix:depends("VNE", "v6プラス")
     ipv4_prefix:depends("VNE", "OCNバーチャルコネクト")
     ipv4_prefix:depends("VNE", "IPv6オプション")
+    o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
     
     o = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
-    o.value = ipv4_prefixlen or translate("Not available")
     ipv4_prefixlen:depends("VNE", "v6プラス")
     ipv4_prefixlen:depends("VNE", "OCNバーチャルコネクト")
     ipv4_prefixlen:depends("VNE", "IPv6オプション")
+    o.value = ipv4_prefixlen or translate("Not available")
     
     o = s:option(Value, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
-    o.value = ipv6_prefixlen or translate("Not available")
     ipv6_prefixlen:depends("VNE", "v6プラス")
     ipv6_prefixlen:depends("VNE", "OCNバーチャルコネクト")
     ipv6_prefixlen:depends("VNE", "IPv6オプション")
+    o.value = ipv6_prefixlen or translate("Not available")
     
     o = s:option(Value, "ipv6_prefix", translate("IPv6 Prefix"))
-    o.value = ipv6_prefix
     ipv6_prefix:depends("VNE", "v6プラス")
     ipv6_prefix:depends("VNE", "OCNバーチャルコネクト")
     ipv6_prefix:depends("VNE", "IPv6オプション")
+    o.value = ipv6_prefix
     
     o = s:option(Value, "ealen", translate("EA Length"))
-    o.value = ealen
     ealen:depends("VNE", "v6プラス")
     ealen:depends("VNE", "OCNバーチャルコネクト")
     ealen:depends("VNE", "IPv6オプション")
+    o.value = ealen
     
     o = s:option(Value, "psidlen", translate("PSID Length"))
-    o.value = psidlen
     psidlen:depends("VNE", "v6プラス")
     psidlen:depends("VNE", "OCNバーチャルコネクト")
     psidlen:depends("VNE", "IPv6オプション")
+    o.value = psidlen
     
     o = s:option(Value, "offset", translate("Offset"))
-    o.value = offset
     offset:depends("VNE", "v6プラス")
     offset:depends("VNE", "OCNバーチャルコネクト")
     offset:depends("VNE", "IPv6オプション")
+    o.value = offset
     
     o = s:option(Value, "ipv6_56", translate("IPv6_56"))
-    o.value = ipv6_56
     ipv6_56:depends("VNE", "v6プラス")
     ipv6_56:depends("VNE", "OCNバーチャルコネクト")
     ipv6_56:depends("VNE", "IPv6オプション")
+    o.value = ipv6_56
     
     o = s:option(Value, "peeraddr", translate("Peer Address"))
-    o.value = peeraddr
     peeraddr:depends("VNE", "v6プラス")
     peeraddr:depends("VNE", "OCNバーチャルコネクト")
     peeraddr:depends("VNE", "IPv6オプション")
+    o.value = peeraddr
+
 end
 
 

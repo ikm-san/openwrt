@@ -199,23 +199,18 @@ local function check_ntt_hgw()
 end
 
 -- チェック結果の表示
-under_router_flag = s:option(DummyValue, "under_router", translate("Router Connection Status"))
+under_router_flag = s:option(DummyValue, "under_router", translate("WAN接続チェック"))
 if check_under_router() then
-    under_router_flag.default = "NG: Private IPに繋がっているようですが、既存のルーターに接続していませんか？"
+    under_router_flag.default = "Private IPに繋がっているようですが、既存のルーターに接続していませんか？"
 else
-    under_router_flag.default = "OK: Global IPに直接繋がっているようです。"
+    under_router_flag.default = "Global IPに直接繋がっているようです。IPoE接続が設定可能です"
 end
 
-hgw_detected_flag = s:option(DummyValue, "hgw_detected", translate("NTT HGW Detection Status"))
+hgw_detected_flag = s:option(DummyValue, "hgw_detected", translate("NTT HGWチェック"))
 if check_ntt_hgw() then
-    hgw_detected_flag.default = "NG: NTTのHGWが存在するようです。"
+    hgw_detected_flag.default = "NTTのHGWが見つかりました。"
 else
-    hgw_detected_flag.default = "OK: NTTのHGWは存在しないようです。"
-end
-
--- mapデータ表示用フォーム
-if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
-    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
+    hgw_detected_flag.default = "NTTのHGWは見つかりませんでした。"
 end
 
 -- WAN設定選択リスト --
@@ -246,6 +241,10 @@ password.password = true
 username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
+-- mapデータ表示用フォーム
+if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
+    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
+
     o = s:option(Value, "VNE", translate("VNE"))
     o.value = VNE or translate("Not available")
 
@@ -254,30 +253,59 @@ password:depends("wan_setup", "pppoe_ipv4")
 
     o = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
     o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
-
+    ipv4_prefix:depends("VNE", "v6プラス")
+    ipv4_prefix:depends("VNE", "OCNバーチャルコネクト")
+    ipv4_prefix:depends("VNE", "IPv6オプション")
+    
     o = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
     o.value = ipv4_prefixlen or translate("Not available")
-
+    ipv4_prefixlen:depends("VNE", "v6プラス")
+    ipv4_prefixlen:depends("VNE", "OCNバーチャルコネクト")
+    ipv4_prefixlen:depends("VNE", "IPv6オプション")
+    
     o = s:option(Value, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
     o.value = ipv6_prefixlen or translate("Not available")
-
+    ipv6_prefixlen:depends("VNE", "v6プラス")
+    ipv6_prefixlen:depends("VNE", "OCNバーチャルコネクト")
+    ipv6_prefixlen:depends("VNE", "IPv6オプション")
+    
     o = s:option(Value, "ipv6_prefix", translate("IPv6 Prefix"))
     o.value = ipv6_prefix
-
+    ipv6_prefix:depends("VNE", "v6プラス")
+    ipv6_prefix:depends("VNE", "OCNバーチャルコネクト")
+    ipv6_prefix:depends("VNE", "IPv6オプション")
+    
     o = s:option(Value, "ealen", translate("EA Length"))
     o.value = ealen
-
+    ealen:depends("VNE", "v6プラス")
+    ealen:depends("VNE", "OCNバーチャルコネクト")
+    ealen:depends("VNE", "IPv6オプション")
+    
     o = s:option(Value, "psidlen", translate("PSID Length"))
     o.value = psidlen
-
+    psidlen:depends("VNE", "v6プラス")
+    psidlen:depends("VNE", "OCNバーチャルコネクト")
+    psidlen:depends("VNE", "IPv6オプション")
+    
     o = s:option(Value, "offset", translate("Offset"))
     o.value = offset
-
+    offset:depends("VNE", "v6プラス")
+    offset:depends("VNE", "OCNバーチャルコネクト")
+    offset:depends("VNE", "IPv6オプション")
+    
     o = s:option(Value, "ipv6_56", translate("IPv6_56"))
     o.value = ipv6_56
-
+    ipv6_56:depends("VNE", "v6プラス")
+    ipv6_56:depends("VNE", "OCNバーチャルコネクト")
+    ipv6_56:depends("VNE", "IPv6オプション")
+    
     o = s:option(Value, "peeraddr", translate("Peer Address"))
     o.value = peeraddr
+    peeraddr:depends("VNE", "v6プラス")
+    peeraddr:depends("VNE", "OCNバーチャルコネクト")
+    peeraddr:depends("VNE", "IPv6オプション")
+end
+
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function choice.write(self, section, value)

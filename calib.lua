@@ -183,11 +183,11 @@ function M.find_ipv4_prefix(wan_ipv6)
             offset = 4
         end
 
-        ealen = 56 - ipv6_prefixlen
-        psidlen = ealen - (32 - ipv4_prefixlen)
-        ipv6Prefix, prefixLength = M.getIPv6PrefixInfo()
-        ipv6_56 = ipv6Prefix
-        peeraddr = M.peeraddrVNE(wan_ipv6)
+        local ealen = 56 - ipv6_prefixlen
+        local psidlen = ealen - (32 - ipv4_prefixlen)
+        local ipv6Prefix, prefixLength = M.getIPv6PrefixInfo()
+        local ipv6_56 = ipv6Prefix
+        local peeraddr = M.peeraddrVNE(wan_ipv6)
      
         
         return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr

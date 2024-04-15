@@ -2,7 +2,7 @@ local fs = require "nixio.fs"
 local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
 local http = require "luci.http"
-local jsonc = require("luci.jsonc")
+local json = require("luci.jsonc")
 local io = require("io")
 local ubus = require "ubus"
 
@@ -333,7 +333,7 @@ function M.get_mapconfig(wan_ipv6)
     local peeraddr = uci:get("ca_setup", "map", "dmr")
     local ipv6_fixlen = uci:get("ca_setup", "map", "ipv6_fixlen")
     local fmr_json = uci:get("ca_setup", "map", "fmr")
-    local fmr = jsonc.parse(fmr_json)
+    local fmr = json.parse(fmr_json)
     local matching_fmr = M.find_matching_fmr(wan40_ipv6, fmr) or M.find_matching_fmr(wan32_ipv6, fmr)
 
     if matching_fmr then

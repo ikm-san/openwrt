@@ -185,7 +185,8 @@ function M.find_ipv4_prefix(wan_ipv6)
 
         ealen = 56 - ipv6_prefixlen
         psidlen = ealen - (32 - ipv4_prefixlen)
-        ipv6_56 = M.getIPv6PrefixInfo()
+        ipv6Prefix, prefixLength = M.getIPv6PrefixInfo()
+        ipv6_56 = ipv6Prefix
         peeraddr = M.peeraddrVNE(wan_ipv6)
      
         

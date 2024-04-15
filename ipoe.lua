@@ -388,7 +388,8 @@ function choice.write(self, section, value)
         local ealen = self:formvalue(section..".ealen") or s:cfgvalue("ealen")
         local psidlen = self:formvalue(section..".psidlen") or s:cfgvalue("psidlen")
         local offset = self:formvalue(section..".offset") or s:cfgvalue("offset")
-        local ipv6_56 = self:formvalue(section..".ipv6_56") or s:cfgvalue("ipv6_56")
+        -- local ipv6_56 = self:formvalue(section..".ipv6_56") or s:cfgvalue("ipv6_56")
+                local ipv6_56 = wan_ipv6
         local peeraddr = self:formvalue(section..".peeraddr") or s:cfgvalue("peeraddr")
 
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)

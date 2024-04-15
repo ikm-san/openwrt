@@ -290,7 +290,7 @@ function choice.write(self, section, value)
             uci:set("system", "@system[0]", "timezone", "JST-9")
             uci:commit("system")
 
-            http.write("<script>alert('本体は設定変更、再起動中です。ブラウザは閉じて数分お待ちください。');</script>")    
+            http.write("<script>alert('本体は設定変更後ネットワークのリスタートをします。ブラウザは閉じてください。');</script>")    
     
     if value == "pppoe_ipv4" then        
         -- PPPoE設定を適用
@@ -312,7 +312,7 @@ function choice.write(self, section, value)
         uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
         uci:commit("firewall")
         
-   if value == "ipoe_v6plus" then
+    elseif value == "ipoe_v6plus" then
         -- v6プラス
         local ipv4_prefix = s:cfgvalue("ipv4_prefix")
         local ipv4_prefixlen = s:cfgvalue("ipv4_prefixlen")
@@ -409,8 +409,8 @@ function choice.write(self, section, value)
 end
 
 function m.on_after_commit(self)
-        -- 更新完了後の動作を入れる
-            luci.sys.reboot()
+    -- ネットワークサービスを再起動する
+    luci.sys.call("/etc/init.d/network restart")
 end
 
 return m

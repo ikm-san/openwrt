@@ -85,7 +85,7 @@ function M.find_ipv4_prefix()
     local ruleprefix38_20 = M.getRulePrefix38_20()
 
     local ipv4_prefix = ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] or ruleprefix31[hex_prefix_32]
-    local ipv6_prefixlen
+    local ipv6_prefixlen = 32
 
     if ipv4_prefix then
         local ipv4_parts = {}

@@ -9,7 +9,7 @@ local ubus = require "ubus"
 local M = {}
 
 -- IPv6_56アドレスとprefixの取得 --
-local function M.getIPv6PrefixInfo()
+function M.getIPv6PrefixInfo()
     local handle = io.popen("ubus call network.interface.wan6 status")
     local result = handle:read("*a")
     handle:close()

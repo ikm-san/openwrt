@@ -6,42 +6,14 @@ local jsonc = require("luci.jsonc")
 local http = require "luci.http"
 
 -- WANのグローバルIPv6を取得 --
-local wan_ipv6 = calib.get_wan_ipv6_global() 
+-- local wan_ipv6 = calib.get_wan_ipv6_global() 
+local wan_ipv6 = "240b:10:af40:100:0:0:0:0"
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
 
 -- BRANDの判定 --
 local brandcheck = calib.brandcheck()
-
--- WAN設定選択リスト --
-m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
-
-s = m:section(TypedSection, "ipoe", "")
-s.addremove = false
-s.anonymous = true
-
-choice = s:option(ListValue, "wan_setup", "操作")
-choice:value("ipoe_v6plus", "v6プラス")
-choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
-choice:value("ipoe_biglobe", "IPv6オプション")
-choice:value("ipoe_transix", "transix")
-choice:value("ipoe_xpass", "クロスパス")
-choice:value("ipoe_v6connect", "v6コネクト")
-choice:value("pppoe_ipv4", "PPPoE接続")
-choice:value("bridge_mode", "ブリッジ・APモード")
-
-msg_text = s:option(DummyValue, "smg_text", "【注意】")
-msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
-msg_text:depends("wan_setup", "bridge_mode")
-
--- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
-username = s:option(Value, "username", "PPPoE ユーザー名")
-password = s:option(Value, "password", "PPPoE パスワード")
-password.password = true
-username:depends("wan_setup", "pppoe_ipv4")
-password:depends("wan_setup", "pppoe_ipv4")
-
 
 -- ds-lite接続設定関数
 local function configure_dslite_connection(gw_aftr)
@@ -227,60 +199,132 @@ local function check_ntt_hgw()
     return false
 end
 
--- チェック結果の表示
-under_router_flag = s:option(DummyValue, "under_router", translate("Router Connection Status"))
-if check_under_router() then
-    under_router_flag.default = "NG: Private IPに繋がっているようですが、既存のルーターに接続していませんか？"
-else
-    under_router_flag.default = "OK: Global IPに直接繋がっているようです。"
-end
 
-hgw_detected_flag = s:option(DummyValue, "hgw_detected", translate("NTT HGW Detection Status"))
-if check_ntt_hgw() then
-    hgw_detected_flag.default = "NG: NTTのHGWが存在するようです。"
-else
-    hgw_detected_flag.default = "OK: NTTのHGWは存在しないようです。"
-end
-
---mapデータ表示用
+-- mapデータ表示用フォーム
 if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
-local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
--- local peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_fixlen, ipv6_56, fmr, fmr_json, wan_ipv6, wan32_ipv6, wan40_ipv6 = calib.get_mapconfig(wan_ipv6)
-
-o = s:option(DummyValue, "VNE", translate("VNE"))
-o.value = VNE or translate("Not available")
-
-o = s:option(DummyValue, "wan_ipv6", translate("WAN IPv6 Address"))
-o.value = wan_ipv6 or translate("Not available")
-
-o = s:option(DummyValue, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
-o.value = ipv4_prefix or translate("No matching IPv4 prefix found.")
-
-o = s:option(DummyValue, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
-o.value = ipv4_prefixlen or translate("Not available")
-
-o = s:option(DummyValue, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
-o.value = ipv6_prefixlen or translate("Not available")
-
-o = s:option(DummyValue, "ipv6_prefix", translate("IPv6 Prefix"))
-o.value = ipv6_prefix
-
-o = s:option(DummyValue, "ealen", translate("EA Length"))
-o.value = ealen
-
-o = s:option(DummyValue, "psidlen", translate("PSID Length"))
-o.value = psidlen
-
-o = s:option(DummyValue, "offset", translate("Offset"))
-o.value = offset
-
-o = s:option(DummyValue, "ipv6_56", translate("IPv6_56"))
-o.value = ipv6_56
-
-o = s:option(DummyValue, "peeraddr", translate("peeraddr"))
-o.value = peeraddr
-
+    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
 end
+
+
+-- WAN設定選択リスト --
+m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
+
+s = m:section(TypedSection, "ipoe", "")
+s.addremove = false
+s.anonymous = true
+
+choice = s:option(ListValue, "wan_setup", "操作")
+choice:value("ipoe_v6plus", "v6プラス")
+choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
+choice:value("ipoe_biglobe", "IPv6オプション")
+choice:value("ipoe_transix", "transix")
+choice:value("ipoe_xpass", "クロスパス")
+choice:value("ipoe_v6connect", "v6コネクト")
+choice:value("pppoe_ipv4", "PPPoE接続")
+choice:value("bridge_mode", "ブリッジ・APモード")
+
+msg_text = s:option(DummyValue, "smg_text", "【注意】")
+msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
+msg_text:depends("wan_setup", "bridge_mode")
+
+-- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
+username = s:option(Value, "username", "PPPoE ユーザー名")
+password = s:option(Value, "password", "PPPoE パスワード")
+password.password = true
+username:depends("wan_setup", "pppoe_ipv4")
+password:depends("wan_setup", "pppoe_ipv4")
+
+    
+        -- WAN IPv6 Address
+        o = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return wan_ipv6 or translate("Not available")
+        end
+        
+        -- IPV4 Prefix
+        local o = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return ipv4_prefix or translate("No matching IPv4 prefix found.")
+        end
+        
+        -- IPV4 Prefix Length
+        o = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return ipv4_prefixlen or translate("Not available")
+        end
+        
+        -- IPV6 Prefix Length
+        o = s:option(Value, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return ipv6_prefixlen or translate("Not available")
+        end
+        
+        -- IPV6 Prefix
+        o = s:option(Value, "ipv6_prefix", translate("IPv6 Prefix"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return ipv6_prefix
+        end
+        
+        -- EA Length
+        o = s:option(Value, "ealen", translate("EA Length"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return ealen
+        end
+        
+        -- PSID Length
+        o = s:option(Value, "psidlen", translate("PSID Length"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return psidlen
+        end
+        
+        -- Offset
+        o = s:option(Value, "offset", translate("Offset"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return offset
+        end
+        
+        -- IPv6_56
+        o = s:option(Value, "ipv6_56", translate("IPv6_56"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return ipv6_56
+        end
+        
+        -- Peer Address
+        o = s:option(Value, "peeraddr", translate("Peer Address"))
+        o:depends("wan_setup", "ipoe_v6plus")
+        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        o:depends("wan_setup", "ipoe_biglobe")
+        function o.cfgvalue(self, section)
+            return peeraddr
+        end
+
 
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作
@@ -291,7 +335,7 @@ function choice.write(self, section, value)
             uci:set("system", "@system[0]", "timezone", "JST-9")
             uci:commit("system")
 
-            http.write("<script>alert('本体は設定変更、再起動中です。ブラウザは閉じて数分お待ちください。');</script>")    
+            http.write("<script>alert('本体は設定変更後ネットワークのリスタートをします。ブラウザは閉じてください。');</script>")    
     
     if value == "pppoe_ipv4" then        
         -- PPPoE設定を適用
@@ -313,21 +357,48 @@ function choice.write(self, section, value)
         uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
         uci:commit("firewall")
         
-    elseif value == "ipoe_v6plus" then      
+    elseif value == "ipoe_v6plus" then
         -- v6プラス
-            local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
-            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+        local ipv4_prefix = s:cfgvalue("ipv4_prefix")
+        local ipv4_prefixlen = s:cfgvalue("ipv4_prefixlen")
+        local ipv6_prefix = s:cfgvalue("ipv6_prefix")
+        local ipv6_prefixlen = s:cfgvalue("ipv6_prefixlen")
+        local ealen = s:cfgvalue("ealen")
+        local psidlen = s:cfgvalue("psidlen")
+        local offset = s:cfgvalue("offset")
+        local ipv6_56 = s:cfgvalue("ipv6_56")
+        local peeraddr = s:cfgvalue("peeraddr")
+
+        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
     
     elseif value == "ipoe_ocnvirtualconnect" then
         -- OCNバーチャルコネクト
-            local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
-            configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-        
+        local ipv4_prefix = s:cfgvalue("ipv4_prefix")
+        local ipv4_prefixlen = s:cfgvalue("ipv4_prefixlen")
+        local ipv6_prefix = s:cfgvalue("ipv6_prefix")
+        local ipv6_prefixlen = s:cfgvalue("ipv6_prefixlen")
+        local ealen = s:cfgvalue("ealen")
+        local psidlen = s:cfgvalue("psidlen")
+        local offset = s:cfgvalue("offset")
+        local ipv6_56 = s:cfgvalue("ipv6_56")
+        local peeraddr = s:cfgvalue("peeraddr")
+
+        configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+    
     elseif value == "ipoe_biglobe" then
         -- BIGLOBE IPv6オプション
-            local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
-            configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-        
+        local ipv4_prefix = s:cfgvalue("ipv4_prefix")
+        local ipv4_prefixlen = s:cfgvalue("ipv4_prefixlen")
+        local ipv6_prefix = s:cfgvalue("ipv6_prefix")
+        local ipv6_prefixlen = s:cfgvalue("ipv6_prefixlen")
+        local ealen = s:cfgvalue("ealen")
+        local psidlen = s:cfgvalue("psidlen")
+        local offset = s:cfgvalue("offset")
+        local ipv6_56 = s:cfgvalue("ipv6_56")
+        local peeraddr = s:cfgvalue("peeraddr")
+
+        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
+    
     elseif value == "ipoe_transix" then
         -- transix (ds-lite)
             gw_aftr = m.uci:get("ca_setup", "ipoe_transix", "gw_aftr")
@@ -383,8 +454,8 @@ function choice.write(self, section, value)
 end
 
 function m.on_after_commit(self)
-        -- 更新完了後の動作を入れる
-            luci.sys.reboot()
+    -- ネットワークサービスを再起動する
+    luci.sys.call("/etc/init.d/network restart")
 end
 
 return m

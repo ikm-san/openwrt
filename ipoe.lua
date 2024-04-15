@@ -242,7 +242,8 @@ end
 
 -- map-e v6 plus 接続設定関数
 function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-local ipv6_56 = wan_ipv6
+-- local ipv6_56 = wan_ipv6
+local ip6prefix = ipv6_56 .. "/56"
               
     -- DHCP LAN settings
     uci:set("dhcp", "lan", "dhcp")
@@ -268,7 +269,7 @@ local ipv6_56 = wan_ipv6
     uci:set("network", "wan6", "proto", "dhcpv6")
     uci:set("network", "wan6", "reqaddress", "try")
     uci:set("network", "wan6", "reqprefix", "auto")
-    uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "/56")
+    uci:set("network", "wan6", "ip6prefix", ip6prefix)
     
     -- WANMAP settings
     uci:section("network", "interface", "wanmap", {

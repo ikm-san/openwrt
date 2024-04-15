@@ -198,20 +198,7 @@ local function check_ntt_hgw()
     return false
 end
 
--- チェック結果の表示
-under_router_flag = s:option(DummyValue, "under_router", translate("WAN接続チェック"))
-if check_under_router() then
-    under_router_flag.default = "Private IPに繋がっているようですが、既存のルーターに接続していませんか？"
-else
-    under_router_flag.default = "Global IPに直接繋がっているようです。IPoE接続が設定可能です"
-end
 
-hgw_detected_flag = s:option(DummyValue, "hgw_detected", translate("NTT HGWチェック"))
-if check_ntt_hgw() then
-    hgw_detected_flag.default = "NTTのHGWが見つかりました。"
-else
-    hgw_detected_flag.default = "NTTのHGWは見つかりませんでした。"
-end
 
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。IPoE接続の場合は、ONUに直接つないでから実行してください。")

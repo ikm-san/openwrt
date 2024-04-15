@@ -231,13 +231,13 @@ end
 
 
 -- WAN設定選択リスト --
-m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
+m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
 
 s = m:section(TypedSection, "ipoe", "")
 s.addremove = false
 s.anonymous = true
 
-choice = s:option(ListValue, "wan_setup", "操作")
+choice = s:option(ListValue, "wan_setup", "WAN設定")
 choice:value("ipoe_v6plus", "v6プラス")
 choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
 choice:value("ipoe_biglobe", "IPv6オプション")
@@ -258,7 +258,6 @@ password.password = true
 username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
-    
         -- WAN IPv6 Address
         o = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
         o:depends("wan_setup", "ipoe_v6plus")
@@ -330,17 +329,8 @@ password:depends("wan_setup", "pppoe_ipv4")
         function o.cfgvalue(self, section)
             return offset
         end
-        
-        -- IPv6_56
-        o = s:option(Value, "ipv6_56", translate("IPv6_56"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
-            return ipv6_56
-        end
-        
-        -- Peer Address
+              
+        -- Peer Addr
         o = s:option(Value, "peeraddr", translate("Peer Address"))
         o:depends("wan_setup", "ipoe_v6plus")
         o:depends("wan_setup", "ipoe_ocnvirtualconnect")

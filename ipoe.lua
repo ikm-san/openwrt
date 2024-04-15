@@ -14,35 +14,6 @@ local VNE = calib.dtermineVNE(wan_ipv6)
 -- BRANDの判定 --
 local brandcheck = calib.brandcheck()
 
--- WAN設定選択リスト --
-m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
-
-s = m:section(TypedSection, "ipoe", "")
-s.addremove = false
-s.anonymous = true
-
-choice = s:option(ListValue, "wan_setup", "操作")
-choice:value("ipoe_v6plus", "v6プラス")
-choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
-choice:value("ipoe_biglobe", "IPv6オプション")
-choice:value("ipoe_transix", "transix")
-choice:value("ipoe_xpass", "クロスパス")
-choice:value("ipoe_v6connect", "v6コネクト")
-choice:value("pppoe_ipv4", "PPPoE接続")
-choice:value("bridge_mode", "ブリッジ・APモード")
-
-msg_text = s:option(DummyValue, "smg_text", "【注意】")
-msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
-msg_text:depends("wan_setup", "bridge_mode")
-
--- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
-username = s:option(Value, "username", "PPPoE ユーザー名")
-password = s:option(Value, "password", "PPPoE パスワード")
-password.password = true
-username:depends("wan_setup", "pppoe_ipv4")
-password:depends("wan_setup", "pppoe_ipv4")
-
-
 -- ds-lite接続設定関数
 local function configure_dslite_connection(gw_aftr)
     -- DHCP LAN設定
@@ -245,6 +216,35 @@ end
 -- mapデータ表示用フォーム
 if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
     local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
+end
+
+-- WAN設定選択リスト --
+m = Map("ca_setup", "WAN接続設定", "下記のリストより適切なものを選んで実行してください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
+
+s = m:section(TypedSection, "ipoe", "")
+s.addremove = false
+s.anonymous = true
+
+choice = s:option(ListValue, "wan_setup", "操作")
+choice:value("ipoe_v6plus", "v6プラス")
+choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
+choice:value("ipoe_biglobe", "IPv6オプション")
+choice:value("ipoe_transix", "transix")
+choice:value("ipoe_xpass", "クロスパス")
+choice:value("ipoe_v6connect", "v6コネクト")
+choice:value("pppoe_ipv4", "PPPoE接続")
+choice:value("bridge_mode", "ブリッジ・APモード")
+
+msg_text = s:option(DummyValue, "smg_text", "【注意】")
+msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
+msg_text:depends("wan_setup", "bridge_mode")
+
+-- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
+username = s:option(Value, "username", "PPPoE ユーザー名")
+password = s:option(Value, "password", "PPPoE パスワード")
+password.password = true
+username:depends("wan_setup", "pppoe_ipv4")
+password:depends("wan_setup", "pppoe_ipv4")
 
     o = s:option(Value, "VNE", translate("VNE"))
     o.value = VNE or translate("Not available")
@@ -278,9 +278,6 @@ if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IP
 
     o = s:option(Value, "peeraddr", translate("Peer Address"))
     o.value = peeraddr
-end
-
-
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function choice.write(self, section, value)

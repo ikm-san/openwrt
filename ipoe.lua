@@ -144,17 +144,6 @@ if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IP
         fipv6_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fipv6_prefixlen:depends("wan_setup", "ipoe_biglobe")
         
-
-        -- Peer Addr
-        fpeeraddr = s:option(Value, "peeraddr", translate("Peer Address"))
-        if peeraddr ~= nil then
-            fpeeraddr.default = peeraddr
-        else
-            fpeeraddr.default = "認識できません"
-        end
-        fpeeraddr:depends("wan_setup", "ipoe_v6plus")
-        fpeeraddr:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        fpeeraddr:depends("wan_setup", "ipoe_biglobe")
     
         -- IPV4 Prefix
         fipv4_prefix = s:option(Value, "ipv4_prefix", translate("IPv4 Prefix"))
@@ -211,7 +200,16 @@ if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IP
         foffset:depends("wan_setup", "ipoe_ocnvirtualconnect")
         foffset:depends("wan_setup", "ipoe_biglobe")
 
-
+        -- Peer Addr
+        fpeeraddr = s:option(Value, "peeraddr", translate("Peer Address"))
+        if peeraddr ~= nil then
+            fpeeraddr.default = peeraddr
+        else
+            fpeeraddr.default = "認識できません"
+        end
+        fpeeraddr:depends("wan_setup", "ipoe_v6plus")
+        fpeeraddr:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        fpeeraddr:depends("wan_setup", "ipoe_biglobe")
 
 end
     

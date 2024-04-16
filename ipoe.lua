@@ -5,9 +5,6 @@ local json = require("luci.jsonc")
 local ubus = require "ubus"
 local calib = require "calib" 
 
--- local fs = require "nixio.fs"
--- local http = require "luci.http"
-
 -- IPv6_56アドレスとprefixの取得 --
 local function getIPv6PrefixInfo()
     local handle = io.popen("ubus call network.interface.wan6 status")
@@ -27,13 +24,8 @@ end
    
 local ipv6Prefix, prefixLength = getIPv6PrefixInfo()
 
-
-
 -- WANのグローバルIPv6を取得 --
 local wan_ipv6 = calib.get_wan_ipv6_global() 
--- local wan_ipv6 = ipv6Prefix
-
-
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
@@ -77,7 +69,20 @@ local function check_ntt_hgw()
     return false
 end
 
+-- チェック結果の表示
+under_router_flag = s:option(DummyValue, "under_router", translate("WAN環境判定"))
+if check_under_router() then
+    under_router_flag.default = "Private IPに繋がっているようですが、既存のルーターに接続していませんか？"
+else
+    under_router_flag.default = "Global IPに直接繋がっているようです。IPoE接続が設定可能です"
+end
 
+hgw_detected_flag = s:option(DummyValue, "hgw_detected", translate("NTT HGW判定"))
+if check_ntt_hgw() then
+    hgw_detected_flag.default = "NTTのHGWにつながっていませんか？
+else
+    hgw_detected_flag.default = "NTTのHGWは見つかりませんでした"
+end
 
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")

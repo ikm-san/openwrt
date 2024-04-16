@@ -112,92 +112,92 @@ username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
         -- WAN IPv6 Address
-        o = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
+        wan_ipv6 = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
+        wan_ipv6:depends("wan_setup", "ipoe_v6plus")
+        wan_ipv6:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        wan_ipv6:depends("wan_setup", "ipoe_biglobe")
+        function wan_ipv6.cfgvalue(self, section)
             return wan_ipv6 or translate("Not available")
         end
         
         -- IPV4 Prefix
         local o = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
+        ipv4_prefix:depends("wan_setup", "ipoe_v6plus")
+        ipv4_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        ipv4_prefix:depends("wan_setup", "ipoe_biglobe")
+        function ipv4_prefix.cfgvalue(self, section)
             return ipv4_prefix or translate("No matching IPv4 prefix found.")
         end
         
         -- IPV4 Prefix Length
-        o = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
+        ipv4_prefixleno = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
+        ipv4_prefixlen:depends("wan_setup", "ipoe_v6plus")
+        ipv4_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        ipv4_prefixlen:depends("wan_setup", "ipoe_biglobe")
+        function ipv4_prefixlen.cfgvalue(self, section)
             return ipv4_prefixlen or translate("Not available")
         end
         
         -- IPV6 Prefix Length
-        o = s:option(Value, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
+        ipv6_prefixlen = s:option(Value, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
+        ipv6_prefixlen:depends("wan_setup", "ipoe_v6plus")
+        ipv6_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        ipv6_prefixlen:depends("wan_setup", "ipoe_biglobe")
+        function ipv6_prefixlen.cfgvalue(self, section)
             return ipv6_prefixlen or translate("Not available")
         end
         
         -- IPV6 Prefix
-        o = s:option(Value, "ipv6_prefix", translate("IPv6 Prefix"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
+        ipv6_prefix = s:option(Value, "ipv6_prefix", translate("IPv6 Prefix"))
+        ipv6_prefix:depends("wan_setup", "ipoe_v6plus")
+        ipv6_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        ipv6_prefix:depends("wan_setup", "ipoe_biglobe")
+        function ipv6_prefix.cfgvalue(self, section)
             return ipv6_prefix
         end
         
         -- EA Length
-        o = s:option(Value, "ealen", translate("EA Length"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
+        ealen = s:option(Value, "ealen", translate("EA Length"))
+        ealen:depends("wan_setup", "ipoe_v6plus")
+        ealen:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        ealen:depends("wan_setup", "ipoe_biglobe")
+        function ealen.cfgvalue(self, section)
             return ealen
         end
         
         -- PSID Length
-        o = s:option(Value, "psidlen", translate("PSID Length"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
+        psidlen = s:option(Value, "psidlen", translate("PSID Length"))
+        psidlen:depends("wan_setup", "ipoe_v6plus")
+        psidlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        psidlen:depends("wan_setup", "ipoe_biglobe")
+        function psidlen.cfgvalue(self, section)
             return psidlen
         end
         
         -- Offset
-        o = s:option(Value, "offset", translate("Offset"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
+        offset = s:option(Value, "offset", translate("Offset"))
+        offset:depends("wan_setup", "ipoe_v6plus")
+        offset:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        offset:depends("wan_setup", "ipoe_biglobe")
+        function offset.cfgvalue(self, section)
             return offset
         end
 
         -- IPv6_56
-        o = s:option(Value, "ipv6_56", translate("IPv6_56"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
+        ipv6_56 = s:option(Value, "ipv6_56", translate("IPv6_56"))
+        ipv6_56:depends("wan_setup", "ipoe_v6plus")
+        ipv6_56:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        ipv6_56:depends("wan_setup", "ipoe_biglobe")
+        function ipv6_56.cfgvalue(self, section)
             return ipv6_56
         end
 
         -- Peer Addr
-        o = s:option(Value, "peeraddr", translate("Peer Address"))
-        o:depends("wan_setup", "ipoe_v6plus")
-        o:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        o:depends("wan_setup", "ipoe_biglobe")
-        function o.cfgvalue(self, section)
+        peeraddr = s:option(Value, "peeraddr", translate("Peer Address"))
+        peeraddr:depends("wan_setup", "ipoe_v6plus")
+        peeraddr:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        peeraddr:depends("wan_setup", "ipoe_biglobe")
+        function peeraddr.cfgvalue(self, section)
             return peeraddr
         end
 
@@ -243,8 +243,6 @@ end
 
 -- map-e v6 plus 接続設定関数
 function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-local ipv6_56 = wan_ipv6
-
               
     -- DHCP LAN settings
     uci:set("dhcp", "lan", "dhcp")
@@ -300,7 +298,6 @@ end
 
 -- map-e OCN Virtual Connect 接続設定関数
 function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
-local ipv6_56 = wan_ipv6
       
     -- DHCP LAN settings
     uci:set("dhcp", "lan", "dhcp")
@@ -478,15 +475,15 @@ function choice.write(self, section, value)
     elseif value == "ipoe_v6plus" then
         -- v6プラス
         clean_wan_configuration()
-        local ipv4_prefix = self:formvalue(section..".ipv4_prefix") or s:cfgvalue("ipv4_prefix")
-        local ipv4_prefixlen = self:formvalue(section..".ipv4_prefixlen") or s:cfgvalue("ipv4_prefixlen")
-        local ipv6_prefix = self:formvalue(section..".ipv6_prefix") or s:cfgvalue("ipv6_prefix")
-        local ipv6_prefixlen = self:formvalue(section..".ipv6_prefixlen") or s:cfgvalue("ipv6_prefixlen")
-        local ealen = self:formvalue(section..".ealen") or s:cfgvalue("ealen")
-        local psidlen = self:formvalue(section..".psidlen") or s:cfgvalue("psidlen")
-        local offset = self:formvalue(section..".offset") or s:cfgvalue("offset")
-        local ipv6_56 = self:formvalue(section..".ipv6_56") or s:cfgvalue("ipv6_56")
-        local peeraddr = self:formvalue(section..".peeraddr") or s:cfgvalue("peeraddr")
+        local ipv4_prefix = ipv4_prefix:formvalue(section)
+        local ipv4_prefixlen = ipv4_prefixlen:formvalue(section)
+        local ipv6_prefix = ipv6_prefix:formvalue(section)
+        local ipv6_prefixlen = ipv6_prefixlen:formvalue(section)
+        local ealen = ealen:formvalue(section)
+        local psidlen = psidlen:formvalue(section)
+        local offset = offset:formvalue(section)
+        local ipv6_56 = ipv6_56:formvalue(section)
+        local peeraddr = peeraddr:formvalue(section)
 
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
     

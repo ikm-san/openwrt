@@ -224,7 +224,7 @@ if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IP
         fpeeraddr:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fpeeraddr:depends("wan_setup", "ipoe_biglobe")
 
-elseif
+else
 
 msg_textmap = s:option(DummyValue, "smg_text")
 msg_textmap.default = "ONUに直接つないでから実行してください。"

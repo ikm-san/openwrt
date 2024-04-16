@@ -79,7 +79,7 @@ end
 
 hgw_detected_flag = s:option(DummyValue, "hgw_detected", translate("NTT HGW判定"))
 if check_ntt_hgw() then
-    hgw_detected_flag.default = "NTTのHGWにつながっていませんか？
+    hgw_detected_flag.default = "NTTのHGWにつながっていませんか？"
 else
     hgw_detected_flag.default = "NTTのHGWは見つかりませんでした"
 end

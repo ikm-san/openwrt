@@ -97,6 +97,7 @@ choice:value("ipoe_transix", "transix")
 choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("pppoe_ipv4", "PPPoE接続")
+choice:value("dhcp_auto", "DHCP自動")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
 msg_text = s:option(DummyValue, "smg_text", "【注意】")
@@ -399,6 +400,54 @@ local function clean_wan_configuration()
     end
 end
 
+-- mapやdsliteの状態から、DHCP自動に戻すためのUCI設定関数 --
+local function apply_dhcp_configuration()
+    -- 指定された設定が存在するかどうかを確認し、存在する場合は削除する関数
+    local function delete_config(config, section, option, value)
+        if option then
+            uci:delete(config, section, option)
+        else
+            uci:delete(config, section)
+        end
+        if value then
+            for _, v in ipairs(value) do
+                uci:delete(config, section, option, v)
+            end
+        end
+    end
+
+    -- map, dslite, map6ra設定が存在するかチェック
+    local mapExists = uci:get("network", "wanmap") or uci:get("network", "map6ra") or uci:get("network", "dslite")
+
+    if mapExists then
+        -- 存在する場合、指定された設定を削除
+        delete_config("dhcp", "lan", "ndp")
+        delete_config("dhcp", "lan", "force")
+        delete_config("dhcp", "wan6")
+        delete_config("network", "wan", "auto")
+        delete_config("network", "wan6", "reqaddress")
+        delete_config("network", "wan6", "reqprefix")
+        delete_config("network", "wan6", "ip6prefix")
+        delete_config("network", "map6ra")
+        delete_config("network", "wanmap")
+        delete_config("network", "dslite")
+        delete_config("firewall", "@zone[1]", "network", {"wanmap", "map6ra"})
+    
+        -- DHCP関連設定の適用
+        uci:set("network", "wan", "proto", "dhcp")
+        uci:set("network", "wan6", "proto", "dhcpv6")
+        uci:set("dhcp", "lan", "interface", "lan")
+        uci:set("dhcp", "lan", "dhcpv6", "server")
+        uci:set("dhcp", "lan", "ra", "server")
+        uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
+    
+    end
+end
+
+
+
+
+
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function choice.write(self, section, value)
     
@@ -420,8 +469,12 @@ function choice.write(self, section, value)
         -- uci:commit("network")        
 
         uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
-        -- uci:commit("firewall")
-        
+        -- uci:commit("firewall")  
+
+    elseif value == "dhcp_auto" then
+        -- DHCP自動であるべきなので、関係ないWAN設定の確認と削除、DHCP自動に戻す設定動作
+        apply_dhcp_configuration()
+    
     elseif value == "ipoe_v6plus" then
         -- v6プラス
         clean_wan_configuration()

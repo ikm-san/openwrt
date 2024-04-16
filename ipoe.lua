@@ -77,8 +77,6 @@ end
 
 
 
-
-
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
 
@@ -316,8 +314,6 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     uci:delete("firewall", "@zone[1]", "network", "wan")
     uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap"})
 
-    -- uci:commit("network")     
-    -- uci:commit("firewall")
 end
 
 -- map-e OCN Virtual Connect 接続設定関数
@@ -337,8 +333,7 @@ function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, 
     uci:set("dhcp", "wan6", "master", "1")
     uci:set("dhcp", "wan6", "ra", "relay")
     uci:set("dhcp", "wan6", "dhcpv6", "relay")
-    uci:set("dhcp", "wan6", "ndp", "relay")
-    uci:commit("dhcp")  
+    uci:set("dhcp", "wan6", "ndp", "relay") 
 
     -- WAN settings
     uci:set("network", "wan", "auto", "0")
@@ -373,8 +368,6 @@ function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, 
     uci:delete("firewall", "@zone[1]", "network", "wan")
     uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap", "map6ra"})
 
-    -- uci:commit("network")     
-    -- uci:commit("firewall")
 end
 
 -- clean wan 関数 dsliteからmapへ戻す可能性があるとき用 --
@@ -474,23 +467,18 @@ function choice.write(self, section, value)
     
     if value == "pppoe_ipv4" then        
         -- PPPoE設定を適用
-        -- user = m.uci:get("ca_setup", "ipoe", "username")
-        -- pass = m.uci:get("ca_setup", "ipoe", "password")
          uci:section("network", "interface", "wan", {
             proto = "pppoe",
             username = username:formvalue(section),
             password = password:formvalue(section),
         })
-        -- uci:commit("network") 
-        -- uci:save() 
+
               
         -- WAN settings
         uci:set("network", "wan", "auto", "1")
-        uci:set("network", "wan6", "auto", "0")
-        -- uci:commit("network")        
+        uci:set("network", "wan6", "auto", "0")     
 
         uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
-        -- uci:commit("firewall")  
 
     elseif value == "dhcp_auto" then
         -- DHCP自動であるべきなので、関係ないWAN設定の確認と削除、DHCP自動に戻す設定動作
@@ -566,42 +554,32 @@ function choice.write(self, section, value)
             -- /etc/config/dhcp の設定変更
             uci:delete("dhcp", "lan", "ra_slaac")
             uci:set("dhcp", "lan", "ignore", "1")
-            -- uci:commit("dhcp")
             
             -- /etc/config/network の設定変更
             uci:delete("network", "lan", "ipaddr")
             uci:delete("network", "lan", "netmask")
             uci:delete("network", "lan", "ip6assign")
             uci:set("network", "lan", "proto", "dhcp")
-            -- uci:commit("network")
     
             -- /etc/config/dhcp の設定変更
             uci:delete("dhcp", "wan")
-            -- uci:commit("dhcp")
-
 
             uci:delete("network", "wan")
             uci:delete("network", "wan6")
-            -- uci:commit("network")
         
             -- wanインターフェースをbr-lanに接続
             uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 wan")
-            -- uci:commit("network")
         
             -- ホスト名を"WifiAP"に変更する
             uci:set("system", "@system[0]", "hostname", "WifiAP")
-            -- uci:commit("system")
-        
-            -- すべての変更をコミットする
-            -- uci:commit()
+
     end
 
 
 end
 
 function m.on_after_commit(self)
-    -- ネットワークサービスを再起動する
-    -- luci.sys.call("/etc/init.d/network restart")
+    -- LuciのSAVE＆APPLYボタンで設定の反映およびネットワークサービスを再起動する
 end
 
 return m

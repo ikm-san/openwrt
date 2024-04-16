@@ -64,11 +64,10 @@ wget -O /usr/lib/lua/luci/controller/ca_setup.lua https://raw.githubusercontent.
 wget -O /usr/lib/lua/calib.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/calib.lua  
 wget -O /usr/lib/lua/luci/model/cbi/ca_setup/ipoe.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/ipoe.lua  
 wget -O /usr/lib/lua/luci/model/cbi/ca_setup/wireless.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/wireless.lua  
-wget -O /usr/lib/lua/luci/model/cbi/ca_setup/update.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/update.lua  
 rm -rf /tmp/luci-*  
 /etc/init.d/uhttpd restart  
 
-再起動したほうが良いです。  
+念のため再起動したほうが良いかもしれません。  
 reboot  
 
 # CA設定メニュー
@@ -79,7 +78,7 @@ Luciの画面を表示した状態で接続環境を変更するとブラウザ�
 設定完了後再起動したらIPoEで使えるようになります。  
 
 # 動作検証に使用したハードウェア
-特にメッシュWiFiの動作は機種に依存する傾向が強いため、以下のモデルを用意してください。
+特にメッシュWiFiの動作は機種に依存する傾向が強いため、検証済みの以下のモデルを用意してください。
 * Linksys E8450-JP
 
 # Map系接続がよりスムーズに動く更新スクリプト
@@ -98,4 +97,4 @@ wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubuserco
 # スペシャルサンクス
 https://ipv4.web.fc2.com/map-e.html -- 簡易マップの道を切り開いてくれた偉人  
 https://qiita.com/site_u -- 日本のOpenWrtコミュニティに多大な貢献をされている偉人、心の師匠  
-https://github.com/fakemanhk/openwrt-jp-ipoe -- map.shをv6プラスに合わせてアップデートしてくれたすばらしき偉人  
+https://github.com/fakemanhk/openwrt-jp-ipoe -- map.shを日本の実装環境合わせてカスタマイズしてくれたすばらしき偉人  

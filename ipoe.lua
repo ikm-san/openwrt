@@ -494,7 +494,7 @@ function choice.write(self, section, value)
         local offset = foffset:formvalue(section)
         local ipv6_56 = fipv6_56:formvalue(section)
         local peeraddr = fpeeraddr:formvalue(section) 
-        local prefixLength = prefixLength:formvalue(section)
+        local prefixLength = fprefixLength:formvalue(section)
 
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, prefixLength)
     
@@ -510,7 +510,7 @@ function choice.write(self, section, value)
         local offset = foffset:formvalue(section)
         local ipv6_56 = fipv6_56:formvalue(section)
         local peeraddr = fpeeraddr:formvalue(section)
-        local prefixLength = prefixLength:formvalue(section)
+        local prefixLength = fprefixLength:formvalue(section)
 
         configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, prefixLength)
     
@@ -526,7 +526,7 @@ function choice.write(self, section, value)
         local offset = foffset:formvalue(section)
         local ipv6_56 = fipv6_56:formvalue(section)
         local peeraddr = fpeeraddr:formvalue(section)
-        local prefixLength = prefixLength:formvalue(section)
+        local prefixLength = fprefixLength:formvalue(section)
 
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, prefixLength)
     

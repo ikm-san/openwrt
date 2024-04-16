@@ -130,7 +130,7 @@ password:depends("wan_setup", "pppoe_ipv4")
         end
         
         -- IPV4 Prefix Length
-        ipv4_prefixleno = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
+        ipv4_prefixlen = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
         ipv4_prefixlen:depends("wan_setup", "ipoe_v6plus")
         ipv4_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
         ipv4_prefixlen:depends("wan_setup", "ipoe_biglobe")

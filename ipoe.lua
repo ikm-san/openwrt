@@ -5,33 +5,16 @@ local json = require("luci.jsonc")
 local ubus = require "ubus"
 local calib = require "calib" 
 
--- IPv6_56アドレスとprefixの取得 --
-local function getIPv6PrefixInfo()
-    local handle = io.popen("ubus call network.interface.wan6 status")
-    local result = handle:read("*a")
-    handle:close()
-
-    local data = json.parse(result)
-    local ipv6Prefix, prefixLength = "not found", "not found"
-    
-    if data["route"] and data["route"][1] then
-        ipv6Prefix = data["route"][1].target or ipv6Prefix
-        prefixLength = data["route"][1].mask or prefixLength
-    end
-
-    return ipv6Prefix, prefixLength
-end
-   
-local ipv6Prefix, prefixLength = getIPv6PrefixInfo()
-
 -- WANのグローバルIPv6を取得 --
 local wan_ipv6 = calib.get_wan_ipv6_global() 
+
+-- RAかDHCPで割り当てられたIPv6 Addressとprefixの値取得 --
+local ipv6Prefix, prefixLength = calib.getIPv6PrefixInfo()
+
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
 
--- BRANDの判定 --
-local brandcheck = calib.brandcheck()
 
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")

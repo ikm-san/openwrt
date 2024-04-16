@@ -355,6 +355,50 @@ local ipv6_56 = wan_ipv6
     -- uci:commit("firewall")
 end
 
+-- clean wan 関数 dsliteからmapへ戻す可能性があるとき用 --
+local function clean_wan_configuration()
+    -- 指定された設定が存在するかどうかを確認し、存在する場合は削除する関数
+    local function delete_config(config, section, option, value)
+        if option then
+            uci:delete(config, section, option)
+        else
+            uci:delete(config, section)
+        end
+        if value then
+            for _, v in ipairs(value) do
+                uci:delete(config, section, option, v)
+            end
+        end
+    end
+
+    -- map, dslite, map6ra設定が存在するかチェック
+    local mapExists = uci:get("network", "wanmap") or uci:get("network", "map6ra") or uci:get("network", "dslite")
+
+    if mapExists then
+        -- 存在する場合、指定された設定を削除
+        delete_config("dhcp", "lan", "ndp")
+        delete_config("dhcp", "lan", "force")
+        delete_config("dhcp", "wan6")
+        delete_config("network", "wan", "auto")
+        delete_config("network", "wan6", "reqaddress")
+        delete_config("network", "wan6", "reqprefix")
+        delete_config("network", "wan6", "ip6prefix")
+        delete_config("network", "map6ra")
+        delete_config("network", "wanmap")
+        delete_config("network", "dslite")
+        delete_config("firewall", "@zone[1]", "network", {"wanmap", "map6ra"})
+    
+        -- DHCP関連設定の適用
+        uci:set("network", "wan", "proto", "dhcp")
+        uci:set("network", "wan6", "proto", "dhcpv6")
+        uci:set("dhcp", "lan", "interface", "lan")
+        uci:set("dhcp", "lan", "dhcpv6", "server")
+        uci:set("dhcp", "lan", "ra", "server")
+        uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
+                   
+    end
+end
+
 -- LuciのSAVE＆APPLYボタンが押された時の動作
 function choice.write(self, section, value)
     
@@ -380,6 +424,7 @@ function choice.write(self, section, value)
         
     elseif value == "ipoe_v6plus" then
         -- v6プラス
+        clean_wan_configuration()
         local ipv4_prefix = self:formvalue(section..".ipv4_prefix") or s:cfgvalue("ipv4_prefix")
         local ipv4_prefixlen = self:formvalue(section..".ipv4_prefixlen") or s:cfgvalue("ipv4_prefixlen")
         local ipv6_prefix = self:formvalue(section..".ipv6_prefix") or s:cfgvalue("ipv6_prefix")
@@ -394,6 +439,7 @@ function choice.write(self, section, value)
     
     elseif value == "ipoe_ocnvirtualconnect" then
         -- OCNバーチャルコネクト
+        clean_wan_configuration()
         local ipv4_prefix = self:formvalue(section..".ipv4_prefix") or s:cfgvalue("ipv4_prefix")
         local ipv4_prefixlen = self:formvalue(section..".ipv4_prefixlen") or s:cfgvalue("ipv4_prefixlen")
         local ipv6_prefix = self:formvalue(section..".ipv6_prefix") or s:cfgvalue("ipv6_prefix")
@@ -408,6 +454,7 @@ function choice.write(self, section, value)
     
     elseif value == "ipoe_biglobe" then
         -- BIGLOBE IPv6オプション
+        clean_wan_configuration()
         local ipv4_prefix = self:formvalue(section..".ipv4_prefix") or s:cfgvalue("ipv4_prefix")
         local ipv4_prefixlen = self:formvalue(section..".ipv4_prefixlen") or s:cfgvalue("ipv4_prefixlen")
         local ipv6_prefix = self:formvalue(section..".ipv6_prefix") or s:cfgvalue("ipv6_prefix")
@@ -421,22 +468,26 @@ function choice.write(self, section, value)
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
     
     elseif value == "ipoe_transix" then
-        -- transix (ds-lite)
+            -- transix (ds-lite)
+            clean_wan_configuration()
             gw_aftr = m.uci:get("ca_setup", "ipoe_transix", "gw_aftr")
             configure_dslite_connection(gw_aftr)
     
     elseif value == "ipoe_xpass" then
-        -- クロスパス (ds-lite)
+            -- クロスパス (ds-lite)
+            clean_wan_configuration()
             gw_aftr = m.uci:get("ca_setup", "ipoe_xpass", "gw_aftr")
             configure_dslite_connection(gw_aftr)
         
     elseif value == "ipoe_v6connect" then
-        -- v6コネクト
+            -- v6コネクト
+            clean_wan_configuration()
             gw_aftr = m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr")
             configure_dslite_connection(gw_aftr)
         
     elseif value == "bridge_mode" then
             -- ブリッジモード設定の適用
+            clean_wan_configuration()
 
             -- /etc/config/dhcp の設定変更
             uci:delete("dhcp", "lan", "ra_slaac")

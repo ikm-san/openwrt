@@ -76,7 +76,7 @@ local function configure_WiFi(section)
     uci:delete("wireless", "default_radio0")
     uci:delete("wireless", "default_radio1")
     uci:delete("wireless", "default_radio2")
-    uci:commit("wireless")
+    -- uci:commit("wireless")
 
     local devices = {"radio0", "radio1", "radio2"}
     for index, dev in ipairs(devices) do
@@ -120,9 +120,9 @@ local function configure_WiFi(section)
         uci:set("wireless", "radio1", "channels", "36 40 44 48 52 56 60 64")
         
         -- 設定をコミット
-        uci:commit("wireless")  
-        sys.call("wifi down")
-        sys.call("wifi up")
+        -- uci:commit("wireless")  
+        -- sys.call("wifi down")
+        -- sys.call("wifi up")
 end
 
 
@@ -146,7 +146,7 @@ local function configure_meshWiFi(section)
         -- uci:delete("wireless", radio, "disabled")
     end
 
-    uci:commit("wireless")
+    -- uci:commit("wireless")
 
 end
 
@@ -161,18 +161,18 @@ local function configure_bat_parent(setion)
             gw_mode = "server",
             hop_penalty = "30"
         })
-        uci:commit("network")
+        -- uci:commit("network")
     
         -- メッシュインターフェイスの設定
         uci:section("network", "interface", "batmesh", {
             proto = "batadv_hardif",
             master = "bat0"
         })
-        uci:commit("network")
+        -- uci:commit("network")
 
         -- firewallのzone[0]のnetworkオプションに'lan'と'batmesh'を設定
         uci:set_list("firewall", "@zone[0]", "network", {"lan", "batmesh"})
-        uci:commit("firewall")
+        -- uci:commit("firewall")
 
     
         -- ワイヤレス設定
@@ -180,12 +180,12 @@ local function configure_bat_parent(setion)
         uci:set("wireless", "wifinet10", "network", "batmesh")
         uci:set("wireless", "wifinet11", "mesh_fwding", "0")
         uci:set("wireless", "wifinet11", "network", "batmesh")
-        uci:commit("wireless")
+        -- uci:commit("wireless")
 
         -- LANポートとB.A.T.M.A.N.インターフェイスのブリッジ設定
         uci:set("network", "batmesh", "device", "br-lan")
         uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 bat0")
-        uci:commit("network")
+        -- uci:commit("network")
        
 end
 
@@ -200,7 +200,7 @@ local function configure_bat_child(setion)
             gw_mode = "client",
             hop_penalty = "30"
         })
-        uci:commit("network")
+        -- uci:commit("network")
     
         -- メッシュインターフェイスの設定
         uci:section("network", "interface", "batmesh", {
@@ -214,12 +214,12 @@ local function configure_bat_child(setion)
         uci:set("wireless", "wifinet10", "network", "batmesh")
         uci:set("wireless", "wifinet11", "mesh_fwding", "0")
         uci:set("wireless", "wifinet11", "network", "batmesh")
-        uci:commit("wireless")
+        -- uci:commit("wireless")
 
         -- LANポートとB.A.T.M.A.N.インターフェイスのブリッジ設定
         uci:set("network", "batmesh", "device", "br-lan")
         uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 bat0")
-        uci:commit("network")
+        -- uci:commit("network")
         
 end
 
@@ -295,7 +295,7 @@ end
 
 function m.on_after_commit(self)
         -- 再起動して設定を反映
-        luci.sys.reboot()
+        -- luci.sys.reboot()
 end
 
 return m

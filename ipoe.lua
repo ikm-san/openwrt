@@ -220,7 +220,7 @@ local function configure_dslite_connection(gw_aftr)
         tunlink = 'wan6',
         mtu = '1460'
     })
-    uci:commit("network")
+    -- uci:commit("network")
     
     -- DHCP関連設定
     uci:set("dhcp", "wan6", "dhcp")
@@ -230,13 +230,13 @@ local function configure_dslite_connection(gw_aftr)
     uci:set("dhcp", "wan6", "dhcpv6", "relay")
     uci:set("dhcp", "wan6", "ra", "relay")
     uci:set("dhcp", "wan6", "ndp", "relay")
-    uci:commit("dhcp")
+    -- uci:commit("dhcp")
 
     os.execute([[sed -i -e 's/mtu:-1280/mtu:-1460/g' /lib/netifd/proto/dslite.sh]])
 
     -- DS-LiteインターフェースをWANゾーンに追加
     uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
-    uci:commit("firewall")
+    -- uci:commit("firewall")
 
 end
 
@@ -351,8 +351,8 @@ local ipv6_56 = wan_ipv6
     uci:delete("firewall", "@zone[1]", "network", "wan")
     uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap", "map6ra"})
 
-    uci:commit("network")     
-    uci:commit("firewall")
+    -- uci:commit("network")     
+    -- uci:commit("firewall")
 end
 
 -- LuciのSAVE＆APPLYボタンが押された時の動作
@@ -367,16 +367,16 @@ function choice.write(self, section, value)
             username = username:formvalue(section),
             password = password:formvalue(section),
         })
-        uci:commit("network") 
-        uci:save() 
+        -- uci:commit("network") 
+        -- uci:save() 
               
         -- WAN settings
         uci:set("network", "wan", "auto", "1")
         uci:set("network", "wan6", "auto", "0")
-        uci:commit("network")        
+        -- uci:commit("network")        
 
         uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
-        uci:commit("firewall")
+        -- uci:commit("firewall")
         
     elseif value == "ipoe_v6plus" then
         -- v6プラス
@@ -441,34 +441,34 @@ function choice.write(self, section, value)
             -- /etc/config/dhcp の設定変更
             uci:delete("dhcp", "lan", "ra_slaac")
             uci:set("dhcp", "lan", "ignore", "1")
-            uci:commit("dhcp")
+            -- uci:commit("dhcp")
             
             -- /etc/config/network の設定変更
             uci:delete("network", "lan", "ipaddr")
             uci:delete("network", "lan", "netmask")
             uci:delete("network", "lan", "ip6assign")
             uci:set("network", "lan", "proto", "dhcp")
-            uci:commit("network")
+            -- uci:commit("network")
     
             -- /etc/config/dhcp の設定変更
             uci:delete("dhcp", "wan")
-            uci:commit("dhcp")
+            -- uci:commit("dhcp")
 
 
             uci:delete("network", "wan")
             uci:delete("network", "wan6")
-            uci:commit("network")
+            -- uci:commit("network")
         
             -- wanインターフェースをbr-lanに接続
             uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 wan")
-            uci:commit("network")
+            -- uci:commit("network")
         
             -- ホスト名を"WifiAP"に変更する
             uci:set("system", "@system[0]", "hostname", "WifiAP")
-            uci:commit("system")
+            -- uci:commit("system")
         
             -- すべての変更をコミットする
-            uci:commit()
+            -- uci:commit()
     end
 
 

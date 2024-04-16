@@ -4,9 +4,6 @@ local json = require("luci.jsonc")
 local io = require("io")
 local ubus = require "ubus"
 
--- local fs = require "nixio.fs"
--- local http = require "luci.http"
-
 local M = {}
 
 -- IPv6_56アドレスとprefixの取得 --

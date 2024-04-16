@@ -1,10 +1,12 @@
-local fs = require "nixio.fs"
+
 local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
-local calib = require "calib" 
 local json = require("luci.jsonc")
-local http = require "luci.http"
 local ubus = require "ubus"
+local calib = require "calib" 
+
+-- local fs = require "nixio.fs"
+-- local http = require "luci.http"
 
 -- IPv6_56アドレスとprefixの取得 --
 local function getIPv6PrefixInfo()

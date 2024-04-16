@@ -232,7 +232,6 @@ local function configure_dslite_connection(gw_aftr)
         tunlink = 'wan6',
         mtu = '1460'
     })
-    -- uci:commit("network")
     
     -- DHCP関連設定
     uci:set("dhcp", "wan6", "dhcp")
@@ -242,13 +241,11 @@ local function configure_dslite_connection(gw_aftr)
     uci:set("dhcp", "wan6", "dhcpv6", "relay")
     uci:set("dhcp", "wan6", "ra", "relay")
     uci:set("dhcp", "wan6", "ndp", "relay")
-    -- uci:commit("dhcp")
 
     os.execute([[sed -i -e 's/mtu:-1280/mtu:-1460/g' /lib/netifd/proto/dslite.sh]])
 
     -- DS-LiteインターフェースをWANゾーンに追加
     uci:set_list("firewall", "@zone[1]", "network", {"wan", "wan6"})
-    -- uci:commit("firewall")
 
 end
 
@@ -270,7 +267,6 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     uci:set("dhcp", "wan6", "ra", "relay")
     uci:set("dhcp", "wan6", "dhcpv6", "relay")
     uci:set("dhcp", "wan6", "ndp", "relay")
-    uci:commit("dhcp")  
 
     -- WAN settings
     uci:set("network", "wan", "auto", "0")
@@ -467,7 +463,6 @@ function choice.write(self, section, value)
         -- WAN settings
         uci:set("network", "wan", "auto", "1")
         uci:set("network", "wan6", "auto", "0")     
-
         uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
 
     elseif value == "dhcp_auto" then
@@ -564,8 +559,6 @@ function choice.write(self, section, value)
             uci:set("system", "@system[0]", "hostname", "WifiAP")
 
     end
-
-
 end
 
 function m.on_after_commit(self)

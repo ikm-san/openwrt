@@ -207,7 +207,7 @@ local function configure_bat_child(setion)
             proto = "batadv_hardif",
             master = "bat0"
         })
-        uci:commit("network")
+        -- uci:commit("network")
     
         -- ワイヤレス設定
         uci:set("wireless", "wifinet10", "mesh_fwding", "0")
@@ -231,33 +231,33 @@ local function ap_mode()
             -- /etc/config/dhcp の設定変更
             uci:delete("dhcp", "lan", "ra_slaac")
             uci:set("dhcp", "lan", "ignore", "1")
-            uci:commit("dhcp")
+            -- uci:commit("dhcp")
             
             -- /etc/config/network の設定変更
             uci:delete("network", "lan", "ipaddr")
             uci:delete("network", "lan", "netmask")
             uci:delete("network", "lan", "ip6assign")
             uci:set("network", "lan", "proto", "dhcp")
-            uci:commit("network")
+            -- uci:commit("network")
     
             -- /etc/config/dhcp の設定変更
             uci:delete("dhcp", "wan")
-            uci:commit("dhcp")
+            -- uci:commit("dhcp")
 
 
             uci:delete("network", "wan")
             uci:delete("network", "wan6")
-            uci:commit("network")
+            -- uci:commit("network")
         
             -- wanインターフェースをbr-lanに接続
             uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 bat0 wan")
-            uci:commit("network")
+            -- uci:commit("network")
         
             -- ホスト名を"AP"に変更する
             uci:set("system", "@system[0]", "hostname", "AP")
             uci:set("system", "@system[0]", "zonename", "Asia/Tokyo")
             uci:set("system", "@system[0]", "timezone", "JST-9")
-            uci:commit("system")
+            -- uci:commit("system")
 
             os.execute('/etc/init.d/firewall disable && /etc/init.d/firewall stop')
             os.execute('/etc/init.d/dnsmasq disable && /etc/init.d/dnsmasq stop')
@@ -294,8 +294,7 @@ function choice.write(self, section, value)
 end
 
 function m.on_after_commit(self)
-        -- 再起動して設定を反映
-        -- luci.sys.reboot()
+    -- LuciのSAVE＆APPLYボタンで設定の反映およびネットワークサービスを再起動する
 end
 
 return m

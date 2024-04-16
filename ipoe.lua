@@ -113,94 +113,114 @@ password:depends("wan_setup", "pppoe_ipv4")
 
         -- WAN IPv6 Address
         wan_ipv6 = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
+        if wan_ipv6 ~= nil then
+            wan_ipv6.default = wan_ipv6
+        else
+            wan_ipv6.default = "Not available"
+        end
         wan_ipv6:depends("wan_setup", "ipoe_v6plus")
         wan_ipv6:depends("wan_setup", "ipoe_ocnvirtualconnect")
         wan_ipv6:depends("wan_setup", "ipoe_biglobe")
-        function wan_ipv6.cfgvalue(self, section)
-            return wan_ipv6 or translate("Not available")
-        end
+
         
         -- IPV4 Prefix
         ipv4_prefix = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
+        if ipv4_prefix ~= nil then
+            ipv4_prefix.default = ipv4_prefix
+        else
+            ipv4_prefix.default = "Not available"
+        end
         ipv4_prefix:depends("wan_setup", "ipoe_v6plus")
         ipv4_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
         ipv4_prefix:depends("wan_setup", "ipoe_biglobe")
-        function ipv4_prefix.cfgvalue(self, section)
-            return ipv4_prefix or translate("No matching IPv4 prefix found.")
-        end
         
         -- IPV4 Prefix Length
         ipv4_prefixlen = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
+        if ipv4_prefixlen ~= nil then
+            ipv4_prefixlen.default = ipv4_prefixlen
+        else
+            ipv4_prefixlen.default = "Not available"
+        end
         ipv4_prefixlen:depends("wan_setup", "ipoe_v6plus")
         ipv4_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
         ipv4_prefixlen:depends("wan_setup", "ipoe_biglobe")
-        function ipv4_prefixlen.cfgvalue(self, section)
-            return ipv4_prefixlen or translate("Not available")
-        end
         
         -- IPV6 Prefix Length
         ipv6_prefixlen = s:option(Value, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
+        if ipv6_prefixlen ~= nil then
+            ipv6_prefixlen.default = ipv6_prefixlen
+        else
+            ipv6_prefixlen.default = "Not available"
+        end
         ipv6_prefixlen:depends("wan_setup", "ipoe_v6plus")
         ipv6_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
         ipv6_prefixlen:depends("wan_setup", "ipoe_biglobe")
-        function ipv6_prefixlen.cfgvalue(self, section)
-            return ipv6_prefixlen or translate("Not available")
-        end
         
         -- IPV6 Prefix
         ipv6_prefix = s:option(Value, "ipv6_prefix", translate("IPv6 Prefix"))
+        if ipv6_prefix ~= nil then
+            ipv6_prefix.default = ipv6_prefix
+        else
+            ipv6_prefix.default = "Not available"
+        end
         ipv6_prefix:depends("wan_setup", "ipoe_v6plus")
         ipv6_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
         ipv6_prefix:depends("wan_setup", "ipoe_biglobe")
-        function ipv6_prefix.cfgvalue(self, section)
-            return ipv6_prefix
-        end
         
         -- EA Length
         ealen = s:option(Value, "ealen", translate("EA Length"))
+        if ealen ~= nil then
+            ealen.default = ealen
+        else
+            ealen.default = "Not available"
+        end
         ealen:depends("wan_setup", "ipoe_v6plus")
         ealen:depends("wan_setup", "ipoe_ocnvirtualconnect")
         ealen:depends("wan_setup", "ipoe_biglobe")
-        function ealen.cfgvalue(self, section)
-            return ealen
-        end
         
         -- PSID Length
         psidlen = s:option(Value, "psidlen", translate("PSID Length"))
+        if psidlen ~= nil then
+            psidlen.default = psidlen
+        else
+            psidlen.default = "Not available"
+        end
         psidlen:depends("wan_setup", "ipoe_v6plus")
         psidlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
         psidlen:depends("wan_setup", "ipoe_biglobe")
-        function psidlen.cfgvalue(self, section)
-            return psidlen
-        end
         
         -- Offset
         offset = s:option(Value, "offset", translate("Offset"))
+        if offset ~= nil then
+            offset.default = offset
+        else
+            offset.default = "Not available"
+        end
         offset:depends("wan_setup", "ipoe_v6plus")
         offset:depends("wan_setup", "ipoe_ocnvirtualconnect")
         offset:depends("wan_setup", "ipoe_biglobe")
-        function offset.cfgvalue(self, section)
-            return offset
-        end
 
         -- IPv6_56
         ipv6_56 = s:option(Value, "ipv6_56", translate("IPv6_56"))
+        if ipv6_56 ~= nil then
+            ipv6_56.default = ipv6_56
+        else
+            ipv6_56.default = "Not available"
+        end
         ipv6_56:depends("wan_setup", "ipoe_v6plus")
         ipv6_56:depends("wan_setup", "ipoe_ocnvirtualconnect")
         ipv6_56:depends("wan_setup", "ipoe_biglobe")
-        function ipv6_56.cfgvalue(self, section)
-            return ipv6_56
-        end
 
         -- Peer Addr
         peeraddr = s:option(Value, "peeraddr", translate("Peer Address"))
+        if peeraddr ~= nil then
+            peeraddr.default = peeraddr
+        else
+            peeraddr.default = "Not available"
+        end
         peeraddr:depends("wan_setup", "ipoe_v6plus")
         peeraddr:depends("wan_setup", "ipoe_ocnvirtualconnect")
         peeraddr:depends("wan_setup", "ipoe_biglobe")
-        function peeraddr.cfgvalue(self, section)
-            return peeraddr
-        end
-
 
 -- ds-lite接続設定関数
 local function configure_dslite_connection(gw_aftr)

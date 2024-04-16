@@ -293,8 +293,8 @@ local ipv6_56 = wan_ipv6
     uci:delete("firewall", "@zone[1]", "network", "wan")
     uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap"})
 
-    uci:commit("network")     
-    uci:commit("firewall")
+    -- uci:commit("network")     
+    -- uci:commit("firewall")
 end
 
 -- map-e OCN Virtual Connect 接続設定関数
@@ -476,7 +476,7 @@ end
 
 function m.on_after_commit(self)
     -- ネットワークサービスを再起動する
-    luci.sys.call("/etc/init.d/network restart")
+    -- luci.sys.call("/etc/init.d/network restart")
 end
 
 return m

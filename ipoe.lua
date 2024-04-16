@@ -76,10 +76,7 @@ local function check_ntt_hgw()
 end
 
 
--- mapデータ表示用フォーム
--- if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
-    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
--- end
+
 
 
 -- WAN設定選択リスト --
@@ -110,6 +107,11 @@ password = s:option(Value, "password", "PPPoE パスワード")
 password.password = true
 username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
+
+
+-- mapデータのフォーム表示用
+if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
+    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
 
         -- WAN IPv6 Address
         fwan_ipv6 = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
@@ -222,6 +224,8 @@ password:depends("wan_setup", "pppoe_ipv4")
         fpeeraddr:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fpeeraddr:depends("wan_setup", "ipoe_biglobe")
 
+end
+    
 -- ds-lite接続設定関数
 local function configure_dslite_connection(gw_aftr)
     -- DHCP LAN設定

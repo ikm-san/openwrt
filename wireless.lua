@@ -76,7 +76,6 @@ local function configure_WiFi(section)
     uci:delete("wireless", "default_radio0")
     uci:delete("wireless", "default_radio1")
     uci:delete("wireless", "default_radio2")
-    -- uci:commit("wireless")
 
     local devices = {"radio0", "radio1", "radio2"}
     for index, dev in ipairs(devices) do
@@ -118,11 +117,6 @@ local function configure_WiFi(section)
         uci:set("wireless", "radio1", "channel", "36")
         uci:set("wireless", "radio0", "channels", "1 6 11")
         uci:set("wireless", "radio1", "channels", "36 40 44 48 52 56 60 64")
-        
-        -- 設定をコミット
-        -- uci:commit("wireless")  
-        -- sys.call("wifi down")
-        -- sys.call("wifi up")
 end
 
 
@@ -145,9 +139,6 @@ local function configure_meshWiFi(section)
         -- uci:set("wireless", radio, "channel", "auto")
         -- uci:delete("wireless", radio, "disabled")
     end
-
-    -- uci:commit("wireless")
-
 end
 
 -- batmesh親機設定
@@ -231,39 +222,31 @@ local function ap_mode()
             -- /etc/config/dhcp の設定変更
             uci:delete("dhcp", "lan", "ra_slaac")
             uci:set("dhcp", "lan", "ignore", "1")
-            -- uci:commit("dhcp")
-            
+    
             -- /etc/config/network の設定変更
             uci:delete("network", "lan", "ipaddr")
             uci:delete("network", "lan", "netmask")
             uci:delete("network", "lan", "ip6assign")
             uci:set("network", "lan", "proto", "dhcp")
-            -- uci:commit("network")
     
             -- /etc/config/dhcp の設定変更
             uci:delete("dhcp", "wan")
-            -- uci:commit("dhcp")
-
-
+    
             uci:delete("network", "wan")
             uci:delete("network", "wan6")
-            -- uci:commit("network")
         
             -- wanインターフェースをbr-lanに接続
             uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 bat0 wan")
-            -- uci:commit("network")
         
             -- ホスト名を"AP"に変更する
             uci:set("system", "@system[0]", "hostname", "AP")
             uci:set("system", "@system[0]", "zonename", "Asia/Tokyo")
             uci:set("system", "@system[0]", "timezone", "JST-9")
-            -- uci:commit("system")
-
+    
             os.execute('/etc/init.d/firewall disable && /etc/init.d/firewall stop')
             os.execute('/etc/init.d/dnsmasq disable && /etc/init.d/dnsmasq stop')
             os.execute('/etc/init.d/odhcpd disable && /etc/init.d/odhcpd stop')
             os.rename("/etc/config/firewall", "/etc/config/firewall.unused")
-            -- すべての変更をコミットする
 end
 
 

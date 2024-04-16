@@ -456,6 +456,7 @@ function choice.write(self, section, value)
     
     if value == "pppoe_ipv4" then        
         -- PPPoE設定を適用
+        clean_wan_configuration()
          uci:section("network", "interface", "wan", {
             proto = "pppoe",
             username = username:formvalue(section),

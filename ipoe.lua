@@ -85,14 +85,14 @@ s.addremove = false
 s.anonymous = true
 
 choice = s:option(ListValue, "wan_setup", "WAN設定")
+choice:value("dhcp_auto", "DHCP自動")
+choice:value("pppoe_ipv4", "PPPoE接続")
 choice:value("ipoe_v6plus", "v6プラス")
 choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
 choice:value("ipoe_biglobe", "IPv6オプション")
 choice:value("ipoe_transix", "transix")
 choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
-choice:value("pppoe_ipv4", "PPPoE接続")
-choice:value("dhcp_auto", "DHCP自動")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
 msg_text = s:option(DummyValue, "smg_text", "【注意】")

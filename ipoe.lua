@@ -112,15 +112,15 @@ username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
         -- WAN IPv6 Address
-        wan_ipv6 = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
+        fwan_ipv6 = s:option(Value, "wan_ipv6", translate("WAN IPv6 Address"))
         if wan_ipv6 ~= nil then
-            wan_ipv6.default = wan_ipv6
+            fwan_ipv6.default = wan_ipv6
         else
-            wan_ipv6.default = "Not available"
+            fwan_ipv6.default = "Not available"
         end
-        wan_ipv6:depends("wan_setup", "ipoe_v6plus")
-        wan_ipv6:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        wan_ipv6:depends("wan_setup", "ipoe_biglobe")
+        fwan_ipv6:depends("wan_setup", "ipoe_v6plus")
+        fwan_ipv6:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        fwan_ipv6:depends("wan_setup", "ipoe_biglobe")
 
         
         -- IPV4 Prefix

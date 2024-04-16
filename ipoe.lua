@@ -69,6 +69,7 @@ local function check_ntt_hgw()
     return false
 end
 
+
 -- チェック結果の表示
 under_router_flag = s:option(DummyValue, "under_router", translate("WAN環境判定"))
 if check_under_router() then

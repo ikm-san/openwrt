@@ -124,103 +124,103 @@ password:depends("wan_setup", "pppoe_ipv4")
 
         
         -- IPV4 Prefix
-        ipv4_prefix = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
+        fipv4_prefix = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
         if ipv4_prefix ~= nil then
-            ipv4_prefix.default = ipv4_prefix
+            fipv4_prefix.default = ipv4_prefix
         else
-            ipv4_prefix.default = "Not available"
+            fipv4_prefix.default = "Not available"
         end
-        ipv4_prefix:depends("wan_setup", "ipoe_v6plus")
-        ipv4_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        ipv4_prefix:depends("wan_setup", "ipoe_biglobe")
+        fipv4_prefix:depends("wan_setup", "ipoe_v6plus")
+        fipv4_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        fipv4_prefix:depends("wan_setup", "ipoe_biglobe")
         
         -- IPV4 Prefix Length
-        ipv4_prefixlen = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
+        fipv4_prefixlen = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
         if ipv4_prefixlen ~= nil then
-            ipv4_prefixlen.default = ipv4_prefixlen
+            fipv4_prefixlen.default = ipv4_prefixlen
         else
-            ipv4_prefixlen.default = "Not available"
+            fipv4_prefixlen.default = "Not available"
         end
-        ipv4_prefixlen:depends("wan_setup", "ipoe_v6plus")
-        ipv4_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        ipv4_prefixlen:depends("wan_setup", "ipoe_biglobe")
+        fipv4_prefixlen:depends("wan_setup", "ipoe_v6plus")
+        fipv4_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        fipv4_prefixlen:depends("wan_setup", "ipoe_biglobe")
         
         -- IPV6 Prefix Length
-        ipv6_prefixlen = s:option(Value, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
+        fipv6_prefixlen = s:option(Value, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
         if ipv6_prefixlen ~= nil then
-            ipv6_prefixlen.default = ipv6_prefixlen
+            fipv6_prefixlen.default = ipv6_prefixlen
         else
-            ipv6_prefixlen.default = "Not available"
+            fipv6_prefixlen.default = "Not available"
         end
-        ipv6_prefixlen:depends("wan_setup", "ipoe_v6plus")
-        ipv6_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        ipv6_prefixlen:depends("wan_setup", "ipoe_biglobe")
+        fipv6_prefixlen:depends("wan_setup", "ipoe_v6plus")
+        fipv6_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        fipv6_prefixlen:depends("wan_setup", "ipoe_biglobe")
         
         -- IPV6 Prefix
-        ipv6_prefix = s:option(Value, "ipv6_prefix", translate("IPv6 Prefix"))
+        fipv6_prefix = s:option(Value, "ipv6_prefix", translate("IPv6 Prefix"))
         if ipv6_prefix ~= nil then
-            ipv6_prefix.default = ipv6_prefix
+            fipv6_prefix.default = ipv6_prefix
         else
-            ipv6_prefix.default = "Not available"
+            fipv6_prefix.default = "Not available"
         end
-        ipv6_prefix:depends("wan_setup", "ipoe_v6plus")
-        ipv6_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        ipv6_prefix:depends("wan_setup", "ipoe_biglobe")
+        fipv6_prefix:depends("wan_setup", "ipoe_v6plus")
+        fipv6_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        fipv6_prefix:depends("wan_setup", "ipoe_biglobe")
         
         -- EA Length
-        ealen = s:option(Value, "ealen", translate("EA Length"))
+        fealen = s:option(Value, "ealen", translate("EA Length"))
         if ealen ~= nil then
-            ealen.default = ealen
+            fealen.default = ealen
         else
-            ealen.default = "Not available"
+            fealen.default = "Not available"
         end
-        ealen:depends("wan_setup", "ipoe_v6plus")
-        ealen:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        ealen:depends("wan_setup", "ipoe_biglobe")
+        fealen:depends("wan_setup", "ipoe_v6plus")
+        fealen:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        fealen:depends("wan_setup", "ipoe_biglobe")
         
         -- PSID Length
-        psidlen = s:option(Value, "psidlen", translate("PSID Length"))
+        fpsidlen = s:option(Value, "psidlen", translate("PSID Length"))
         if psidlen ~= nil then
-            psidlen.default = psidlen
+            fpsidlen.default = psidlen
         else
-            psidlen.default = "Not available"
+            fpsidlen.default = "Not available"
         end
-        psidlen:depends("wan_setup", "ipoe_v6plus")
-        psidlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        psidlen:depends("wan_setup", "ipoe_biglobe")
+        fpsidlen:depends("wan_setup", "ipoe_v6plus")
+        fpsidlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        fpsidlen:depends("wan_setup", "ipoe_biglobe")
         
         -- Offset
-        offset = s:option(Value, "offset", translate("Offset"))
+        foffset = s:option(Value, "offset", translate("Offset"))
         if offset ~= nil then
-            offset.default = offset
+            foffset.default = offset
         else
-            offset.default = "Not available"
+            foffset.default = "Not available"
         end
-        offset:depends("wan_setup", "ipoe_v6plus")
-        offset:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        offset:depends("wan_setup", "ipoe_biglobe")
+        foffset:depends("wan_setup", "ipoe_v6plus")
+        foffset:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        foffset:depends("wan_setup", "ipoe_biglobe")
 
         -- IPv6_56
-        ipv6_56 = s:option(Value, "ipv6_56", translate("IPv6_56"))
+        fipv6_56 = s:option(Value, "ipv6_56", translate("IPv6_56"))
         if ipv6_56 ~= nil then
-            ipv6_56.default = ipv6_56
+            fipv6_56.default = ipv6_56
         else
-            ipv6_56.default = "Not available"
+            fipv6_56.default = "Not available"
         end
-        ipv6_56:depends("wan_setup", "ipoe_v6plus")
-        ipv6_56:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        ipv6_56:depends("wan_setup", "ipoe_biglobe")
+        fipv6_56:depends("wan_setup", "ipoe_v6plus")
+        fipv6_56:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        fipv6_56:depends("wan_setup", "ipoe_biglobe")
 
         -- Peer Addr
-        peeraddr = s:option(Value, "peeraddr", translate("Peer Address"))
+        fpeeraddr = s:option(Value, "peeraddr", translate("Peer Address"))
         if peeraddr ~= nil then
-            peeraddr.default = peeraddr
+            fpeeraddr.default = peeraddr
         else
-            peeraddr.default = "Not available"
+            fpeeraddr.default = "Not available"
         end
-        peeraddr:depends("wan_setup", "ipoe_v6plus")
-        peeraddr:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        peeraddr:depends("wan_setup", "ipoe_biglobe")
+        fpeeraddr:depends("wan_setup", "ipoe_v6plus")
+        fpeeraddr:depends("wan_setup", "ipoe_ocnvirtualconnect")
+        fpeeraddr:depends("wan_setup", "ipoe_biglobe")
 
 -- ds-lite接続設定関数
 local function configure_dslite_connection(gw_aftr)
@@ -495,15 +495,15 @@ function choice.write(self, section, value)
     elseif value == "ipoe_v6plus" then
         -- v6プラス
         clean_wan_configuration()
-        local ipv4_prefix = ipv4_prefix:formvalue(section)
-        local ipv4_prefixlen = ipv4_prefixlen:formvalue(section)
-        local ipv6_prefix = ipv6_prefix:formvalue(section)
-        local ipv6_prefixlen = ipv6_prefixlen:formvalue(section)
-        local ealen = ealen:formvalue(section)
-        local psidlen = psidlen:formvalue(section)
-        local offset = offset:formvalue(section)
-        local ipv6_56 = ipv6_56:formvalue(section)
-        local peeraddr = peeraddr:formvalue(section)
+        local ipv4_prefix = fipv4_prefix:formvalue(section)
+        local ipv4_prefixlen = fipv4_prefixlen:formvalue(section)
+        local ipv6_prefix = fipv6_prefix:formvalue(section)
+        local ipv6_prefixlen = fipv6_prefixlen:formvalue(section)
+        local ealen = fealen:formvalue(section)
+        local psidlen = fpsidlen:formvalue(section)
+        local offset = foffset:formvalue(section)
+        local ipv6_56 = fipv6_56:formvalue(section)
+        local peeraddr = fpeeraddr:formvalue(section)
 
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56)
     

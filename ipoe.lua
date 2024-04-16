@@ -121,7 +121,7 @@ password:depends("wan_setup", "pppoe_ipv4")
         end
         
         -- IPV4 Prefix
-        local o = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
+        ipv4_prefix = s:option(Value, "ipv4_prefix", translate("MAPE IPv4 Prefix"))
         ipv4_prefix:depends("wan_setup", "ipoe_v6plus")
         ipv4_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
         ipv4_prefix:depends("wan_setup", "ipoe_biglobe")

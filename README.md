@@ -82,12 +82,12 @@ Luciの画面を表示した状態で接続環境を変更するとブラウザ�
 設定完了後再起動したらIPoEで使えるようになります。  
 
 ## 動作検証に使用したハードウェア
-特にメッシュWiFiの動作は機種に依存する傾向が強いため、検証済みの以下のモデルを用意してください。
+以下のモデルにて動作検証を行いました。
 * Linksys E8450-JP
-* Linksys MX5300-JP with SNAPSHOT版
+* Linksys MX5300-JP (SNAPSHOT)
 
 ## Luciからインストールできるopkgファイル形式
-ターミナルからSSHでrootログインはちょっとという方向けのLuci管理画面からインストールできる[opkgファイル](https://github.com/ikm-san/openwrt/raw/main/opkg/luci-app-jpoe_1.0_all.ipk)用意しました。  
+ターミナルからSSHでrootログインはちょっと・・・という方向けのLuci管理画面からインストールできる[opkgファイル](https://github.com/ikm-san/openwrt/raw/main/opkg/luci-app-jpoe_1.0_all.ipk)用意しました。  
 
 ## Map系接続がよりスムーズに動く更新スクリプト
 そのままでも動きますが、ポートセットを有効活用できていないため通称ニチバンベンチ等でひっかかる現象が発生します。  

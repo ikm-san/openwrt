@@ -16,14 +16,14 @@ NTTフレッツ網を利用していない電力系やケーブルテレビ系�
 * PPPoE設定
 * アクセスポイント・ブリッジモード設定  
 
-# 事前準備と全体の流れ
+## 事前準備と全体の流れ
 OpenWrtは初期値で192.168.1.1です。  
 このままでは、ほかのルーターと競合する場合が多いです。  
 そのため、先にOpenWrtルーターのWANはどこにもつながずに、パソコン等の端末から192.168.1.1でLuciの管理画面に入り、  
 Interface - LAN を192.168.10.1に変更してほかのルーター下に置けるようにすることを推奨します。  
 その後、ターミナルから必要なファイルをローディングして、Luciの管理画面で設定するとIPoEで繋がります。
 
-# ターミナルへの入り方
+## ターミナルへの入り方
 Terminalをまず起動する  
 * Winの場合 - Win + X -> A で立ち上がります  
 * Macの場合 - CMD + Space -> terminalと入力して立ち上げるのが一番早いかも  
@@ -34,16 +34,17 @@ SSHログインできたら、#スクリプトへ進みます。
 もし、警告が出てできない場合は、以下のラインを実行して再度トライすれば入れます。  
 初回はyes/no/fingerprintあたりの設問が出ます。  
 
-#Win  
+#Win 
+```
 Clear-Content .ssh\known_hosts -Force  
-
-#Mac  
+```
+#Mac
+```
 ssh-keygen -R 192.168.10.1  
-
-
-# スクリプト
+```
+## スクリプト
 以下のコマンドを丸ごとコピペしてterminalに貼り付けてもらえれば順番に実行して数十秒で完了します。  
-
+```
 opkg update  
 opkg install curl  
 opkg remove wpad-basic-mbedtls  
@@ -67,32 +68,36 @@ wget -O /usr/lib/lua/luci/model/cbi/ca_setup/ipoe.lua https://raw.githubusercont
 wget -O /usr/lib/lua/luci/model/cbi/ca_setup/wireless.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/wireless.lua  
 rm -rf /tmp/luci-*  
 /etc/init.d/uhttpd restart  
-
+```
 念のため再起動したほうが良いかもしれません。  
+```
 reboot  
+```
 
-# CA設定メニュー
+## CA設定メニュー
 ブラウザから192.168.10.1と入力してLuciの管理画面からCA接続設定メニューを選びます。  
 IPoE接続については、必ずOpenWrtルーターをONU直下に接続した状態で、適切なものを選んで実行してください。  
 Luciの画面を表示した状態で接続環境を変更するとブラウザに残ったキャッシュが誤作動を起こす可能性があるので、  
 接続環境を例えばルーター下からONU下に途中で繋ぎ直したりした場合は一旦ブラウザを閉じてから設定を行なってください。  
 設定完了後再起動したらIPoEで使えるようになります。  
 
-# 動作検証に使用したハードウェア
+## 動作検証に使用したハードウェア
 特にメッシュWiFiの動作は機種に依存する傾向が強いため、検証済みの以下のモデルを用意してください。
 * Linksys E8450-JP
 * Linksys MX5300-JP with SNAPSHOT版
 
-# Luciからインストールできるopkgファイル形式
+## Luciからインストールできるopkgファイル形式
 ターミナルからSSHでrootログインはちょっとという方向けのLuci管理画面からインストールできるopkgファイル用意しました。  
 https://github.com/ikm-san/openwrt/raw/main/opkg/luci-app-jpoe_1.0_all.ipk  
 
-# Map系接続がよりスムーズに動く更新スクリプト
+## Map系接続がよりスムーズに動く更新スクリプト
 そのままでも動きますが、ポートセットを有効活用できていないため通称ニチバンベンチ等でひっかかる現象が発生します。  
 以下のfakemanhk氏とsite_u氏によってv6プラス仕様にカスタマイズされた下記map.shスクリプトに差し替えると、ニチバンベンチもスムーズにクリアします。
+```
 wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map.sh.new
+```
 
-# おわりに
+## おわりに
 すべてのVNEでの検証はできておりませんので、動作報告や不具合報告はGitHubかXでご連絡いただけると嬉しいです。  
 性能改善につながるスクリプトの改修提案もお待ちしております。  
 本ソフトウェアのmapデータは https://ipv4.web.fc2.com/map-e.html より参照した簡易mapデータです。  
@@ -100,7 +105,7 @@ wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubuserco
 
 当ソフトウェアの利用に関して、当方はいかなる責任も負いかねますのであらかじめ了承の上お使いください。  
 
-# スペシャルサンクス
+## スペシャルサンクス
 https://ipv4.web.fc2.com/map-e.html -- 簡易マップの道を切り開いてくれた偉人  
 https://qiita.com/site_u -- 日本のOpenWrtコミュニティに多大な貢献をされている偉人、心の師匠  
 https://github.com/fakemanhk/openwrt-jp-ipoe -- map.shを日本の実装環境合わせてカスタマイズしてくれたすばらしき偉人  

@@ -108,3 +108,4 @@ wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubuserco
 https://ipv4.web.fc2.com/map-e.html -- 簡易マップの道を切り開いてくれた偉人  
 https://qiita.com/site_u -- 日本のOpenWrtコミュニティに多大な貢献をされている偉人、心の師匠  
 https://github.com/fakemanhk/openwrt-jp-ipoe -- map.shを日本の実装環境合わせてカスタマイズしてくれたすばらしき偉人  
+https://utakamo.com/article/openwrt/beginner/intro01.html -- うたカモ技術ブログでOpenWrtソフト開発の基礎を学びました、知恵の偉人

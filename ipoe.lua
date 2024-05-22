@@ -245,6 +245,10 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
         encaplimit = "ignore"
     })
 
+    -- LAN settings
+    uci:delete("network", "globals", "ula_prefix") 
+    uci:set("network", "lan", "ip6assign", "64")
+   
     -- Firewall settings
     uci:delete("firewall", "@zone[1]", "network", "wan")
     uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap"})
@@ -298,7 +302,10 @@ function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, 
         mtu = "1460"
     })
 
-
+    -- LAN settings
+    uci:delete("network", "globals", "ula_prefix") 
+    uci:set("network", "lan", "ip6assign", "64")
+    
     -- Firewall settings
     uci:delete("firewall", "@zone[1]", "network", "wan")
     uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap", "map6ra"})

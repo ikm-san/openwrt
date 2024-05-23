@@ -225,6 +225,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     uci:set("network", "wan6", "proto", "dhcpv6")
     uci:set("network", "wan6", "reqaddress", "try")
     uci:set("network", "wan6", "reqprefix", "auto")
+    uci:set("network", "wan6", "ip6assign", "64")
     uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "/" .. prefixLength)
     
     -- WANMAP settings
@@ -276,13 +277,13 @@ function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, 
 
     -- WAN settings
     uci:set("network", "wan", "auto", "0")
-    
+   
     -- WAN6RA settings
     uci:section("network", "interface", "map6ra", {
         device = "wan",
         proto = "static",
         ip6gw = ipv6_56 .. "1",
-        ip6prefix = ipv6_56 .. "/" .. prefixLength,
+        ip6prefix = ipv6_56 .. "/64",
         ip6addr = ipv6_56 .. "1001"
     })
     

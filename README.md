@@ -84,6 +84,7 @@ Luciの画面を表示した状態で接続環境を変更するとブラウザ�
 ## 動作検証に使用したハードウェア
 以下のモデルにて動作検証を行いました。
 * Linksys E8450-JP
+* Linksys WHW03v2
   
 ## Luciからインストールできるopkgファイル形式
 ターミナルからSSHでrootログインはちょっと・・・という方向けのLuci管理画面からインストールできる[opkgファイル](https://github.com/ikm-san/openwrt/raw/main/opkg/luci-app-jpoe_1.0_all.ipk)用意しました。  

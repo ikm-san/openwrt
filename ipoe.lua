@@ -256,63 +256,6 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
 
 end
 
--- map-e OCN Virtual Connect 接続設定関数
-function configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, prefixLength)
-      
-    -- DHCP LAN settings
-    uci:set("dhcp", "lan", "dhcp")
-    uci:set("dhcp", "lan", "dhcpv6", "server")
-    uci:set("dhcp", "lan", "ra", "relay")
-    uci:set("dhcp", "lan", "ndp", "relay")
-    uci:set("dhcp", "lan", "force", "1")
-
-    -- DHCP WAN6 settings
-    uci:set("dhcp", "wan6", "dhcp")
-    uci:set("dhcp", "wan6", "interface", "wan6")
-    uci:set("dhcp", "wan6", "ignore", "1")
-    uci:set("dhcp", "wan6", "master", "1")
-    uci:set("dhcp", "wan6", "ra", "relay")
-    uci:set("dhcp", "wan6", "dhcpv6", "relay")
-    uci:set("dhcp", "wan6", "ndp", "relay") 
-
-    -- WAN settings
-    uci:set("network", "wan", "auto", "0")
-   
-    -- WAN6RA settings
-    uci:section("network", "interface", "map6ra", {
-        device = "wan",
-        proto = "static",
-        ip6gw = ipv6_56 .. "1",
-        ip6prefix = ipv6_56 .. "/64",
-        ip6addr = ipv6_56 .. "1001"
-    })
-    
-    -- WANMAP settings
-    uci:section("network", "interface", "wanmap", {
-        proto = "map",
-        maptype = "map-e",
-        peeraddr = peeraddr,
-        ipaddr = ipv4_prefix,
-        ip4prefixlen = ipv4_prefixlen,
-        ip6prefix = ipv6_prefix,
-        ip6prefixlen = ipv6_prefixlen,
-        ealen = ealen,
-        psidlen = psidlen,
-        offset = offset,
-        legacymap = "1",
-        mtu = "1460"
-    })
-
-    -- LAN settings
-    uci:delete("network", "globals", "ula_prefix") 
-    uci:set("network", "lan", "ip6assign", "64")
-    
-    -- Firewall settings
-    uci:delete("firewall", "@zone[1]", "network", "wan")
-    uci:set_list("firewall", "@zone[1]", "network", {"wan6", "wanmap", "map6ra"})
-
-end
-
 -- clean wan 関数 dsliteからmapへ戻す可能性があるとき用 --
 local function clean_wan_configuration()
     -- 指定された設定が存在するかどうかを確認し、存在する場合は削除する関数
@@ -457,7 +400,7 @@ function choice.write(self, section, value)
         local peeraddr = fpeeraddr:formvalue(section)
         local prefixLength = fprefixLength:formvalue(section)
 
-        configure_mape_ocn(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, prefixLength)
+        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, prefixLength)
     
     elseif value == "ipoe_biglobe" then
         -- BIGLOBE IPv6オプション

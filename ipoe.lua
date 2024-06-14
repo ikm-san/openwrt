@@ -50,113 +50,62 @@ password:depends("wan_setup", "pppoe_ipv4")
 if VNE == "v6プラス" or VNE == "OCNバーチャルコネクト" or VNE == "IPv6オプション" then
     local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
 
-        -- IPv6 Address
         fipv6_56 = s:option(Value, "ipv6_56", translate("IPv6 Address"))
-        if ipv6_56 ~= nil then
-            fipv6_56.default = ipv6_56
-        else
-            fipv6_56.default = "認識できません"
-        end
+        fipv6_56.default = ipv6_56 or "認識できません"
         fipv6_56:depends("wan_setup", "ipoe_v6plus")
         fipv6_56:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fipv6_56:depends("wan_setup", "ipoe_biglobe")
-
-        -- IPv6 Addr Prefix
+        
         fprefixLength = s:option(Value, "prefixLength", translate("IPv6 Addr Prefix"))
-        if prefixLength ~= nil then
-            fprefixLength.default = prefixLength
-        else
-            fprefixLength.default = "認識できません"
-        end
+        fprefixLength.default = prefixLength or "認識できません"
         fprefixLength:depends("wan_setup", "ipoe_v6plus")
         fprefixLength:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fprefixLength:depends("wan_setup", "ipoe_biglobe")
-    
-        -- IPV6 Prefix
+        
         fipv6_prefix = s:option(Value, "ipv6_prefix", translate("IPv6 Prefix"))
-        if ipv6_prefix ~= nil then
-            fipv6_prefix.default = ipv6_prefix
-        else
-            fipv6_prefix.default = "認識できません"
-        end
+        fipv6_prefix.default = ipv6_prefix or "認識できません"
         fipv6_prefix:depends("wan_setup", "ipoe_v6plus")
         fipv6_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fipv6_prefix:depends("wan_setup", "ipoe_biglobe")
         
-        -- IPV6 Prefix Length
         fipv6_prefixlen = s:option(Value, "ipv6_prefixlen", translate("IPv6 Prefix Length"))
-        if ipv6_prefixlen ~= nil then
-            fipv6_prefixlen.default = ipv6_prefixlen
-        else
-            fipv6_prefixlen.default = "認識できません"
-        end
+        fipv6_prefixlen.default = ipv6_prefixlen or "認識できません"
         fipv6_prefixlen:depends("wan_setup", "ipoe_v6plus")
         fipv6_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fipv6_prefixlen:depends("wan_setup", "ipoe_biglobe")
         
-    
-        -- IPV4 Prefix
         fipv4_prefix = s:option(Value, "ipv4_prefix", translate("IPv4 Prefix"))
-        if ipv4_prefix ~= nil then
-            fipv4_prefix.default = ipv4_prefix
-        else
-            fipv4_prefix.default = "認識できません"
-        end
+        fipv4_prefix.default = ipv4_prefix or "認識できません"
         fipv4_prefix:depends("wan_setup", "ipoe_v6plus")
         fipv4_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fipv4_prefix:depends("wan_setup", "ipoe_biglobe")
         
-        -- IPV4 Prefix Length
         fipv4_prefixlen = s:option(Value, "ipv4_prefixlen", translate("IPv4 Prefix Length"))
-        if ipv4_prefixlen ~= nil then
-            fipv4_prefixlen.default = ipv4_prefixlen
-        else
-            fipv4_prefixlen.default = "認識できません"
-        end
+        fipv4_prefixlen.default = ipv4_prefixlen or "認識できません"
         fipv4_prefixlen:depends("wan_setup", "ipoe_v6plus")
         fipv4_prefixlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fipv4_prefixlen:depends("wan_setup", "ipoe_biglobe")
-      
-        -- EA Length
+        
         fealen = s:option(Value, "ealen", translate("EA Length"))
-        if ealen ~= nil then
-            fealen.default = ealen
-        else
-            fealen.default = "認識できません"
-        end
+        fealen.default = ealen or "認識できません"
         fealen:depends("wan_setup", "ipoe_v6plus")
         fealen:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fealen:depends("wan_setup", "ipoe_biglobe")
         
-        -- PSID Length
         fpsidlen = s:option(Value, "psidlen", translate("PSID Length"))
-        if psidlen ~= nil then
-            fpsidlen.default = psidlen
-        else
-            fpsidlen.default = "認識できません"
-        end
+        fpsidlen.default = psidlen or "認識できません"
         fpsidlen:depends("wan_setup", "ipoe_v6plus")
         fpsidlen:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fpsidlen:depends("wan_setup", "ipoe_biglobe")
         
-        -- Offset
         foffset = s:option(Value, "offset", translate("Offset"))
-        if offset ~= nil then
-            foffset.default = offset
-        else
-            foffset.default = "認識できません"
-        end
+        foffset.default = offset or "認識できません"
         foffset:depends("wan_setup", "ipoe_v6plus")
         foffset:depends("wan_setup", "ipoe_ocnvirtualconnect")
         foffset:depends("wan_setup", "ipoe_biglobe")
-
-        -- Peer Addr
+        
         fpeeraddr = s:option(Value, "peeraddr", translate("Peer Address"))
-        if peeraddr ~= nil then
-            fpeeraddr.default = peeraddr
-        else
-            fpeeraddr.default = "認識できません"
-        end
+        fpeeraddr.default = peeraddr or "認識できません"
         fpeeraddr:depends("wan_setup", "ipoe_v6plus")
         fpeeraddr:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fpeeraddr:depends("wan_setup", "ipoe_biglobe")

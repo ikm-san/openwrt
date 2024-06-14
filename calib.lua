@@ -38,6 +38,29 @@ function M.getIPv6_wan_status()
     return wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask
 end
 
+-- IPv6_56アドレスとprefixの取得 --
+function M.getIPv6PrefixInfo()
+    local handle = io.popen("ubus call network.interface.wan6 status")
+    local result = handle:read("*a")
+    handle:close()
+
+    -- デバッグ出力: UBusコマンドの結果をログに出力
+    luci.sys.exec("logger -t calib 'UBus result: " .. result .. "'")
+
+    local data = json.parse(result)
+    local ipv6Prefix, prefixLength = "not found", "not found"
+    
+    if data["route"] and data["route"][1] then
+        ipv6Prefix = data["route"][1].target or ipv6Prefix
+        prefixLength = data["route"][1].mask or prefixLength
+    end
+
+        -- デバッグ出力: パースされたデータをログに出力
+    luci.sys.exec("logger -t calib 'Parsed IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
+
+    return ipv6Prefix, prefixLength
+end
+
 -- wan_ipv6をセクション毎に分割する関数 --
 function M.split_ipv6(wan_ipv6)
     local sections = {}

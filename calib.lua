@@ -12,9 +12,6 @@ function M.getIPv6PrefixInfo()
     local handle = io.popen("ubus call network.interface.wan6 status")
     local result = handle:read("*a")
     handle:close()
-
-    -- デバッグ出力: UBusコマンドの結果をログに出力
-    luci.sys.exec("logger -t calib 'UBus result: " .. result .. "'")
     
     local data = json.parse(result)
     local ipv6Prefix, prefixLength = "not found", "not found"
@@ -23,48 +20,39 @@ function M.getIPv6PrefixInfo()
         ipv6Prefix = data["route"][1].target or ipv6Prefix
         prefixLength = data["route"][1].mask or prefixLength
     end
-
-        -- デバッグ出力: パースされたデータをログに出力
-    luci.sys.exec("logger -t calib 'Parsed IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
     
     return ipv6Prefix, prefixLength
 end
 
 -- WANインターフェースのIPv6アドレス（scope global）を取得
 function M.get_wan_ipv6_global()
-    -- WANインターフェースの状態を確認
-    local interface_up = sys.exec("ip link show dev wan | grep 'state UP'")
+    local handle = io.popen("ubus call network.interface.wan6 status")
+    local result = handle:read("*a")
+    handle:close()
+    local data = json.parse(result)
+    local wan_ipv6 = "0000:0000:0000:0000:0000:0000:0000:0000"
+    local ipv6Prefix, prefixLength, route_target, route_mask = "not found", "not found", "not found", "not found"
 
-    -- インターフェースがダウンしているか確認
-    if interface_up == nil or interface_up == '' then
-        return '0000:0000:0000:0000:0000:0000:0000:0000' -- インターフェースがダウンしている場合、'0' を返す
+    if data["ipv6-prefix"] and data["ipv6-prefix"][1] then
+        ipv6Prefix = data["ipv6-prefix"][1].address or ipv6Prefix
+        prefixLength = data["ipv6-prefix"][1].mask or prefixLength
     end
 
-    -- WANインターフェースのIPv6アドレス（scope global）を取得
-            local ipv6_list_raw = sys.exec("ip -6 addr show dev wan")
-            local ipv6_global = nil
-            for line in ipv6_list_raw:gmatch("[^\r\n]+") do
-                if line:find("inet6") and line:find("scope global") then
-                    -- IPv6アドレスを抽出
-                    local ipv6_addr = line:match("inet6 ([a-fA-F0-9:]+)/")
-                    if ipv6_addr then
-                        ipv6_global = ipv6_addr
-                        break -- 最初に見つかったグローバルアドレスを使用
-                    end
-                end
-            end
-
-    if ipv6_global == nil then
-    return '0000:0000:0000:0000:0000:0000:0000:0000' -- IPv6アドレスが見つからない場合は0を返す
+    if data["route"] and data["route"][1] then
+        route_target = data["route"][1].target or route_target
+        route_mask = data["route"][1].mask or route_mask
     end
-    local normalized_ipv6 = ipv6_global:match("([a-fA-F0-9:]+)") -- IPv6アドレスの正規化
-
-    -- IPv6アドレスが見つからない場合は0を返す
-    if normalized_ipv6 == nil or normalized_ipv6 == '' then
-        return '0000:0000:0000:0000:0000:0000:0000:0000'
-    else
-        return normalized_ipv6
+    
+    if data["ipv6-address"] and data["ipv6-address"][1] then
+        wan_ipv6 = data["ipv6-address"][1].address or wan_ipv6
+    elseif data["ipv6-prefix"][1]["assigned"] and data["ipv6-prefix"][1]["assigned"]["wan6"] then
+        wan_ipv6 = data["ipv6-prefix"][1]["assigned"]["wan6"].address or wan_ipv6
+    elseif wan_ipv6 == "0000:0000:0000:0000:0000:0000:0000:0000" and data["ipv6-prefix"] and data["ipv6-prefix"][1] then
+        -- DHCPv6-PDでprefixだけが配布されWANのIPv6アドレスがまだ生成されていない場合に直接IPv6アドレスをwan6に割り当てる
+        wan_ipv6 = ipv6Prefix .. "1/" .. prefixLength  -- プレフィックスの一部を使用してインターフェースにアドレスを設定
+        os.execute("ip -6 addr add " .. wan_ipv6 .. " dev wan6")
     end
+    return wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask
 end
 
 -- wan_ipv6をセクション毎に分割する関数 --

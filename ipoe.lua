@@ -4,6 +4,7 @@ local fs = require "nixio.fs"
 local json = require("luci.jsonc")
 local ubus = require "ubus"
 local calib = require "calib" 
+luci.sys.exec("logger -t calib 'calib module loaded'")
 
 -- WANのグローバルIPv6を取得 --
 local wan_ipv6 = calib.get_wan_ipv6_global() 

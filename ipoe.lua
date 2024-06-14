@@ -24,6 +24,9 @@ luci.sys.exec("logger -t calib 'WAN IPv6: " .. wan_ipv6 .. "'")
 local ipv6Prefix, prefixLength = calib.getIPv6PrefixInfo()
 luci.sys.exec("logger -t calib 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
 
+-- デバッグ: 受け取ったデータを確認
+luci.sys.exec("logger -t ipoe 'Received IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
+
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
 

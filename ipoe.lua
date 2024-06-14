@@ -4,14 +4,25 @@ local fs = require "nixio.fs"
 local json = require("luci.jsonc")
 local ubus = require "ubus"
 local calib = require "calib" 
-luci.sys.exec("logger -t calib 'calib module loaded'")
+
+-- デバッグ用メッセージ
+local success, err = pcall(function()
+    calib = require "calib"
+end)
+
+if not success then
+    luci.sys.exec("logger -t calib 'Failed to load calib module: " .. err .. "'")
+else
+    luci.sys.exec("logger -t calib 'calib module loaded successfully'")
+end
 
 -- WANのグローバルIPv6を取得 --
 local wan_ipv6 = calib.get_wan_ipv6_global() 
+luci.sys.exec("logger -t calib 'WAN IPv6: " .. wan_ipv6 .. "'")
 
 -- RAかDHCPで割り当てられたIPv6 Addressとprefixの値取得 --
 local ipv6Prefix, prefixLength = calib.getIPv6PrefixInfo()
-
+luci.sys.exec("logger -t calib 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)

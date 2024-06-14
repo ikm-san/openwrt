@@ -31,21 +31,6 @@ luci.sys.exec("logger -t ipoe 'Received IPv6 Prefix: " .. ipv6Prefix .. ", Prefi
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
 
-
--- 取得したデータをフォームに設定する
-local fipv6_prefix = s:option(Value, "ipv6_prefix", "IPv6 Prefix")
-fipv6_prefix.default = ipv6Prefix or "取得できません"
-fipv6_prefix:depends("wan_setup", "ipoe_v6plus")
-fipv6_prefix:depends("wan_setup", "ipoe_ocnvirtualconnect")
-fipv6_prefix:depends("wan_setup", "ipoe_biglobe")
-
-local fprefixLength = s:option(Value, "prefixLength", "IPv6 Prefix Length")
-fprefixLength.default = prefixLength or "取得できません"
-fprefixLength:depends("wan_setup", "ipoe_v6plus")
-fprefixLength:depends("wan_setup", "ipoe_ocnvirtualconnect")
-fprefixLength:depends("wan_setup", "ipoe_biglobe")
-
-
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
 

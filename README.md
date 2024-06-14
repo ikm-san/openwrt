@@ -47,7 +47,6 @@ ssh-keygen -R 192.168.10.1
 ```
 opkg update  
 opkg install curl  
-opkg remove wpad-basic-mbedtls  
 opkg install luci-lua-runtime  
 opkg install luci-proto-ipv6  
 opkg install luci-compat  

@@ -8,7 +8,7 @@ local ubus = require "ubus"
 local M = {}
 
 -- WANインターフェースのIPv6アドレス（scope global）を取得
-function M.ggetIPv6_wan_status()
+function M.getIPv6_wan_status()
     local handle = io.popen("ubus call network.interface.wan6 status")
     local result = handle:read("*a")
     handle:close()

@@ -17,8 +17,9 @@ else
 end
 
 -- WANのグローバルIPv6を取得 --
-local wan_ipv6 = calib.get_wan_ipv6_global() 
+local wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask = calib.get_wan_ipv6_global() 
 luci.sys.exec("logger -t calib 'WAN IPv6: " .. wan_ipv6 .. "'")
+luci.sys.exec("logger -t calib 'ubus get IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
 
 -- RAかDHCPで割り当てられたIPv6 Addressとprefixの値取得 --
 local ipv6Prefix, prefixLength = calib.getIPv6PrefixInfo()

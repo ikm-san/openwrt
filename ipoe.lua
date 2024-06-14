@@ -1,4 +1,3 @@
-
 local sys = require "luci.sys"
 local uci = require "luci.model.uci".cursor()
 local fs = require "nixio.fs"

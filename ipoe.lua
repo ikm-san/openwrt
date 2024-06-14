@@ -5,28 +5,10 @@ local json = require("luci.jsonc")
 local ubus = require "ubus"
 local calib = require "calib" 
 
--- デバッグ用メッセージ
-local success, err = pcall(function()
-    calib = require "calib"
-end)
-
-if not success then
-    luci.sys.exec("logger -t calib 'Failed to load calib module: " .. err .. "'")
-else
-    luci.sys.exec("logger -t calib 'calib module loaded successfully'")
-end
-
 -- WANのグローバルIPv6を取得 --
-local wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask = calib.get_wan_ipv6_global() 
+local wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask = calib.getIPv6_wan_status()
 luci.sys.exec("logger -t calib 'WAN IPv6: " .. wan_ipv6 .. "'")
-luci.sys.exec("logger -t calib 'ubus get IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
-
--- RAかDHCPで割り当てられたIPv6 Addressとprefixの値取得 --
-local ipv6Prefix, prefixLength = calib.getIPv6PrefixInfo()
 luci.sys.exec("logger -t calib 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
-
--- デバッグ: 受け取ったデータを確認
-luci.sys.exec("logger -t ipoe 'Received IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
@@ -305,11 +287,9 @@ local function apply_dhcp_configuration()
     end
 end
 
-
-
-
-
+----------------------------------------
 -- LuciのSAVE＆APPLYボタンが押された時の動作
+----------------------------------------
 function choice.write(self, section, value)
     
     if value == "pppoe_ipv4" then        
@@ -413,7 +393,6 @@ function choice.write(self, section, value)
     
             -- /etc/config/dhcp の設定変更
             uci:delete("dhcp", "wan")
-
             uci:delete("network", "wan")
             uci:delete("network", "wan6")
         

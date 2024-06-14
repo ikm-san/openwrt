@@ -13,6 +13,9 @@ function M.getIPv6PrefixInfo()
     local result = handle:read("*a")
     handle:close()
 
+    -- デバッグ出力: UBusコマンドの結果をログに出力
+    luci.sys.exec("logger -t calib 'UBus result: " .. result .. "'")
+    
     local data = json.parse(result)
     local ipv6Prefix, prefixLength = "not found", "not found"
     
@@ -21,6 +24,9 @@ function M.getIPv6PrefixInfo()
         prefixLength = data["route"][1].mask or prefixLength
     end
 
+        -- デバッグ出力: パースされたデータをログに出力
+    luci.sys.exec("logger -t calib 'Parsed IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
+    
     return ipv6Prefix, prefixLength
 end
 

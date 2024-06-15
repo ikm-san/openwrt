@@ -5,19 +5,23 @@ local json = require("luci.jsonc")
 local ubus = require "ubus"
 local calib = require "calib" 
 
+luci.sys.exec("logger -t ipoe '------------------------------------------------------------------------'")
+luci.sys.exec("logger -t ipoe '           LUCI Japanese IPoE Auto Config system logger                 '")
+luci.sys.exec("logger -t ipoe '------------------------------------------------------------------------'")
+
 -- WANのグローバルIPv6を取得 --
 local wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask = calib.getIPv6_wan_status()
-luci.sys.exec("logger -t calib 'WAN IPv6: " .. wan_ipv6 .. "'")
-luci.sys.exec("logger -t calib 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
+luci.sys.exec("logger -t ipoe 'WAN IPv6: " .. wan_ipv6 .. "'")
+luci.sys.exec("logger -t ipoe 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
 
 -- WANインターフェース名の判定 --
 local lan_interfaces, wan_interface, wan6_interface = calib.get_lan_wan_interfaces()
 local ports = table.concat(lan_interfaces, " ") .. " " .. wan_interface
-luci.sys.exec("logger -t calib 'interfaces: " .. wan6_interface .. ", ALL PORTS: " .. ports .. "'")
+luci.sys.exec("logger -t ipoe 'interfaces: " .. wan6_interface .. ", ALL PORTS: " .. ports .. "'")
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
-luci.sys.exec("logger -t calib 'VNE: " .. VNE .. "'")
+luci.sys.exec("logger -t ipoe 'VNE: " .. VNE .. "'")
 
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")

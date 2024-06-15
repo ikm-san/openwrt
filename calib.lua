@@ -7,34 +7,57 @@ local ubus = require "ubus"
 
 local M = {}
 
--- WANインターフェースのIPv6アドレス（scope global）を取得
-function M.getIPv6_wan_status()
+-- L3デバイスのインターフェース名を取得
+function M.get_wan6_interface_name()
     local handle = io.popen("ubus call network.interface.wan6 status")
     local result = handle:read("*a")
     handle:close()
+    
+    local data = json.parse(result)
+    if data and data["l3_device"] then
+        return data["l3_device"]
+    end
+    return nil
+end
+
+-- WANインターフェースのIPv6アドレス（scope global）を取得
+function M.getIPv6_wan_status()
+    local wan_iface = M.get_wan6_interface_name()
+    if not wan_iface then
+        luci.sys.exec("logger -t calib 'Error: Could not determine WAN interface name'")
+        return
+    end
+
+    local handle = io.popen("ubus call network.interface.wan6 status")
+    local result = handle:read("*a")
+    handle:close()
+    
     local data = json.parse(result)
     local wan_ipv6 = "0000:0000:0000:0000:0000:0000:0000:0000"
     local ipv6Prefix, prefixLength, route_target, route_mask = "not found", "not found", "not found", "not found"
 
-    if data["ipv6-prefix"] and data["ipv6-prefix"][1] then
-        ipv6Prefix = data["ipv6-prefix"][1].address or ipv6Prefix
-        prefixLength = data["ipv6-prefix"][1].mask or prefixLength
+    if data then
+        if data["ipv6-prefix"] and data["ipv6-prefix"][1] then
+            ipv6Prefix = data["ipv6-prefix"][1].address or ipv6Prefix
+            prefixLength = data["ipv6-prefix"][1].mask or prefixLength
+        end
+
+        if data["route"] and data["route"][1] then
+            route_target = data["route"][1].target or route_target
+            route_mask = data["route"][1].mask or route_mask
+        end
+        
+        if data["ipv6-address"] and data["ipv6-address"][1] then
+            wan_ipv6 = data["ipv6-address"][1].address or wan_ipv6
+        elseif data["ipv6-prefix"] and data["ipv6-prefix"][1] and data["ipv6-prefix"][1]["assigned"] and data["ipv6-prefix"][1]["assigned"]["wan6"] then
+            wan_ipv6 = data["ipv6-prefix"][1]["assigned"]["wan6"].address or wan_ipv6
+        elseif wan_ipv6 == "0000:0000:0000:0000:0000:0000:0000:0000" and data["ipv6-prefix"] and data["ipv6-prefix"][1] then
+            -- DHCPv6-PDでprefixだけが配布されWANのIPv6アドレスがまだ生成されていない場合に直接IPv6アドレスをwan6に割り当てる
+            wan_ipv6 = ipv6Prefix .. "1/" .. prefixLength  -- プレフィックスの一部を使用してインターフェースにアドレスを設定
+            os.execute("ip -6 addr add " .. wan_ipv6 .. " dev " .. wan_iface)
+        end
     end
 
-    if data["route"] and data["route"][1] then
-        route_target = data["route"][1].target or route_target
-        route_mask = data["route"][1].mask or route_mask
-    end
-    
-    if data["ipv6-address"] and data["ipv6-address"][1] then
-        wan_ipv6 = data["ipv6-address"][1].address or wan_ipv6
-    elseif data["ipv6-prefix"][1]["assigned"] and data["ipv6-prefix"][1]["assigned"]["wan6"] then
-        wan_ipv6 = data["ipv6-prefix"][1]["assigned"]["wan6"].address or wan_ipv6
-    elseif wan_ipv6 == "0000:0000:0000:0000:0000:0000:0000:0000" and data["ipv6-prefix"] and data["ipv6-prefix"][1] then
-        -- DHCPv6-PDでprefixだけが配布されWANのIPv6アドレスがまだ生成されていない場合に直接IPv6アドレスをwan6に割り当てる
-        wan_ipv6 = ipv6Prefix .. "1/" .. prefixLength  -- プレフィックスの一部を使用してインターフェースにアドレスを設定
-        os.execute("ip -6 addr add " .. wan_ipv6 .. " dev wan6")
-    end
     return wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask
 end
 

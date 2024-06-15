@@ -10,6 +10,9 @@ local wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask = calib.getIP
 luci.sys.exec("logger -t calib 'WAN IPv6: " .. wan_ipv6 .. "'")
 luci.sys.exec("logger -t calib 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
 
+-- WANインターフェース名の判定 --
+local wan_iface = calib.get_wan6_interface_name()
+
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
 

@@ -7,7 +7,8 @@ local ubus = require "ubus"
 
 local M = {}
 
-function log_message(tag, message)
+-- ログメッセージを出力する関数
+function M.log_message(tag, message)
     sys.exec("logger -t " .. tag .. " '" .. message .. "'")
 end
 
@@ -48,17 +49,17 @@ end
 function M.getIPv6_wan_status()
     local wan_iface = M.get_wan6_interface_name()
     if not wan_iface then
-        log_message("calib", "Error: Could not determine WAN interface name")
+        M.log_message("calib", "Error: Could not determine WAN interface name")
         return "0000:0000:0000:0000:0000:0000:0000:0000", "not found", "not found", "not found", "not found"
     end
 
-    log_message("calib", "WAN interface: " .. wan_iface)
+    M.log_message("calib", "WAN interface: " .. wan_iface)
 
     local handle = io.popen("ubus call network.interface.wan6 status")
     local result = handle:read("*a")
     handle:close()
     
-    log_message("calib", "UBus result: " .. result)
+    M.log_message("calib", "UBus result: " .. result)
 
     local data = json.parse(result)
     local wan_ipv6 = "0000:0000:0000:0000:0000:0000:0000:0000"
@@ -68,51 +69,51 @@ function M.getIPv6_wan_status()
         if data["ipv6-prefix"] and data["ipv6-prefix"][1] then
             ipv6Prefix = data["ipv6-prefix"][1].address or ipv6Prefix
             prefixLength = data["ipv6-prefix"][1].mask or prefixLength
-            log_message("calib", "IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength)
+            M.log_message("calib", "IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength)
         end
 
         if data["route"] and data["route"][1] then
             route_target = data["route"][1].target or route_target
             route_mask = data["route"][1].mask or route_mask
-            log_message("calib", "Route Target: " .. route_target .. ", Route Mask: " .. route_mask)
+            M.log_message("calib", "Route Target: " .. route_target .. ", Route Mask: " .. route_mask)
         end
         
         if data["ipv6-address"] and data["ipv6-address"][1] then
             wan_ipv6 = data["ipv6-address"][1].address or wan_ipv6
-            log_message("calib", "WAN IPv6 Address: " .. wan_ipv6)
+            M.log_message("calib", "WAN IPv6 Address: " .. wan_ipv6)
         elseif data["ipv6-prefix"] and data["ipv6-prefix"][1] and data["ipv6-prefix"][1]["assigned"] and data["ipv6-prefix"][1]["assigned"]["wan6"] then
             wan_ipv6 = data["ipv6-prefix"][1]["assigned"]["wan6"].address or wan_ipv6
-            log_message("calib", "Assigned WAN6 IPv6 Address: " .. wan_ipv6)
+            M.log_message("calib", "Assigned WAN6 IPv6 Address: " .. wan_ipv6)
         elseif wan_ipv6 == "0000:0000:0000:0000:0000:0000:0000:0000" and data["ipv6-prefix"] and data["ipv6-prefix"][1] then
             -- DHCPv6-PDでprefixだけが配布されWANのIPv6アドレスがまだ生成されていない場合に直接IPv6アドレスをwan6に割り当てる
             wan_ipv6 = ipv6Prefix .. "1/" .. prefixLength  -- プレフィックスの一部を使用してインターフェースにアドレスを設定
             os.execute("ip -6 addr add " .. wan_ipv6 .. " dev " .. wan_iface)
-            log_message("calib", "Assigned WAN IPv6 Address: " .. wan_ipv6)
+            M.log_message("calib", "Assigned WAN IPv6 Address: " .. wan_ipv6)
         end
     else
-        log_message("calib", "No data returned from ubus call")
+        M.log_message("calib", "No data returned from ubus call")
     end
 
     -- WANインターフェースがダウンしている場合にデフォルト値を返す
     if not wan_ipv6 then
         wan_ipv6 = "0000:0000:0000:0000:0000:0000:0000:0000"
-        log_message("calib", "WAN IPv6 is nil, defaulting to: " .. wan_ipv6)
+        M.log_message("calib", "WAN IPv6 is nil, defaulting to: " .. wan_ipv6)
     end
     if not ipv6Prefix then
         ipv6Prefix = "not found"
-        log_message("calib", "IPv6 Prefix is nil, defaulting to: " .. ipv6Prefix)
+        M.log_message("calib", "IPv6 Prefix is nil, defaulting to: " .. ipv6Prefix)
     end
     if not prefixLength then
         prefixLength = "not found"
-        log_message("calib", "Prefix Length is nil, defaulting to: " .. prefixLength)
+        M.log_message("calib", "Prefix Length is nil, defaulting to: " .. prefixLength)
     end
     if not route_target then
         route_target = "not found"
-        log_message("calib", "Route Target is nil, defaulting to: " .. route_target)
+        M.log_message("calib", "Route Target is nil, defaulting to: " .. route_target)
     end
     if not route_mask then
         route_mask = "not found"
-        log_message("calib", "Route Mask is nil, defaulting to: " .. route_mask)
+        M.log_message("calib", "Route Mask is nil, defaulting to: " .. route_mask)
     end
 
     return wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask

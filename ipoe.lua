@@ -11,7 +11,9 @@ luci.sys.exec("logger -t calib 'WAN IPv6: " .. wan_ipv6 .. "'")
 luci.sys.exec("logger -t calib 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
 
 -- WANインターフェース名の判定 --
-local wan_iface = calib.get_wan6_interface_name()
+local wan6_iface = calib.get_wan6_interface_name()
+local lan_interfaces, wan_interface = calib.get_lan_wan_interfaces()
+luci.sys.exec("logger -t calib 'interfaces: " .. wan6_iface,lan_interfaces, wan_interface .. "'")
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
@@ -125,13 +127,13 @@ local function configure_dslite_connection(gw_aftr)
     uci:section("network", "interface", "dslite", {
         proto = 'dslite',
         peeraddr = gw_aftr, 
-        tunlink = 'wan6',
+        tunlink = wan6_iface,
         mtu = '1460'
     })
     
     -- DHCP関連設定
     uci:set("dhcp", "wan6", "dhcp")
-    uci:set("dhcp", "wan6", "interface", "wan6")
+    uci:set("dhcp", "wan6", "interface", wan6_iface)
     uci:set("dhcp", "wan6", "master", "1")
     uci:set("dhcp", "wan6", "ignore", "1")
     uci:set("dhcp", "wan6", "dhcpv6", "relay")
@@ -157,7 +159,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
 
     -- DHCP WAN6 settings
     uci:set("dhcp", "wan6", "dhcp")
-    uci:set("dhcp", "wan6", "interface", "wan6")
+    uci:set("dhcp", "wan6", "interface", wan6_iface)
     uci:set("dhcp", "wan6", "ignore", "1")
     uci:set("dhcp", "wan6", "master", "1")
     uci:set("dhcp", "wan6", "ra", "relay")
@@ -188,7 +190,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
         offset = offset,
         legacymap = "1",
         mtu = "1460",
-        tunlink= "wan6",
+        tunlink= wan6_iface,
         encaplimit = "ignore"
     })
 
@@ -400,7 +402,10 @@ function choice.write(self, section, value)
             uci:delete("network", "wan6")
         
             -- wanインターフェースをbr-lanに接続
-            uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 wan")
+            -- uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 wan")
+            local ports = table.concat(lan_interfaces, " ") .. " " .. wan_interface
+            uci:set("network", "@device[0]", "ports", ports)
+
         
             -- ホスト名を"WifiAP"に変更する
             uci:set("system", "@system[0]", "hostname", "WifiAP")

@@ -322,7 +322,7 @@ M.log_message("find_ipv4_prefix", "hex_prefix_40: " .. (hex_prefix_40 or "nil"))
         local ealen = 56 - ipv6_prefixlen
         local psidlen = ealen - (32 - ipv4_prefixlen)
         local ipv6Prefix, prefixLength = M.getIPv6PrefixInfo(wan_ipv6)
-        local ipv6_56 = ipv6Prefix
+        local ipv6_56 = M.extract_ipv6_56(wan_ipv6)
         local peeraddr = M.peeraddrVNE(wan_ipv6)
 
         M.log_message("find_ipv4_prefix", "ipv6Prefix: " .. (ipv6Prefix or "nil"))

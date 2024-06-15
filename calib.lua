@@ -222,7 +222,8 @@ function M.find_ipv4_prefix(wan_ipv6)
     local full_ipv6 = table.concat(segments, ":"):gsub("::", function(s)
         return ":" .. string.rep("0000:", 8 - #segments)
     end)
-
+M.log_message("find_ipv4_prefix", "full_ipv6: " .. full_ipv6)
+    
     -- 40ビットと32ビットのプレフィックスを取得
     local hex_prefix_40 = full_ipv6:gsub(":", ""):sub(1, 10)
     local hex_prefix_32 = full_ipv6:gsub(":", ""):sub(1, 8)
@@ -306,7 +307,9 @@ M.log_message("find_ipv4_prefix", "hex_prefix_40: " .. (hex_prefix_40 or "nil"))
                 -- ipv4_prefixlen = string.len(binary_string) + 16
                 ipv4_prefixlen = 20
                 ipv6_prefix , ipv6_prefixlen = extract_ipv6_prefix(wan_ipv6)
-                offset = 6            
+                offset = 6       
+                 M.log_message("find_ipv4_prefix", "ipv6_prefix after extract: " .. (ipv6_prefix or "nil"))
+                 M.log_message("find_ipv4_prefix", "ipv6_prefix after extract wan_ipv6: " .. (wan_ipv6 or "nil"))
         elseif ruleprefix31[hex_prefix_32] then
             ipv6_prefixlen = 32
             ipv4_prefixlen = 16
@@ -314,6 +317,8 @@ M.log_message("find_ipv4_prefix", "hex_prefix_40: " .. (hex_prefix_40 or "nil"))
             offset = 4
         end
 
+        M.log_message("find_ipv4_prefix", "line320 wan_ipv6: " .. (wan_ipv6 or "nil"))
+        
         local ealen = 56 - ipv6_prefixlen
         local psidlen = ealen - (32 - ipv4_prefixlen)
         local ipv6Prefix, prefixLength = M.getIPv6PrefixInfo()

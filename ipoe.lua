@@ -13,7 +13,7 @@ luci.sys.exec("logger -t calib 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length
 -- WANインターフェース名の判定 --
 local lan_interfaces, wan_interface, wan6_interface = calib.get_lan_wan_interfaces()
 local ports = table.concat(lan_interfaces, " ") .. " " .. wan_interface
-luci.sys.exec("logger -t calib 'interfaces: " .. wan6_interface .. ", " .. ports .. "'")
+luci.sys.exec("logger -t calib 'interfaces: " .. wan6_interface .. ", ALL PORTS: " .. ports .. "'")
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
@@ -404,7 +404,6 @@ function choice.write(self, section, value)
         
             -- wanインターフェースをbr-lanに接続
             -- uci:set("network", "@device[0]", "ports", "lan1 lan2 lan3 lan4 wan")
-            local ports = table.concat(lan_interfaces, " ") .. " " .. wan_interface
             uci:set("network", "@device[0]", "ports", ports)
 
         

@@ -12,6 +12,58 @@ function M.log_message(tag, message)
     sys.exec("logger -t " .. tag .. " '" .. message .. "'")
 end
 
+-- 物理WANインターフェース名を取得する関数
+function M.get_wan_interface_name()
+    local handle = io.popen("ubus call network.interface.wan status")
+    local result = handle:read("*a")
+    handle:close()
+
+    M.log_message("calib", "UBus result for WAN interface: " .. result)
+    
+    local data = json.parse(result)
+    if data and data["l3_device"] then
+        return data["l3_device"]
+    else
+        return nil
+    end
+end
+
+-- すべてのネットワークインターフェース名を取得する関数
+function M.get_network_interfaces()
+    local handle = io.popen("ubus call network.device status")
+    local result = handle:read("*a")
+    handle:close()
+
+    M.log_message("calib", "UBus result for network interfaces: " .. result)
+    
+    local data = json.parse(result)
+    local interfaces = {}
+
+    if data then
+        for name, _ in pairs(data) do
+            table.insert(interfaces, name)
+        end
+    end
+
+    return interfaces
+end
+
+-- LANおよびWANインターフェース名を取得する関数
+function M.get_lan_wan_interfaces()
+    local interfaces = M.get_network_interfaces()
+    local lan_interfaces = {}
+    local wan_interface = M.get_wan_interface_name()
+    local wan6_interface = M.get_wan6_interface_name()
+
+    for _, iface in ipairs(interfaces) do
+        if iface:match("^lan%d*$") then
+            table.insert(lan_interfaces, iface)
+        end
+    end
+
+    return lan_interfaces, wan_interface, wan6_interface
+end
+
 -- L3デバイスのインターフェース名を取得
 function M.get_wan6_interface_name()
     local handle = io.popen("ubus call network.interface.wan6 status")
@@ -43,43 +95,6 @@ function M.get_wan6_interface_name()
     -- Log an error message if the WAN interface name could not be determined
     luci.sys.exec("logger -t calib 'Error: Could not determine WAN interface name'")
     return nil
-end
-
--- すべてのネットワークインターフェース名を取得する関数
-function M.get_network_interfaces()
-    local handle = io.popen("ubus call network.device status")
-    local result = handle:read("*a")
-    handle:close()
-
-    M.log_message("calib", "UBus result for network interfaces: " .. result)
-    
-    local data = json.parse(result)
-    local interfaces = {}
-
-    if data then
-        for name, _ in pairs(data) do
-            table.insert(interfaces, name)
-        end
-    end
-
-    return interfaces
-end
-
--- LANおよびWANインターフェース名を取得する関数
-function M.get_lan_wan_interfaces()
-    local interfaces = M.get_network_interfaces()
-    local lan_interfaces = {}
-    local wan_interface = nil
-
-    for _, iface in ipairs(interfaces) do
-        if iface:match("^lan%d*$") then
-            table.insert(lan_interfaces, iface)
-        elseif iface == "wan" or iface:match("^wan%d*$") then
-            wan_interface = iface
-        end
-    end
-
-    return lan_interfaces, wan_interface
 end
 
 -- WANインターフェースのIPv6アドレス（scope global）を取得

@@ -105,8 +105,6 @@ function M.getIPv6_wan_status()
     local handle = io.popen("ubus call network.interface.wan6 status")
     local result = handle:read("*a")
     handle:close()
-    
-    M.log_message("calib", "UBus result: " .. result)
 
     local data = json.parse(result)
     local wan_ipv6 = "0000:0000:0000:0000:0000:0000:0000:0000"
@@ -144,7 +142,7 @@ function M.getIPv6_wan_status()
     return wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask
 end
 
--- IPv6_56アドレスとprefixの取得 --
+-- IPv6 PrefixとPrefix Lengthの取得 --
 function M.getIPv6PrefixInfo()
     local handle = io.popen("ubus call network.interface.wan6 status")
     local result = handle:read("*a")

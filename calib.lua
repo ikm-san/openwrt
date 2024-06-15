@@ -78,6 +78,23 @@ function M.getIPv6_wan_status()
         end
     end
 
+    -- WANインターフェースがダウンしている場合にデフォルト値を返す
+    if not wan_ipv6 then
+        wan_ipv6 = "0000:0000:0000:0000:0000:0000:0000:0000"
+    end
+    if not ipv6Prefix then
+        ipv6Prefix = "not found"
+    end
+    if not prefixLength then
+        prefixLength = "not found"
+    end
+    if not route_target then
+        route_target = "not found"
+    end
+    if not route_mask then
+        route_mask = "not found"
+    end
+
     return wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask
 end
 

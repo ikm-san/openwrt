@@ -107,7 +107,7 @@ function M.get_lan_wan_interfaces()
     local wan6_interface = M.get_wan6_interface_name()
 
     for _, iface in ipairs(interfaces) do
-        if iface:match("^lan%d*$") or iface:match("^eth%d*$") then
+        if (iface:match("^lan%d*$") or iface:match("^eth%d*$")) and iface ~= wan_interface and iface ~= wan6_interface then
             table.insert(lan_interfaces, iface)
         end
     end
@@ -175,9 +175,6 @@ function M.getIPv6PrefixInfo()
     local result = handle:read("*a")
     handle:close()
 
-    -- デバッグ出力: UBusコマンドの結果をログに出力
-    luci.sys.exec("logger -t calib 'UBus result: " .. result .. "'")
-
     local data = json.parse(result)
     local ipv6Prefix, prefixLength = "not found", "not found"
     
@@ -185,9 +182,6 @@ function M.getIPv6PrefixInfo()
         ipv6Prefix = data["route"][1].target or ipv6Prefix
         prefixLength = data["route"][1].mask or prefixLength
     end
-
-        -- デバッグ出力: パースされたデータをログに出力
-    luci.sys.exec("logger -t calib 'Parsed IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
 
     return ipv6Prefix, prefixLength
 end

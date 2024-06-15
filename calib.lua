@@ -49,7 +49,6 @@ end
 function M.getIPv6_wan_status()
     local wan_iface = M.get_wan6_interface_name()
     if not wan_iface then
-        M.log_message("calib", "Error: Could not determine WAN interface name")
         return "0000:0000:0000:0000:0000:0000:0000:0000", "not found", "not found", "not found", "not found"
     end
 
@@ -92,28 +91,6 @@ function M.getIPv6_wan_status()
         end
     else
         M.log_message("calib", "No data returned from ubus call")
-    end
-
-    -- WANインターフェースがダウンしている場合にデフォルト値を返す
-    if not wan_ipv6 then
-        wan_ipv6 = "0000:0000:0000:0000:0000:0000:0000:0000"
-        M.log_message("calib", "WAN IPv6 is nil, defaulting to: " .. wan_ipv6)
-    end
-    if not ipv6Prefix then
-        ipv6Prefix = "not found"
-        M.log_message("calib", "IPv6 Prefix is nil, defaulting to: " .. ipv6Prefix)
-    end
-    if not prefixLength then
-        prefixLength = "not found"
-        M.log_message("calib", "Prefix Length is nil, defaulting to: " .. prefixLength)
-    end
-    if not route_target then
-        route_target = "not found"
-        M.log_message("calib", "Route Target is nil, defaulting to: " .. route_target)
-    end
-    if not route_mask then
-        route_mask = "not found"
-        M.log_message("calib", "Route Mask is nil, defaulting to: " .. route_mask)
     end
 
     return wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask

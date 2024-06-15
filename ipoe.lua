@@ -13,10 +13,11 @@ luci.sys.exec("logger -t calib 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length
 -- WANインターフェース名の判定 --
 local lan_interfaces, wan_interface, wan6_interface = calib.get_lan_wan_interfaces()
 local ports = table.concat(lan_interfaces, " ") .. " " .. wan_interface
-luci.sys.exec("logger -t calib 'interfaces: " .. wan6_interface, ports .. "'")
+luci.sys.exec("logger -t calib 'interfaces: " .. wan6_interface .. ", " .. ports .. "'")
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
+luci.sys.exec("logger -t calib 'VNE: " .. VNE .. "'")
 
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")

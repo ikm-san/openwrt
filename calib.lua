@@ -22,7 +22,7 @@ function M.get_wan_interface_name()
     if data and data["l3_device"] then
         return data["l3_device"]
     else
-        return nil
+        return ""
     end
 end
 
@@ -74,7 +74,7 @@ function M.get_wan6_interface_name()
     
     -- Log an error message if the WAN interface name could not be determined
     luci.sys.exec("logger -t calib 'Error: Could not determine WAN interface name'")
-    return nil
+    return ""
 end
 
 -- すべてのネットワークインターフェース名を取得する関数

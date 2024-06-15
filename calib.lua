@@ -14,9 +14,29 @@ function M.get_wan6_interface_name()
     handle:close()
     
     local data = json.parse(result)
+    
     if data and data["l3_device"] then
-        return data["l3_device"]
+        -- Check if the interface is down
+        if data["up"] == false then
+            -- Interface is down, bring it up
+            luci.sys.exec("ifup wan6")
+            -- Wait for a moment to ensure the interface is up
+            os.execute("sleep 3")
+            -- Recheck the status after bringing the interface up
+            handle = io.popen("ubus call network.interface.wan6 status")
+            result = handle:read("*a")
+            handle:close()
+            data = json.parse(result)
+            if data and data["l3_device"] then
+                return data["l3_device"]
+            end
+        else
+            return data["l3_device"]
+        end
     end
+    
+    -- Log an error message if the WAN interface name could not be determined
+    luci.sys.exec("logger -t calib 'Error: Could not determine WAN interface name'")
     return nil
 end
 

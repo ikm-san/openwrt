@@ -11,8 +11,7 @@ luci.sys.exec("logger -t calib 'WAN IPv6: " .. wan_ipv6 .. "'")
 luci.sys.exec("logger -t calib 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. "'")
 
 -- WANインターフェース名の判定 --
-local wan6_iface = calib.get_wan6_interface_name()
-local lan_interfaces, wan_interface = calib.get_lan_wan_interfaces()
+local lan_interfaces, wan_interface, wan6_interface = calib.get_lan_wan_interfaces()
 luci.sys.exec("logger -t calib 'interfaces: " .. wan6_iface,lan_interfaces, wan_interface .. "'")
 
 -- VNEの判定 --

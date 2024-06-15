@@ -13,7 +13,7 @@ luci.sys.exec("logger -t calib 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length
 -- WANインターフェース名の判定 --
 local lan_interfaces, wan_interface, wan6_interface = calib.get_lan_wan_interfaces()
 local ports = table.concat(lan_interfaces, " ") .. " " .. wan_interface
-luci.sys.exec("logger -t calib 'interfaces: " .. wan6_iface, ports .. "'")
+luci.sys.exec("logger -t calib 'interfaces: " .. wan6_interface, ports .. "'")
 
 -- VNEの判定 --
 local VNE = calib.dtermineVNE(wan_ipv6)
@@ -127,13 +127,13 @@ local function configure_dslite_connection(gw_aftr)
     uci:section("network", "interface", "dslite", {
         proto = 'dslite',
         peeraddr = gw_aftr, 
-        tunlink = wan6_iface,
+        tunlink = wan6_interface,
         mtu = '1460'
     })
     
     -- DHCP関連設定
     uci:set("dhcp", "wan6", "dhcp")
-    uci:set("dhcp", "wan6", "interface", wan6_iface)
+    uci:set("dhcp", "wan6", "interface", wan6_interface)
     uci:set("dhcp", "wan6", "master", "1")
     uci:set("dhcp", "wan6", "ignore", "1")
     uci:set("dhcp", "wan6", "dhcpv6", "relay")
@@ -159,7 +159,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
 
     -- DHCP WAN6 settings
     uci:set("dhcp", "wan6", "dhcp")
-    uci:set("dhcp", "wan6", "interface", wan6_iface)
+    uci:set("dhcp", "wan6", "interface", wan6_interface)
     uci:set("dhcp", "wan6", "ignore", "1")
     uci:set("dhcp", "wan6", "master", "1")
     uci:set("dhcp", "wan6", "ra", "relay")
@@ -190,7 +190,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
         offset = offset,
         legacymap = "1",
         mtu = "1460",
-        tunlink= wan6_iface,
+        tunlink= wan6_interface,
         encaplimit = "ignore"
     })
 

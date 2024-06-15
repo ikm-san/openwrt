@@ -174,9 +174,18 @@ function M.getIPv6PrefixInfo()
     local data = json.parse(result)
     local ipv6Prefix, prefixLength = "not found", "not found"
     
-    if data["route"] and data["route"][1] then
-        ipv6Prefix = data["route"][1].target or ipv6Prefix
-        prefixLength = data["route"][1].mask or prefixLength
+    -- Check for DHCPv6-PD first
+    if data["ipv6-prefix"] and data["ipv6-prefix"][1] then
+        ipv6Prefix = data["ipv6-prefix"][1].address or ipv6Prefix
+        prefixLength = data["ipv6-prefix"][1].mask or prefixLength
+    end
+    
+    -- If DHCPv6-PD data is not found, fallback to route
+    if ipv6Prefix == "not found" or prefixLength == "not found" then
+        if data["route"] and data["route"][1] then
+            ipv6Prefix = data["route"][1].target or ipv6Prefix
+            prefixLength = data["route"][1].mask or prefixLength
+        end
     end
 
     return ipv6Prefix, prefixLength
@@ -204,6 +213,8 @@ end
 
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
 function M.find_ipv4_prefix(wan_ipv6)
+    M.log_message("find_ipv4_prefix", "wan_ipv6: " .. (wan_ipv6 or "nil"))
+    
     local segments = {}
     for seg in wan_ipv6:gmatch("[a-fA-F0-9]+") do
         table.insert(segments, string.format("%04x", tonumber(seg, 16)))
@@ -219,7 +230,9 @@ function M.find_ipv4_prefix(wan_ipv6)
     local ruleprefix31 = M.getRulePrefix31()
     local ruleprefix38 = M.getRulePrefix38()
     local ruleprefix38_20 = M.getRulePrefix38_20()
+M.log_message("find_ipv4_prefix", "hex_prefix_40: " .. (hex_prefix_40 or "nil"))
 
+    
     local ipv4_prefix = ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] or ruleprefix31[hex_prefix_32]
     local ipv6_prefixlen = 32
 
@@ -307,7 +320,11 @@ function M.find_ipv4_prefix(wan_ipv6)
         local ipv6Prefix, prefixLength = M.getIPv6PrefixInfo()
         local ipv6_56 = ipv6Prefix
         local peeraddr = M.peeraddrVNE(wan_ipv6)
-     
+
+        M.log_message("find_ipv4_prefix", "ipv6Prefix: " .. (ipv6Prefix or "nil"))
+        M.log_message("find_ipv4_prefix", "prefixLength: " .. (prefixLength or "nil"))
+        M.log_message("find_ipv4_prefix", "ipv6_56: " .. (ipv6_56 or "nil"))
+        M.log_message("find_ipv4_prefix", "peeraddr: " .. (peeraddr or "nil"))
         
         return table.concat(ipv4_parts, "."), ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr
     else

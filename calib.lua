@@ -82,9 +82,7 @@ function M.get_network_interfaces()
     local handle = io.popen("ubus call network.device status")
     local result = handle:read("*a")
     handle:close()
-
-    M.log_message("calib", "UBus result for network interfaces: " .. result)
-    
+   
     local data = json.parse(result)
     local interfaces = {}
 
@@ -126,8 +124,6 @@ function M.getIPv6_wan_status()
     if not wan_iface then
         return "0000:0000:0000:0000:0000:0000:0000:0000", "not found", "not found", "not found", "not found"
     end
-
-    M.log_message("calib", "WAN interface: " .. wan_iface)
 
     local handle = io.popen("ubus call network.interface.wan6 status")
     local result = handle:read("*a")

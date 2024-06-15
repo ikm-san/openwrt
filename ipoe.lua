@@ -5,9 +5,8 @@ local json = require("luci.jsonc")
 local ubus = require "ubus"
 local calib = require "calib" 
 
-luci.sys.exec("logger -t ipoe '------------------------------------------------------------------------'")
-luci.sys.exec("logger -t ipoe '           LUCI Japanese IPoE Auto Config system logger                 '")
-luci.sys.exec("logger -t ipoe '------------------------------------------------------------------------'")
+-- ログ記録用 CLIからlogreadで確認可能です
+luci.sys.exec("logger -t ipoe 'Starting Japanese IPoE Auto Config for LUCI'")
 
 -- WANのグローバルIPv6を取得 --
 local wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask = calib.getIPv6_wan_status()

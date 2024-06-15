@@ -17,9 +17,7 @@ function M.get_wan_interface_name()
     local handle = io.popen("ubus call network.interface.wan status")
     local result = handle:read("*a")
     handle:close()
-
-    M.log_message("calib", "UBus result for WAN interface: " .. result)
-    
+   
     local data = json.parse(result)
     if data and data["l3_device"] then
         return data["l3_device"]
@@ -33,8 +31,6 @@ function M.get_network_interfaces()
     local handle = io.popen("ubus call network.device status")
     local result = handle:read("*a")
     handle:close()
-
-    M.log_message("calib", "UBus result for network interfaces: " .. result)
     
     local data = json.parse(result)
     local interfaces = {}

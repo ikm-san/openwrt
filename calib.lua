@@ -165,30 +165,29 @@ function M.getIPv6_wan_status()
     return wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask
 end
 
--- IPv6 PrefixとPrefix Lengthの取得 --
-function M.getIPv6PrefixInfo()
-    local handle = io.popen("ubus call network.interface.wan6 status")
-    local result = handle:read("*a")
-    handle:close()
-
-    local data = json.parse(result)
-    local ipv6Prefix, prefixLength = "not found", "not found"
-    
-    -- Check for DHCPv6-PD first
-    if data["ipv6-prefix"] and data["ipv6-prefix"][1] then
-        ipv6Prefix = data["ipv6-prefix"][1].address or ipv6Prefix
-        prefixLength = data["ipv6-prefix"][1].mask or prefixLength
-    end
-    
-    -- If DHCPv6-PD data is not found, fallback to route
-    if ipv6Prefix == "not found" or prefixLength == "not found" then
-        if data["route"] and data["route"][1] then
-            ipv6Prefix = data["route"][1].target or ipv6Prefix
-            prefixLength = data["route"][1].mask or prefixLength
+-- IPv6アドレスの最初の4セクションを抜き出して::/56化する関数
+function extract_ipv6_56(wan_ipv6)
+    -- IPv6アドレスをセクションに分割する
+    local sections = {}
+    for section in wan_ipv6:gmatch("[^:]+") do
+        local hex_section = tonumber(section, 16)
+        if hex_section ~= nil then
+            table.insert(sections, section)
+        else
+            table.insert(sections, "0")
         end
     end
 
-    return ipv6Prefix, prefixLength
+    local ipv6_56 = table.concat(sections, ":", 1, 4).. "::"
+    
+    return ipv6_56
+end
+
+-- IPv6 PrefixとPrefix Lengthの取得 --
+function M.getIPv6PrefixInfo()
+    local ipv6_56 = M.extract_ipv6_56(wan_ipv6)
+    local ipv6_fixlen = (prefixLength == 56) and 56 or 64
+    return ipv6_56, ipv6_fixlen
 end
 
 -- wan_ipv6をセクション毎に分割する関数 --
@@ -330,24 +329,6 @@ M.log_message("find_ipv4_prefix", "hex_prefix_40: " .. (hex_prefix_40 or "nil"))
     else
         return nil, "No matching IPv4 prefix found."
     end
-end
-
--- IPv6アドレスの最初の4セクションを抜き出して::/56化する関数
-function M.extract_ipv6_56(wan_ipv6)
-    -- IPv6アドレスをセクションに分割する
-    local sections = {}
-    for section in wan_ipv6:gmatch("[^:]+") do
-        local hex_section = tonumber(section, 16)
-        if hex_section ~= nil then
-            table.insert(sections, section)
-        else
-            table.insert(sections, "0")
-        end
-    end
-
-    local ipv6_56 = table.concat(sections, ":", 1, 4).. "::"
-    
-    return ipv6_56
 end
 
 -- brand 判定関数

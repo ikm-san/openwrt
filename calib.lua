@@ -166,7 +166,7 @@ function M.getIPv6_wan_status()
 end
 
 -- IPv6アドレスの最初の4セクションを抜き出して::/56化する関数
-function extract_ipv6_56(wan_ipv6)
+function M.extract_ipv6_56(wan_ipv6)
     -- IPv6アドレスをセクションに分割する
     local sections = {}
     for section in wan_ipv6:gmatch("[^:]+") do

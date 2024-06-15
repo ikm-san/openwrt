@@ -236,6 +236,8 @@ M.log_message("find_ipv4_prefix", "hex_prefix_40: " .. (hex_prefix_40 or "nil"))
     local ipv4_prefix = ruleprefix38[hex_prefix_40] or ruleprefix38_20[hex_prefix_40] or ruleprefix31[hex_prefix_32]
     local ipv6_prefixlen = 32
 
+M.log_message("find_ipv4_prefix", "ipv4_prefix: " .. (ipv4_prefix or "nil"))
+    
     if ipv4_prefix then
         local ipv4_parts = {}
         for part in ipv4_prefix:gmatch("(%d+)") do
@@ -315,6 +317,10 @@ M.log_message("find_ipv4_prefix", "hex_prefix_40: " .. (hex_prefix_40 or "nil"))
             ipv4_prefixlen = 16
             ipv6_prefix = wan_ipv6:sub(1, 8) .. ":"
             offset = 4
+
+                 M.log_message("find_ipv4_prefix", "ipv6_prefix after extract: " .. (ipv6_prefix or "nil"))
+                 M.log_message("find_ipv4_prefix", "ipv6_prefix after extract wan_ipv6: " .. (wan_ipv6 or "nil"))
+            
         end
 
         M.log_message("find_ipv4_prefix", "line320 wan_ipv6: " .. (wan_ipv6 or "nil"))

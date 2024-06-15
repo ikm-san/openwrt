@@ -77,6 +77,28 @@ function M.get_wan6_interface_name()
     return nil
 end
 
+-- すべてのネットワークインターフェース名を取得する関数
+function M.get_network_interfaces()
+    local handle = io.popen("ubus call network.device status")
+    local result = handle:read("*a")
+    handle:close()
+
+    M.log_message("calib", "UBus result for network interfaces: " .. result)
+    
+    local data = json.parse(result)
+    local interfaces = {}
+
+    if data then
+        for name, info in pairs(data) do
+            if info.type == "Network device" or info.type == "bridge" then
+                table.insert(interfaces, name)
+            end
+        end
+    end
+
+    return interfaces
+end
+
 -- LANおよびWANインターフェース名を取得する関数
 function M.get_lan_wan_interfaces()
     local interfaces = M.get_network_interfaces()
@@ -85,10 +107,15 @@ function M.get_lan_wan_interfaces()
     local wan6_interface = M.get_wan6_interface_name()
 
     for _, iface in ipairs(interfaces) do
-        if iface:match("^lan%d*$") then
+        if iface:match("^lan%d*$") or iface:match("^eth%d*$") then
             table.insert(lan_interfaces, iface)
         end
     end
+
+    -- ログメッセージの出力
+    M.log_message("calib", "LAN interfaces: " .. table.concat(lan_interfaces, ", "))
+    M.log_message("calib", "WAN interface: " .. (wan_interface or "nil"))
+    M.log_message("calib", "WAN6 interface: " .. (wan6_interface or "nil"))
 
     return lan_interfaces, wan_interface, wan6_interface
 end

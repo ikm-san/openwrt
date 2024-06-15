@@ -184,7 +184,7 @@ function M.extract_ipv6_56(wan_ipv6)
 end
 
 -- IPv6 PrefixとPrefix Lengthの取得 --
-function M.getIPv6PrefixInfo()
+function M.getIPv6PrefixInfo(wan_ipv6)
     local ipv6_56 = M.extract_ipv6_56(wan_ipv6)
     local ipv6_fixlen = (prefixLength == 56) and 56 or 64
     return ipv6_56, ipv6_fixlen
@@ -321,7 +321,7 @@ M.log_message("find_ipv4_prefix", "hex_prefix_40: " .. (hex_prefix_40 or "nil"))
         
         local ealen = 56 - ipv6_prefixlen
         local psidlen = ealen - (32 - ipv4_prefixlen)
-        local ipv6Prefix, prefixLength = M.getIPv6PrefixInfo()
+        local ipv6Prefix, prefixLength = M.getIPv6PrefixInfo(wan_ipv6)
         local ipv6_56 = ipv6Prefix
         local peeraddr = M.peeraddrVNE(wan_ipv6)
 

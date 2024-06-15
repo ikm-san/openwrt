@@ -55,17 +55,6 @@ password:depends("wan_setup", "pppoe_ipv4")
 -- mapデータのフォーム表示用
     local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
 
-        sys.exec("logger -t ipoe 'find_ipv4_prefix result - IPv4 Prefix: " .. ipv4_prefix .. 
-                ", IPv4 Prefix Length: " .. ipv4_prefixlen .. 
-                ", IPv6 Prefix: " .. ipv6_prefix .. 
-                ", IPv6 Prefix Length: " .. ipv6_prefixlen ..
-                ", EA Length: " .. ealen ..
-                ", PSID Length: " .. psidlen ..
-                ", Offset: " .. offset ..
-                ", IPv6 /56: " .. ipv6_56 ..
-                ", Peer Address: " .. peeraddr .. "'")
-
-
         fipv6_56 = s:option(Value, "ipv6_56", translate("IPv6 Address"))
         fipv6_56.default = ipv6_56 or "認識できません"
         fipv6_56:depends("wan_setup", "ipoe_v6plus")

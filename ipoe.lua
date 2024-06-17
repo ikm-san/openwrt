@@ -128,10 +128,10 @@ local function configure_dslite_connection(gw_aftr)
 
     -- DS-Liteインターフェースの設定
     uci:section("network", "interface", "dslite", {
-        proto = 'dslite',
+        proto = "dslite",
         peeraddr = gw_aftr, 
-        tunlink = wan6_interface,
-        mtu = '1460'
+        tunlink = "wan6",
+        mtu = "1460"
     })
     
     -- DHCP関連設定
@@ -176,7 +176,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     uci:set("network", "wan6", "proto", "dhcpv6")
     uci:set("network", "wan6", "reqaddress", "try")
     uci:set("network", "wan6", "reqprefix", "auto")
-    uci:set("network", "wan6", "ip6assign", "64")
+    uci:set("network", "wan6", "ip6assign", "ipv6_fixlen")
     uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "/" .. ipv6_fixlen)
     
     -- WANMAP settings
@@ -193,13 +193,13 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
         offset = offset,
         legacymap = "1",
         mtu = "1460",
-        tunlink= wan6_interface,
+        tunlink= "wan6",
         encaplimit = "ignore"
     })
 
     -- LAN settings
     uci:delete("network", "globals", "ula_prefix") 
-    uci:set("network", "lan", "ip6assign", "64")
+    uci:set("network", "lan", "ip6assign", "ipv6_fixlen")
    
     -- Firewall settings
     uci:delete("firewall", "@zone[1]", "network", "wan")

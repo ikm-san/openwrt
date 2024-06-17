@@ -11,8 +11,8 @@ luci.sys.exec("logger -t ipoe 'Starting Japanese IPoE Auto Config for LUCI'")
 -- WANのグローバルIPv6を取得 --
 local wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask, ipv6_fixlen = calib.getIPv6_wan_status()
 luci.sys.exec("logger -t ipoe 'WAN IPv6: " .. wan_ipv6 .. "'")
-luci.sys.exec("logger -t ipoe 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .., ipv6_fixlen: " .. ipv6_fixlen .. "'")
-
+luci.sys.exec("logger -t ipoe 'IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength .. ", ipv6_fixlen: " .. ipv6_fixlen .. "'")
+    
 -- WANインターフェース名の判定 --
 local lan_interfaces, wan_interface, wan6_interface = calib.get_lan_wan_interfaces()
 local ports = table.concat(lan_interfaces, " ") .. " " .. wan_interface

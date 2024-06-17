@@ -137,12 +137,14 @@ function M.getIPv6_wan_status()
         if data["ipv6-prefix"] and data["ipv6-prefix"][1] then
             ipv6Prefix = data["ipv6-prefix"][1].address or ipv6Prefix
             prefixLength = data["ipv6-prefix"][1].mask or prefixLength
+            ipv6_fixlen = prefixLength
             M.log_message("calib", "IPv6 Prefix: " .. ipv6Prefix .. ", Prefix Length: " .. prefixLength)
         end
 
         if data["route"] and data["route"][1] then
             route_target = data["route"][1].target or route_target
             route_mask = data["route"][1].mask or route_mask
+            ipv6_fixlen = route_mask
             M.log_message("calib", "Route Target: " .. route_target .. ", Route Mask: " .. route_mask)
         end
         
@@ -163,7 +165,7 @@ function M.getIPv6_wan_status()
         M.log_message("calib", "No data returned from ubus call")
     end
 
-    return wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask
+    return wan_ipv6, ipv6Prefix, prefixLength, route_target, route_mask, ipv6_fixlen
 end
 
 -- IPv6アドレスの最初の4セクションを抜き出して::/56化する関数
@@ -366,7 +368,7 @@ end
     local ip4prefixlen = 32 - (ealen - psidlen)
     local peeraddr = M.peeraddrVNE(wan_ipv6)
     local ipv6_56, ipv6_fixlen = M.getIPv6PrefixInfo(wan_ipv6)
-
+     M.log_message("calib", "ipv6_fixlen: " .. ipv6_fixlen)
     return ipv4_prefix, ip4prefixlen, ip6pfx, ip6prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr
 end
 

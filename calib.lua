@@ -154,9 +154,10 @@ function M.getIPv6_wan_status()
             M.log_message("calib", "Assigned WAN6 IPv6 Address: " .. wan_ipv6)
         elseif wan_ipv6 == "0000:0000:0000:0000:0000:0000:0000:0000" and data["ipv6-prefix"] and data["ipv6-prefix"][1] then
             -- DHCPv6-PDでprefixだけが配布されWANのIPv6アドレスがまだ生成されていない場合に直接IPv6アドレスをwan6に割り当てる
-            wan_ipv6 = ipv6Prefix .. "1/" .. prefixLength  -- プレフィックスの一部を使用してインターフェースにアドレスを設定
-            os.execute("ip -6 addr add " .. wan_ipv6 .. " dev " .. wan_iface)
-            M.log_message("calib", "Assigned WAN IPv6 Address: " .. wan_ipv6)
+            --wan_ipv6 = ipv6Prefix .. "1/" .. prefixLength  -- プレフィックスの一部を使用してインターフェースにアドレスを設定
+            --os.execute("ip -6 addr add " .. wan_ipv6 .. " dev " .. wan_iface)
+            wan_ipv6 = ipv6Prefix
+            M.log_message("calib", "Assigned temp WAN IPv6 Address : " .. wan_ipv6)
         end
     else
         M.log_message("calib", "No data returned from ubus call")

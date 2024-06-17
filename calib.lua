@@ -211,7 +211,7 @@ function M.dec_to_bin(dec)
 end
 
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
-function M.find_ipv4_prefix(wan_ipv6)
+unction M.find_ipv4_prefix(wan_ipv6)
     local function band(a, b)
         local result = 0
         local bitval = 1
@@ -273,42 +273,48 @@ function M.find_ipv4_prefix(wan_ipv6)
     end
 
     local function calculate_ipaddr(prefix, ruleprefix, rule_type, hextet)
-        local hex_prefix = to_hex(math.floor(prefix))
-        print("Looking up ruleprefix with key:", hex_prefix)
-        local octet_str = ruleprefix[hex_prefix]
-        local ip6prefixlen, psidlen, offset = 0, 0, 0
-        if octet_str then
-            print("Found octet:", octet_str)
-            local octet = {}
-            for value in string.gmatch(octet_str, "%d+") do
-                table.insert(octet, tonumber(value))
-            end
-            -- Ensure the IPv4 address has 4 sections
-            while #octet < 4 do
-                table.insert(octet, 0)
-            end
-            -- Set the appropriate values for ip6prefixlen, psidlen, and offset based on rule_type
-            if rule_type == "38" then
-                ip6prefixlen = 38
-                psidlen = 8
-                offset = 4
-            elseif rule_type == "31" then
-                ip6prefixlen = 31
-                psidlen = 8
-                offset = 4
-            elseif rule_type == "38_20" then
-                ip6prefixlen = 38
-                psidlen = 6
-                offset = 6
-            end
-            return table.concat(octet, "."), ip6prefixlen, psidlen, offset
-        else
-            print("No matching ruleprefix found for key:", hex_prefix)
-        end
-        return nil, ip6prefixlen, psidlen, offset
-    end
+    local hex_prefix = to_hex(math.floor(prefix))
+    print("Looking up ruleprefix with key:", hex_prefix)
+    local octet_str = ruleprefix[hex_prefix]
+    local ip6prefixlen, psidlen, offset = 0, 0, 0
+    local ip6pfx = ""
 
-    local ruleprefix31 = M.getRulePrefix31()
+    if octet_str then
+        print("Found octet:", octet_str)
+        local octet = {}
+        for value in string.gmatch(octet_str, "%d+") do
+            table.insert(octet, tonumber(value))
+        end
+        -- Ensure the IPv4 address has 4 sections
+        while #octet < 4 do
+            table.insert(octet, 0)
+        end
+
+        -- Set the appropriate values for ip6prefixlen, psidlen, and offset based on rule_type
+        if rule_type == "38" then
+            ip6prefixlen = 38
+            psidlen = 8
+            offset = 4
+            ip6pfx = string.format("%x:%x::", hextet[1], hextet[2])
+        elseif rule_type == "31" then
+            ip6prefixlen = 31
+            psidlen = 8
+            offset = 4
+            ip6pfx = string.format("%x:%x::", hextet[1], hextet[2])
+        elseif rule_type == "38_20" then
+            ip6prefixlen = 38
+            psidlen = 6
+            offset = 6
+            ip6pfx = string.format("%x:%x:%x::", hextet[1], hextet[2], band(hextet[3], 0xfc00))
+        end
+        return table.concat(octet, "."), ip6pfx, ip6prefixlen, psidlen, offset
+    else
+        print("No matching ruleprefix found for key:", hex_prefix)
+    end
+    return nil, ip6pfx, ip6prefixlen, psidlen, offset
+end
+
+      local ruleprefix31 = M.getRulePrefix31()
     local ruleprefix38 = M.getRulePrefix38()
     local ruleprefix38_20 = M.getRulePrefix38_20()
 
@@ -331,17 +337,17 @@ function M.find_ipv4_prefix(wan_ipv6)
     print("prefix31:", prefix31)
     print("prefix38:", prefix38)
 
-    local ip6prefixlen, psidlen, offset, ipv4_prefix
+    local ipv4_prefix, ip6pfx, ip6prefixlen, psidlen, offset
 
     -- Check ruleprefix31 first
-    ipv4_prefix, ip6prefixlen, psidlen, offset = calculate_ipaddr(prefix31, ruleprefix31, "31", hextet)
+    ipv4_prefix, ip6pfx, ip6prefixlen, psidlen, offset = calculate_ipaddr(prefix31, ruleprefix31, "31", hextet)
     if not ipv4_prefix then
         -- Check ruleprefix38 next
-        ipv4_prefix, ip6prefixlen, psidlen, offset = calculate_ipaddr(prefix38, ruleprefix38, "38", hextet)
+        ipv4_prefix, ip6pfx, ip6prefixlen, psidlen, offset = calculate_ipaddr(prefix38, ruleprefix38, "38", hextet)
     end
     if not ipv4_prefix then
         -- Check ruleprefix38_20 last
-        ipv4_prefix, ip6prefixlen, psidlen, offset = calculate_ipaddr(prefix38, ruleprefix38_20, "38_20", hextet)
+        ipv4_prefix, ip6pfx, ip6prefixlen, psidlen, offset = calculate_ipaddr(prefix38, ruleprefix38_20, "38_20", hextet)
     end
 
     if not ipv4_prefix then
@@ -357,12 +363,10 @@ function M.find_ipv4_prefix(wan_ipv6)
 
     local ealen = 56 - ip6prefixlen
     local ip4prefixlen = 32 - (ealen - psidlen)
-    local ip6prefix = {hextet[1], hextet[2], band(hextet[3], 0xfc00)}
     local peeraddr = M.peeraddrVNE(wan_ipv6)
-    local ip6prefix_str = format_ipv6(ip6prefix)
     local ipv6_56 = M.extract_ipv6_56(wan_ipv6)
 
-    return ipv4_prefix, ip4prefixlen, ip6prefix_str, ip6prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr
+    return ipv4_prefix, ip4prefixlen, ip6pfx, ip6prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr
 end
 
     

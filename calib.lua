@@ -266,44 +266,10 @@ function M.find_ipv4_prefix(wan_ipv6)
 
     local function format_ipv6(segments)
         local formatted_segments = {}
-        local zero_start = -1
-        local zero_length = 0
-        local longest_zero_start = -1
-        local longest_zero_length = 0
-    
-        for i, segment in ipairs(segments) do
-            if segment == 0 then
-                if zero_start == -1 then
-                    zero_start = i
-                    zero_length = 1
-                else
-                    zero_length = zero_length + 1
-                end
-            else
-                if zero_length > longest_zero_length then
-                    longest_zero_start = zero_start
-                    longest_zero_length = zero_length
-                end
-                zero_start = -1
-                zero_length = 0
-            end
+        for _, segment in ipairs(segments) do
+            table.insert(formatted_segments, string.format("%x", segment))
         end
-    
-        if zero_length > longest_zero_length then
-            longest_zero_start = zero_start
-            longest_zero_length = zero_length
-        end
-    
-        for i, segment in ipairs(segments) do
-            if i == longest_zero_start then
-                table.insert(formatted_segments, "")
-                i = i + longest_zero_length - 1
-            elseif i < longest_zero_start or i >= longest_zero_start + longest_zero_length then
-                table.insert(formatted_segments, string.format("%x", segment))
-            end
-        end
-    
-        return table.concat(formatted_segments, ":"):gsub("^:", "::"):gsub(":$", "::")
+        return table.concat(formatted_segments, ":") .. "::"
     end
 
     local function calculate_ipaddr(prefix, ruleprefix, rule_type, hextet)

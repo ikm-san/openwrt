@@ -211,7 +211,7 @@ function M.dec_to_bin(dec)
 end
 
 -- Mape関連の数値を取得する関数、IPv6アドレスから対応するIPv4プレフィックスを取得
-unction M.find_ipv4_prefix(wan_ipv6)
+function M.find_ipv4_prefix(wan_ipv6)
     local function band(a, b)
         local result = 0
         local bitval = 1

@@ -364,9 +364,9 @@ end
     local ealen = 56 - ip6prefixlen
     local ip4prefixlen = 32 - (ealen - psidlen)
     local peeraddr = M.peeraddrVNE(wan_ipv6)
-    local ipv6_56 = M.extract_ipv6_56(wan_ipv6)
+    local ipv6_56, ipv6_fixlen = M.getIPv6PrefixInfo(wan_ipv6)
 
-    return ipv4_prefix, ip4prefixlen, ip6pfx, ip6prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr
+    return ipv4_prefix, ip4prefixlen, ip6pfx, ip6prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr
 end
 
     

@@ -51,7 +51,6 @@ password.password = true
 username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
-
 -- mapデータのフォーム表示用
     local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
 

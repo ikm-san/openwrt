@@ -53,16 +53,16 @@ password:depends("wan_setup", "pppoe_ipv4")
 
 
 -- mapデータのフォーム表示用
-    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
+    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = calib.find_ipv4_prefix(wan_ipv6)
 
         fipv6_56 = s:option(Value, "ipv6_56", translate("IPv6 Address"))
         fipv6_56.default = ipv6_56 or "認識できません"
         fipv6_56:depends("wan_setup", "ipoe_v6plus")
         fipv6_56:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        fipv6_56:depends("wan_setup", "ipoe_biglobe")
+        fipv6_56:depends("wan_setup", "ipoe_biglobe"), 
         
         fprefixLength = s:option(Value, "prefixLength", translate("IPv6 Addr Prefix"))
-        fprefixLength.default = prefixLength or "認識できません"
+        fprefixLength.default = ipv6_fixlen or "認識できません"
         fprefixLength:depends("wan_setup", "ipoe_v6plus")
         fprefixLength:depends("wan_setup", "ipoe_ocnvirtualconnect")
         fprefixLength:depends("wan_setup", "ipoe_biglobe")
@@ -152,7 +152,7 @@ local function configure_dslite_connection(gw_aftr)
 end
 
 -- map-e v6 plus 接続設定関数
-function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, prefixLength)
+function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen)
               
     -- DHCP LAN settings
     uci:set("dhcp", "lan", "dhcp")
@@ -178,7 +178,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     uci:set("network", "wan6", "reqaddress", "try")
     uci:set("network", "wan6", "reqprefix", "auto")
     uci:set("network", "wan6", "ip6assign", "64")
-    uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "/" .. prefixLength)
+    uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "/" .. ipv6_fixlen)
     
     -- WANMAP settings
     uci:section("network", "interface", "wanmap", {
@@ -332,9 +332,9 @@ function choice.write(self, section, value)
         local offset = foffset:formvalue(section)
         local ipv6_56 = fipv6_56:formvalue(section)
         local peeraddr = fpeeraddr:formvalue(section) 
-        local prefixLength = fprefixLength:formvalue(section)
+        local ipv6_fixlen = fprefixLength:formvalue(section)
 
-        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, prefixLength)
+        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen)
     
     elseif value == "ipoe_ocnvirtualconnect" then
         -- OCNバーチャルコネクト
@@ -348,9 +348,9 @@ function choice.write(self, section, value)
         local offset = foffset:formvalue(section)
         local ipv6_56 = fipv6_56:formvalue(section)
         local peeraddr = fpeeraddr:formvalue(section)
-        local prefixLength = fprefixLength:formvalue(section)
+        local ipv6_fixlen = fprefixLength:formvalue(section)
 
-        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, prefixLength)
+        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen)
     
     elseif value == "ipoe_biglobe" then
         -- BIGLOBE IPv6オプション
@@ -364,9 +364,9 @@ function choice.write(self, section, value)
         local offset = foffset:formvalue(section)
         local ipv6_56 = fipv6_56:formvalue(section)
         local peeraddr = fpeeraddr:formvalue(section)
-        local prefixLength = fprefixLength:formvalue(section)
+        local ipv6_fixlen = fprefixLength:formvalue(section)
 
-        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, prefixLength)
+        configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen)
     
     elseif value == "ipoe_transix" then
             -- transix (ds-lite)

@@ -59,7 +59,7 @@ password:depends("wan_setup", "pppoe_ipv4")
         fipv6_56.default = ipv6_56 or "認識できません"
         fipv6_56:depends("wan_setup", "ipoe_v6plus")
         fipv6_56:depends("wan_setup", "ipoe_ocnvirtualconnect")
-        fipv6_56:depends("wan_setup", "ipoe_biglobe"), 
+        fipv6_56:depends("wan_setup", "ipoe_biglobe")
         
         fprefixLength = s:option(Value, "prefixLength", translate("IPv6 Addr Prefix"))
         fprefixLength.default = ipv6_fixlen or "認識できません"

@@ -200,7 +200,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
 
     -- LAN settings
     uci:delete("network", "globals", "ula_prefix") 
-    uci:set("network", "lan", "ip6assign", "ipv6_fixlen")
+    uci:set("network", "lan", "ip6assign", ipv6_fixlen)
    
     -- Firewall settings
     uci:delete("firewall", "@zone[1]", "network", "wan")

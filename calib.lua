@@ -471,7 +471,7 @@ function M.wan32_40(wan_ipv6)
     return wan32_ipv6, wan40_ipv6
 end
 
-local function M.MAP0_patch1907_map_sh()
+function M.MAP0_patch1907_map_sh()
     local version = io.popen("grep DISTRIB_RELEASE /etc/openwrt_release | cut -d\"'\" -f2"):read("*a"):gsub("%s+", "")
     if version == "19.07" then
         -- コメントを外す変更が既に適用されているか確認

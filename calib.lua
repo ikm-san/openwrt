@@ -471,6 +471,32 @@ function M.wan32_40(wan_ipv6)
     return wan32_ipv6, wan40_ipv6
 end
 
+local function M.MAP0_patch1907_map_sh()
+    local version = io.popen("grep DISTRIB_RELEASE /etc/openwrt_release | cut -d\"'\" -f2"):read("*a"):gsub("%s+", "")
+    if version == "19.07" then
+        -- コメントを外す変更が既に適用されているか確認
+        local legacy_applied = os.execute("grep -q '^export LEGACY=1' /path/to/map.sh")
+        -- json_add_booleanの変更が既に適用されているか確認
+        local json_applied = os.execute("grep -q 'json_add_string connlimit_ports \"1\"' /path/to/map.sh")
+        
+        if legacy_applied ~= 0 then
+            os.execute("sed -i 's/#export LEGACY=1/export LEGACY=1/' /path/to/map.sh")
+        end
+        if json_applied ~= 0 then
+            os.execute("sed -i 's/json_add_boolean connlimit_ports 1/json_add_string connlimit_ports \"1\"/' /path/to/map.sh")
+        end
+        
+        if legacy_applied == 0 and json_applied == 0 then
+            print("変更は既に適用されています。")
+        else
+            print("map.sh ファイルが修正されました。")
+        end
+    else
+        print("OpenWrt 19.07 ではないため、修正は不要です。")
+    end
+end
+
+
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html RulePrefix31, 38, 38_20
 function M.getRulePrefix31()
     return {

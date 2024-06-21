@@ -487,12 +487,12 @@ local function M.MAP0_patch1907_map_sh()
         end
         
         if legacy_applied == 0 and json_applied == 0 then
-            print("変更は既に適用されています。")
+            luci.sys.exec("logger -t patch1907_map_sh '変更は既に適用されています。'")
         else
-            print("map.sh ファイルが修正されました。")
+            luci.sys.exec("logger -t patch1907_map_sh 'ファイルが修正されました。'")
         end
     else
-        print("OpenWrt 19.07 ではないため、修正は不要です。")
+        luci.sys.exec("logger -t patch1907_map_sh 'OpenWrt 19.07 ではないため、修正は不要です。'")
     end
 end
 

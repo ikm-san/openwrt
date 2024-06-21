@@ -98,6 +98,21 @@ wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubuserco
 ```
 ※こちらはOpenWrt 19.07では動作しません、map-e通信が動かなくなりますので19.07では導入しないでください。
 
+## MAP-Eインターフェースが何故か通信できない？(19.07)
+OpenWrt 19.07では、日本規格のmap-e通信をする場合はLEGACY MAP0モードに戻して使用する必要があります。  
+そこでmap.shファイルの下記２か所に変更を加えるてください。
+最新のバージョンではLuci上から選べるようになり、かつこの作業は不要のため私のスクリプトには自動修正パッチは作成しておりません。
+```  
+# uncomment for legacy MAP0 mode  
+export LEGACY=1  
+修正内容： コメントアウトされているので#外す  
+  
+json_add_boolean connlimit_ports 1  
+# json_add_boolean -> string  
+json_add_string connlimit_ports "1"  
+修正内容： "" で囲われていないので、そこを修正  
+```
+
 ## おわりに
 すべてのVNEでの検証はできておりませんので、動作報告や不具合報告はGitHubかXでご連絡いただけると嬉しいです。  
 性能改善につながるスクリプトの改修提案もお待ちしております。  

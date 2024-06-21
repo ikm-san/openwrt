@@ -335,6 +335,7 @@ function choice.write(self, section, value)
         local ipv6_fixlen = fprefixLength:formvalue(section)
 
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen)
+        calib.MAP0_patch1907_map_sh()
     
     elseif value == "ipoe_ocnvirtualconnect" then
         -- OCNバーチャルコネクト
@@ -351,7 +352,9 @@ function choice.write(self, section, value)
         local ipv6_fixlen = fprefixLength:formvalue(section)
 
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen)
+        calib.MAP0_patch1907_map_sh()
     
+        
     elseif value == "ipoe_biglobe" then
         -- BIGLOBE IPv6オプション
         clean_wan_configuration()
@@ -367,7 +370,8 @@ function choice.write(self, section, value)
         local ipv6_fixlen = fprefixLength:formvalue(section)
 
         configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen)
-    
+        calib.MAP0_patch1907_map_sh()
+            
     elseif value == "ipoe_transix" then
             -- transix (ds-lite)
             clean_wan_configuration()

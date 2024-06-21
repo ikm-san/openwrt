@@ -101,20 +101,14 @@ wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubuserco
 ## MAP-Eインターフェースが何故か通信できない？(19.07)
 OpenWrt 19.07では、日本規格のmap-e通信をする場合はLEGACY MAP0モードに戻して使用する必要があります。  
 最新のバージョンではLuci上から選べるようになり、かつ不要な作業のため、自動修正パッチは作成しておりません。
-```  
-対象ファイル map.sh  
-  
-該当箇所１：  
+```  ：  
 # uncomment for legacy MAP0 mode  
 export LEGACY=1  
-修正内容： コメントアウトされているので#外す
-
-該当箇所２：  
-json_add_boolean connlimit_ports 1  
-# json_add_boolean -> string  
-json_add_string connlimit_ports "1"  
-修正内容： "" で囲われていないので、そこを修正  
+ 
+# json_add_boolean connlimit_ports 1  
+json_add_string connlimit_ports "1"   
 ```
+上記２か所の修正をmap.shで行い、再起動するとmap-eバーチャルインターフェース経由の通信が開通します。
 
 ## おわりに
 すべてのVNEでの検証はできておりませんので、動作報告や不具合報告はGitHubかXでご連絡いただけると嬉しいです。  

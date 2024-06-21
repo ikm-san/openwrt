@@ -1,7 +1,8 @@
-# IPoE IPv4 over IPv6接続設定ソフトウェア
-OpenWrt搭載ルーターを日本のNTTフレッツ網のIPoE環境でIPv4 over IPv6接続を実現するソフトウェアです。  
+# IPoE IPv4 over IPv6接続設定スクリプト
+OpenWrt搭載ルーターを日本のNTTフレッツ網のIPoE環境でIPv4 over IPv6接続を実現するスクリプトです。  
 インストール後、Luci管理画面にCA接続設定というメニューが追加されます。  
 NTTフレッツ網を利用していない電力系やケーブルテレビ系列等のプロバイダではDHCP自動で動く場合が多く、IPoEの特別な設定は不要です。 
+OpenWrt 19.07以降の動作を想定しています。
 
 ■ IPoE設定
 * v6プラス（動作検証済）
@@ -81,7 +82,8 @@ Luciの画面を表示した状態で接続環境を変更するとブラウザ�
 設定完了後再起動したらIPoEで使えるようになります。  
 
 ## 動作検証に使用したハードウェア
-以下のモデルにて動作検証を行いました。
+以下のモデルにて動作検証をしています。
+* Linksys Velop WRT Pro7 LN6001
 * Linksys E8450-JP
 * Linksys WHW03v2
   
@@ -94,6 +96,7 @@ Luciの画面を表示した状態で接続環境を変更するとブラウザ�
 ```
 wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map.sh.new
 ```
+※こちらはOpenWrt 19.07では動作しません、map-e通信が動かなくなりますので19.07では導入しないでください。
 
 ## おわりに
 すべてのVNEでの検証はできておりませんので、動作報告や不具合報告はGitHubかXでご連絡いただけると嬉しいです。  

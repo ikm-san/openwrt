@@ -147,7 +147,7 @@ proto_map_setup() {
 	          json_add_string target SNAT
 	          json_add_string family inet
 	          json_add_string proto "$proto"
-                  json_add_boolean connlimit_ports "1"
+                  json_add_string connlimit_ports "1"
                   json_add_string snat_ip $(eval "echo \$RULE_${k}_IPV4ADDR")
                   json_add_string snat_port "$portset"
 	        json_close_object

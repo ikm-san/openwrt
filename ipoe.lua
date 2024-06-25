@@ -137,7 +137,7 @@ local function configure_dslite_connection(gw_aftr)
     
     -- DHCP関連設定
     uci:set("dhcp", "wan6", "dhcp")
-    uci:set("dhcp", "wan6", "interface", wan6_interface)
+    uci:set("dhcp", "wan6", "interface", "wan6")
     uci:set("dhcp", "wan6", "master", "1")
     uci:set("dhcp", "wan6", "ignore", "1")
     uci:set("dhcp", "wan6", "dhcpv6", "relay")
@@ -163,7 +163,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
 
     -- DHCP WAN6 settings
     uci:set("dhcp", "wan6", "dhcp")
-    uci:set("dhcp", "wan6", "interface", wan6_interface)
+    uci:set("dhcp", "wan6", "interface", "wan6")
     uci:set("dhcp", "wan6", "ignore", "1")
     uci:set("dhcp", "wan6", "master", "1")
     uci:set("dhcp", "wan6", "ra", "relay")

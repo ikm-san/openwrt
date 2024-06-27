@@ -21,36 +21,3 @@ config ipoe
     option wan_setup 'bridge_mode'
     option wan_setup 'dhcp_auto'
     option wan_setup 'dummy'
-
-config ds-lite 'ipoe_transix'
-    option gw_aftr 'gw.transix.jp'
-
-config ds-lite 'ipoe_xpass'
-    option gw_aftr 'dgw.xpass.jp'
-
-config ds-lite 'ipoe_v6connect'
-    option gw_aftr 'dslite.v6connect.net'
-
-config map-e 'ipoe_v6plus'
-    option mape_peeraddr '2404:9200:225:100::64'
-    option mape_ipv6prefixlen '32'
-    option mape_ipv4prefixlen '16'
-    option mape_ealen '24'
-    option mape_psidlen '8'
-    option mape_offset '4'
-
-config map-e 'ipoe_ocnvirtualconnect'
-    option mape_peeraddr '2001:380:a120::9'
-    option mape_ipv6prefixlen '38'
-    option mape_ipv4prefixlen '20'
-    option mape_ealen '18'
-    option mape_psidlen '6'
-    option mape_offset '6'
-
-config map-e 'ipoe_biglobe'
-    option mape_peeraddr '2001:260:700:1::1:275'
-    option mape_ipv6prefixlen '38'
-    option mape_ipv4prefixlen '20'
-    option mape_ealen '18'
-    option mape_psidlen '6'
-    option mape_offset '6'

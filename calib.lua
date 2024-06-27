@@ -4,6 +4,7 @@ local fs = require "nixio.fs"
 local json = require("luci.jsonc")
 local io = require("io")
 local ubus = require "ubus"
+local nixio = require("nixio")
 
 local M = {}
 
@@ -469,6 +470,112 @@ function M.wan32_40(wan_ipv6)
     local wan40_ipv6 = table.concat({sections[1], sections[2], third_section_modified}, ":").. "::"
 
     return wan32_ipv6, wan40_ipv6
+end
+
+
+-- map初期化ルーチン
+function M.init_map_routine(wan_ipv6, VNE)
+   local mode_map = {
+        ["v6プラス"] = "m1",
+        ["OCNバーチャルコネクト"] = "m2",
+        ["IPv6オプション"] = "m3"
+    }
+
+    local mode = mode_map[VNE]
+    if not mode then
+        luci.sys.call("logger -t init_map_routine 'Error: Unsupported VNE: " .. (VNE or "nil") .. "'")
+        return 
+    end
+
+    local mapscript = uci:get("ca_setup", "getmap", "mapscript")
+
+    if not mapscript then
+        local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.find_ipv4_prefix(wan_ipv6)
+        return ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr
+    end
+
+    -- mapscriptのpathが存在する場合
+    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.get_map_rule(mode, mapscript)
+    if not ipv4_prefix then
+        ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.find_ipv4_prefix(wan_ipv6)
+    end
+    return ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr
+end
+
+
+-- mapscript読み出し関数
+function M.get_map_rule(mode, mapscript)
+    -- コマンドを実行して出力を読み取る関数
+    local function execute_command(cmd)
+        local handle = io.popen(cmd)
+        local result = handle:read("*a")
+        handle:close()
+        return result
+    end
+
+    -- タイムアウトを設定してコマンドを実行
+    local timeout = 10 -- 秒
+    local start_time = nixio.sysinfo().uptime
+    local output = execute_command(mapscript .. mode)
+
+    while output == "" and (nixio.sysinfo().uptime - start_time < timeout) do
+        nixio.nanosleep(1) -- 1秒待機
+        output = execute_command(mapscript .. mode)
+    end
+
+    if output == "" then
+        luci.sys.call("logger -t get_map_rule 'Error: Command execution failed or timed out'")
+        return nil
+    end
+
+    -- JSON出力部分のみを抽出する（出力全体からJSON部分を見つけ出す）
+    local json_output = output:match("{.*}")
+
+    if not json_output then
+        luci.sys.call("logger -t get_map_rule 'Error: No JSON output found'")
+        return nil
+    end
+
+    -- JSONデータをパース
+    local data = json.parse(json_output)
+
+    -- matching_fmrの値を取得
+    if data and data.matching_fmr then
+        local matching_fmr = data.matching_fmr
+
+        if next(matching_fmr) == nil then
+            luci.sys.call("logger -t get_map_rule 'Error: matching_fmr is empty'")
+            return nil
+        end
+
+        local offset = matching_fmr.offset
+        local peeraddr = matching_fmr.peeraddr
+        local ipv6_56 = matching_fmr.ipv6_56
+        local ipv6_prefixlen = matching_fmr.ipv6_prefixlen
+        local ipv4_prefix = matching_fmr.ipv4_prefix
+        local psidlen = matching_fmr.psidlen
+        local ealen = matching_fmr.ealen
+        local ipv4_prefixlen = matching_fmr.ipv4_prefixlen
+        local ipv6_fixlen = matching_fmr.ipv6_fixlen
+        local ipv6_prefix = matching_fmr.ipv6_prefix
+
+        -- ログメッセージを表示
+        luci.sys.call("logger -t get_map_rule 'offset: " .. (offset or "nil") .. "'")
+        luci.sys.call("logger -t get_map_rule 'peeraddr: " .. (peeraddr or "nil") .. "'")
+        luci.sys.call("logger -t get_map_rule 'ipv6_56: " .. (ipv6_56 or "nil") .. "'")
+        luci.sys.call("logger -t get_map_rule 'ipv6_prefixlen: " .. (ipv6_prefixlen or "nil") .. "'")
+        luci.sys.call("logger -t get_map_rule 'ipv4_prefix: " .. (ipv4_prefix or "nil") .. "'")
+        luci.sys.call("logger -t get_map_rule 'psidlen: " .. (psidlen or "nil") .. "'")
+        luci.sys.call("logger -t get_map_rule 'ealen: " .. (ealen or "nil") .. "'")
+        luci.sys.call("logger -t get_map_rule 'ipv4_prefixlen: " .. (ipv4_prefixlen or "nil") .. "'")
+        luci.sys.call("logger -t get_map_rule 'ipv6_fixlen: " .. (ipv6_fixlen or "nil") .. "'")
+        luci.sys.call("logger -t get_map_rule 'ipv6_prefix: " .. (ipv6_prefix or "nil") .. "'")
+
+        return ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr
+    else
+        luci.sys.call("logger -t get_map_rule 'Error: matching_fmr data not found'")
+        return nil
+    end
 end
 
 -- basic map-e conversion table based on http://ipv4.web.fc2.com/map-e.html RulePrefix31, 38, 38_20

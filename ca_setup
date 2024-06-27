@@ -21,3 +21,12 @@ config ipoe
     option wan_setup 'bridge_mode'
     option wan_setup 'dhcp_auto'
     option wan_setup 'dummy'
+
+config ds-lite 'ipoe_transix'
+    option gw_aftr 'gw.transix.jp'
+
+config ds-lite 'ipoe_xpass'
+    option gw_aftr 'dgw.xpass.jp'
+
+config ds-lite 'ipoe_v6connect'
+    option gw_aftr 'dslite.v6connect.net'

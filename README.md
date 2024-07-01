@@ -107,11 +107,6 @@ export LEGACY=1
 # json_add_boolean connlimit_ports 1  
 json_add_string connlimit_ports "1"   
 ```
-さらにチューニングを施して、Velop WRT Pro7で動作検証した下記スクリプトを導入するとセッション数が多い状況でもよりスムーズに通信できるようになります。
-```
-wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/map.sh/map.sh1907b  
-```
-
 
 ## おわりに
 すべてのVNEでの検証はできておりませんので、動作報告や不具合報告はGitHubかXでご連絡いただけると嬉しいです。  

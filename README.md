@@ -99,16 +99,23 @@ wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubuserco
 ※こちらはOpenWrt 19.07では動作しません、map-e通信が動かなくなりますので19.07では導入しないでください。
 
 ## MAP-Eインターフェースが何故か通信できない？(19.07)
-OpenWrt 19.07では、日本規格のmap-e通信をする場合はLEGACY MAP0モードに戻して使用する必要があります。  
-最新のバージョンではLuci上から選べるようになり、かつ不要な作業のため、自動修正パッチは作成しておりません。
-```  ：  
+OpenWrt 19.07ではiptablesによってファイアウォールが制御されています。またmap.shスクリプト内の記述にエラーがあるためそのままでは動きません。
+map.sh内の下記２か所の修正を行い、ネットワークサービスを再起動するとmap-eバーチャルインターフェース経由の通信が開通します。
+具体的には、map-e通信の規格がドラフト版を導入する必要がありますが、map.shはそのままだと通常版で動きます。そのためLEGACY MAP0モードに戻してあげる必要があります。  
+また、iptablesに登録する記述にエラーがあるため、その修正が必要でうｓ。
+```    
 # uncomment for legacy MAP0 mode  
 export LEGACY=1  
  
 # json_add_boolean connlimit_ports 1  
 json_add_string connlimit_ports "1"   
 ```
-上記２か所の修正をmap.shで行い、再起動するとmap-eバーチャルインターフェース経由の通信が開通します。
+
+また、当方さらにチューニングを施して、動作検証のとれている下記スクリプトを導入するとセッション数が多い状況でもよりスムーズに通信できるようになります。
+```
+wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/map.sh/map.sh1907b  
+```
+
 
 ## おわりに
 すべてのVNEでの検証はできておりませんので、動作報告や不具合報告はGitHubかXでご連絡いただけると嬉しいです。  

@@ -142,7 +142,7 @@ proto_map_setup() {
 	  else
 
 # -------------------------------------------------------------------------------------------------
-# MOD STARTS HERE
+# MOD STARTS HERE (ikm-san)
 # Special thanks to everyone who has contributed to establishing the Japanese MAP-E connection !!!
 # -------------------------------------------------------------------------------------------------
 
@@ -166,25 +166,17 @@ for portset in $(eval "echo \$RULE_${k}_PORTSETS"); do
 	        json_add_string target SNAT
 	        json_add_string family inet
 	        json_add_string proto "$proto"
-
-		    if [ "$proto" = "tcp" ]; then
-		        json_add_string extra "-m mark --mark $mark"
-			# jason_add_string mark "$mark"
-		        json_add_string extra "-m connlimit --connlimit-daddr --connlimit-upto 16 --connlimit-mask 0"
-		    else
-		        json_add_string extra "-m connlimit --connlimit-daddr --connlimit-upto 16 --connlimit-mask 0"
-		    fi
-
+		json_add_string extra "-m mark --mark $mark"
+		json_add_string extra "-m connlimit --connlimit-daddr --connlimit-upto 16 --connlimit-mask 0"
 	        json_add_string snat_ip $(eval "echo \$RULE_${k}_IPV4ADDR")
 	        json_add_string snat_port "$portset"
 	        json_close_object
 	done
 
-	iptables -t nat -A PREROUTING -p tcp -m statistic --mode nth --every $units --packet $pn -j MARK --set-mark $mark
-  	iptables -t nat -A OUTPUT -p tcp -m statistic --mode nth --every $units --packet $pn -j MARK --set-mark $mark
+	iptables -t nat -A PREROUTING -m statistic --mode nth --every $units --packet $pn -j MARK --set-mark $mark
+  	iptables -t nat -A OUTPUT -m statistic --mode nth --every $units --packet $pn -j MARK --set-mark $mark
 	mark=`expr $mark + 1`
-　　	pn=`expr $pn + 1`
-
+	pn=`expr $pn + 1`
 done
 
 iptables -t nat -A PREROUTING -i $LANDEV -j zone_lan_prerouting

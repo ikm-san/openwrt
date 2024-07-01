@@ -46,8 +46,8 @@ ssh-keygen -R 192.168.10.1
 ```
 ## スクリプト
 以下のコマンドを丸ごとコピペしてterminalに貼り付けてもらえれば順番に実行して数十秒で完了します。  
-NTTフレッツのIPoE環境では、IPv4通信がまだ開通していない環境でもIPv6通信は使えますので、
-このページをあらかじめ開いておけばコピペもはかどります。
+NTTフレッツのIPoE環境では、IPv4通信がまだ開通していない環境でもIPv6通信は使えますので、  
+このページをあらかじめ開いておけばmap-e未開通でもterminalからダウンロード可能です。
 ```
 opkg update  
 opkg install curl  
@@ -83,11 +83,11 @@ Luciの画面を表示した状態で接続環境を変更するとブラウザ�
 ## 動作検証に使用したハードウェア
 以下のモデルにて動作検証をしています。
 * Linksys Velop WRT Pro7 LN6001
-* Linksys E8450-JP
 * Linksys WHW03v2
+* Linksys E8450-JP
   
 ## Luciからインストールできるopkgファイル形式
-ターミナルからSSHでrootログインはちょっと・・・という方向けのLuci管理画面からインストールできる[opkgファイル](https://github.com/ikm-san/openwrt/raw/main/opkg/luci-app-jpoe_1.0_all.ipk)用意しました。  
+ターミナルではなくLuci管理画面からインストールしたい方向けの[opkgファイル](https://github.com/ikm-san/openwrt/raw/main/opkg/luci-app-jpoe_1.0_all.ipk)。  
 
 ## よりスムーズに動くMAP-Eインターフェース用map.shスクリプト
 最新のOpenWrtでは差し替え不要でそのままでもmap-eが動作しますが、ポートセットを有効活用できていないため通称ニチバンベンチ等でひっかかる現象が発生します。  
@@ -124,5 +124,9 @@ wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubuserco
 ## スペシャルサンクス
 https://ipv4.web.fc2.com/map-e.html -- 簡易マップの道を切り開いてくれた偉人  
 https://qiita.com/site_u -- 日本のOpenWrtコミュニティに多大な貢献をされている偉人、心の師匠  
-https://github.com/fakemanhk/openwrt-jp-ipoe -- map.shを日本の実装環境合わせてカスタマイズしてくれたすばらしき偉人  
-https://utakamo.com/article/openwrt/beginner/intro01.html -- うたカモ技術ブログでOpenWrtソフト開発の基礎を学びました、知恵の偉人
+https://github.com/fakemanhk/openwrt-jp-ipoe -- map.shを日本の実装環境に合わせてカスタマイズしてくれたすばらしき偉人  
+https://utakamo.com/article/openwrt/beginner/intro01.html -- うたカモ技術ブログでOpenWrtソフト開発の基礎を学びました、知恵の偉人  
+  
+ほかにも、map-e通信を実現するにあたり、様々な方のブログ記事を参考に改善を重ねていきました。  
+これらの情報なしでは実現し得ることがなかったのが事実です。本当に感謝しています。  
+日本のOpenWrtコミュニティの発展に今後も貢献できれば幸いです。

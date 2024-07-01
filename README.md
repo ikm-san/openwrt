@@ -46,6 +46,8 @@ ssh-keygen -R 192.168.10.1
 ```
 ## スクリプト
 以下のコマンドを丸ごとコピペしてterminalに貼り付けてもらえれば順番に実行して数十秒で完了します。  
+NTTフレッツのIPoE環境では、IPv4通信がまだ開通していない環境でもIPv6通信は使えますので、
+このページをあらかじめ開いておけばコピペもはかどります。
 ```
 opkg update  
 opkg install curl  
@@ -69,10 +71,6 @@ wget -O /usr/lib/lua/luci/model/cbi/ca_setup/ipoe.lua https://raw.githubusercont
 wget -O /usr/lib/lua/luci/model/cbi/ca_setup/wireless.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/wireless.lua  
 rm -rf /tmp/luci-*  
 /etc/init.d/uhttpd restart  
-```
-念のため再起動したほうが良いかもしれません。  
-```
-reboot  
 ```
 
 ## CA設定メニュー

@@ -56,16 +56,21 @@ btn.write = function(self, section)
     if mapscript then
         luci.http.write([[
             <script type="text/javascript">
-                alert("スクリプトを実行中です。設定完了後にネットワークを再起動するため、しばらくお待ちください。");
+                alert("自動設定実行中。設定完了後にネットワーク再起動するため、ブラウザは閉じてお待ちください。");
                 window.location.href = "/";
             </script>
         ]])
-        luci.util.exec("sh -c 'calib.execute_command " .. mapscript .. " &'")
+        luci.util.exec(mapscript)
     end
 end
 
 btn:depends("wan_setup", "ipoe_auto")
 
+-- ボタンを中央に配置するスタイルを追加
+btn.render = function(self, section, scope)
+    self.inputstyle = "margin: 0 auto; display: block; text-align: center;"
+    Button.render(self, section, scope)
+end
 msg_text = s:option(DummyValue, "smg_text", "【注意】")
 msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
 msg_text:depends("wan_setup", "bridge_mode")

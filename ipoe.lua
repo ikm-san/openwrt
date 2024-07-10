@@ -56,7 +56,7 @@ btn.write = function(self, section)
     if mapscript then
         luci.http.write([[
             <script type="text/javascript">
-                alert("スクリプトを実行中です。設定完了後にネットワークを再起動するため、しばらくお待ちください。応答がない場合はブラウザを閉じてください。");
+                alert("スクリプトを実行中です。設定完了後にネットワークを再起動するため、しばらくお待ちください。");
                 window.location.href = "/";
             </script>
         ]])

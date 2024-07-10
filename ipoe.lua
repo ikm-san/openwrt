@@ -50,7 +50,7 @@ if automap == 1 then
 end
 
 local btn = s:option(Button, "_execute", "")
-btn.inputtitle = "自動設定を実行"
+btn.inputtitle = "自動設定スクリプトの登録"
 btn.inputstyle = "apply"
 btn.write = function(self, section)
     if mapscript then

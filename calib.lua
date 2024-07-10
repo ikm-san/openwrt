@@ -515,24 +515,26 @@ function M.init_map_routine(wan_ipv6, VNE)
 end
 
 
+-- コマンドを実行して出力を読み取る関数
+local function M.execute_command(cmd)
+    local handle = io.popen(cmd)
+    local result = handle:read("*a")
+    handle:close()
+    return result
+end
+
 -- mapscript読み出し関数
 function M.get_map_rule(mode, mapscript)
-    -- コマンドを実行して出力を読み取る関数
-    local function execute_command(cmd)
-        local handle = io.popen(cmd)
-        local result = handle:read("*a")
-        handle:close()
-        return result
-    end
+
 
     -- タイムアウトを設定してコマンドを実行
     local timeout = 10 -- 秒
     local start_time = nixio.sysinfo().uptime
-    local output = execute_command(mapscript .. mode)
+    local output = M.execute_command(mapscript .. mode)
 
     while output == "" and (nixio.sysinfo().uptime - start_time < timeout) do
         nixio.nanosleep(1) -- 1秒待機
-        output = execute_command(mapscript .. mode)
+        output = M.execute_command(mapscript .. mode)
     end
 
     if output == "" then

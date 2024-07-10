@@ -526,19 +526,15 @@ end
 function M.choice_auto_ipoe(mapscript, enable_autoipoe)
     if enable_autoipoe == 1 then
         luci.util.exec(mapscript .. " -enable")
-        uci:set("ca_setup", "getmap", "autoipoe", "1")
     elseif enable_autoipoe == 0 then
         luci.util.exec(mapscript .. " -disable")
-        uci:set("ca_setup", "getmap", "autoipoe", "0")
     end
-    uci:commit("ca_setup")
     return
 end
 
 
 -- mapscript読み出し関数
 function M.get_map_rule(mode, mapscript)
-
 
     -- タイムアウトを設定してコマンドを実行
     local timeout = 10 -- 秒

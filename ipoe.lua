@@ -38,6 +38,10 @@ s.anonymous = true
 choice = s:option(ListValue, "wan_setup", "WAN設定")
 choice:value("dhcp_auto", "DHCP自動")
 choice:value("pppoe_ipv4", "PPPoE接続")
+if automap == 1 then
+    choice:value("ipoe_auto", "IPoE接続・自動設定")
+end
+
 choice:value("ipoe_v6plus", "v6プラス")
 choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
 choice:value("ipoe_biglobe", "IPv6オプション")
@@ -45,9 +49,6 @@ choice:value("ipoe_transix", "transix")
 choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
-if automap == 1 then
-    choice:value("ipoe_auto", "IPoE自動設定")
-end
 
 
 msg_text = s:option(DummyValue, "smg_text", "【注意】")

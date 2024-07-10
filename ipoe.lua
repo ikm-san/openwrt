@@ -23,6 +23,9 @@ luci.sys.exec("logger -t ipoe 'interfaces: " .. wan6_interface .. ", ALL PORTS: 
 local VNE = calib.dtermineVNE(wan_ipv6)
 luci.sys.exec("logger -t ipoe 'VNE: " .. VNE .. "'")
 
+-- 自動設定の判定
+local automap, mapscript = M.check_auto_ipoe()
+
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
 
@@ -40,6 +43,10 @@ choice:value("ipoe_transix", "transix")
 choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
+if automap == 1 then
+    choice:value("ipoe_auto", "IPoE自動設定")
+end
+
 
 msg_text = s:option(DummyValue, "smg_text", "【注意】")
 msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
@@ -384,6 +391,9 @@ function choice.write(self, section, value)
             -- v6コネクト
             clean_wan_configuration()
             gw_aftr = m.uci:get("ca_setup", "ipoe_v6connect", "gw_aftr")
+            configure_dslite_connection(gw_aftr)
+
+    elseif value == "ipoe_auto" then
             configure_dslite_connection(gw_aftr)
         
     elseif value == "bridge_mode" then

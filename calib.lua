@@ -505,7 +505,6 @@ function M.init_map_routine(wan_ipv6, VNE)
         return ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr
     end
 
-    -- mapscriptのpathが存在する場合
     local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.get_map_rule(mode, mapscript)
     if not ipv4_prefix then
         ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.find_ipv4_prefix(wan_ipv6)

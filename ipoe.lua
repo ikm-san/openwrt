@@ -38,11 +38,6 @@ s.anonymous = true
 choice = s:option(ListValue, "wan_setup", "WAN設定")
 if automap == 1 then
     choice:value("ipoe_auto", "IPoE自動設定")
-    local status_text = (current_autoipoe == "1") and "稼働中" or "停止中"
-    local status = s:option(DummyValue, "_status", "自動設定スクリプト")
-    status.rawhtml = true
-    status.default = status_text
-    status:depends("wan_setup", "ipoe_auto")
 end
 
 choice:value("dhcp_auto", "DHCP自動")
@@ -56,7 +51,7 @@ choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
 if current_autoipoe == "0" then
-    local btn_enable = s:option(Button, "_execute_enable", " ")
+    local btn_enable = s:option(Button, "_execute_enable", "自動設定スクリプト")
     btn_enable.inputtitle = "運用開始"
     btn_enable.inputstyle = "apply"
     btn_enable.write = function(self, section)

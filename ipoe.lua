@@ -68,9 +68,11 @@ btn:depends("wan_setup", "ipoe_auto")
 
 -- ボタンを中央に配置するスタイルを追加
 btn.render = function(self, section, scope)
-    self.inputstyle = "margin: 0 auto; display: block; text-align: center;"
-    Button.render(self, section, scope)
+    local btn_html = Button.render(self, section, scope)
+    btn_html = btn_html:gsub('<input', '<input style="display:block; margin-left:auto; margin-right:auto;"')
+    luci.http.write(btn_html)
 end
+
 msg_text = s:option(DummyValue, "smg_text", "【注意】")
 msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
 msg_text:depends("wan_setup", "bridge_mode")

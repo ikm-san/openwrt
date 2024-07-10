@@ -516,7 +516,7 @@ end
 
 
 -- コマンドを実行して出力を読み取る関数
-local function M.execute_command(cmd)
+function M.execute_command(cmd)
     local handle = io.popen(cmd)
     local result = handle:read("*a")
     handle:close()

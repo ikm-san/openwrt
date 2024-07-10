@@ -60,7 +60,7 @@ btn.write = function(self, section)
                 window.location.href = "/";
             </script>
         ]])
-        luci.util.exec(mapscript)
+        calib.exec_auto_ipoe(mapscript)
     end
 end
 

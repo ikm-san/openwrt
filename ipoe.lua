@@ -60,7 +60,7 @@ btn.write = function(self, section)
                 window.location.href = "/";
             </script>
         ]])
-        M.exec_auto_ipoe(mapscript .. " -enable")
+        calib.choice_auto_ipoe(mapscript,1)
     end
 end
 
@@ -77,7 +77,7 @@ btn_disable.write = function(self, section)
                 window.location.href = "/";
             </script>
         ]])
-        M.exec_auto_ipoe(mapscript .. " -disable")
+        calib.choice_auto_ipoe(mapscript,2)
     end
 end
 

@@ -487,9 +487,9 @@ end
 -- map初期化ルーチン
 function M.init_map_routine(wan_ipv6, VNE)
    local mode_map = {
-        ["v6プラス"] = "m1",
-        ["OCNバーチャルコネクト"] = "m2",
-        ["IPv6オプション"] = "m3"
+        ["v6プラス"] = " -m1",
+        ["OCNバーチャルコネクト"] = " -m2",
+        ["IPv6オプション"] = " -m3"
     }
 
     local mode = mode_map[VNE]

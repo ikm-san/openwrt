@@ -521,6 +521,14 @@ function M.execute_command(cmd)
     return result
 end
 
+
+function M.exec_auto_ipoe(mapscript)
+    luci.util.exec(mapscript)
+    uci:set("ca_setup", "getmap", "autoipoe", "1")
+    uci:commit("ca_setup")
+    return
+end
+
 -- mapscript読み出し関数
 function M.get_map_rule(mode, mapscript)
 

@@ -66,11 +66,6 @@ btn.write = function(self, section)
 end
 
 btn:depends("wan_setup", "ipoe_auto")
--- ボタンを中央に配置するスタイルを追加
-btn.render = function(self, section, scope)
-    local btn_html = Button.render(self, section, scope)
-    luci.http.write('<div style="text-align: center;">' .. btn_html .. '</div>')
-end
 
 msg_text = s:option(DummyValue, "smg_text", "【注意】")
 msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"

@@ -472,6 +472,18 @@ function M.wan32_40(wan_ipv6)
     return wan32_ipv6, wan40_ipv6
 end
 
+-- オートマップ判定
+function M.check_auto_ipoe()
+    local uci = require("uci").cursor()
+    local mapscript = uci:get("ca_setup", "getmap", "mapscript")
+    local automap = 0
+
+    if mapscript then
+        automap = 1
+    end
+
+    return automap, mapscript
+end
 
 -- map初期化ルーチン
 function M.init_map_routine(wan_ipv6, VNE)

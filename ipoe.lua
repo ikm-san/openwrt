@@ -43,6 +43,8 @@ choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
+calib.automap()
+
 -- automap
 local automap, mapscript = calib.check_auto_ipoe()
 if automap == 1 then

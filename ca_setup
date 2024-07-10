@@ -18,6 +18,7 @@ config ipoe
     option wan_setup 'ipoe_transix'
     option wan_setup 'ipoe_xpass'
     option wan_setup 'ipoe_v6connect'
+    option wan_setup 'ipoe_auto'
     option wan_setup 'bridge_mode'
     option wan_setup 'dhcp_auto'
     option wan_setup 'dummy'

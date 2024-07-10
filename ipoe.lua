@@ -25,9 +25,6 @@ luci.sys.exec("logger -t ipoe 'interfaces: " .. wan6_interface .. ", ALL PORTS: 
 local VNE = calib.dtermineVNE(wan_ipv6)
 luci.sys.exec("logger -t ipoe 'VNE: " .. VNE .. "'")
 
--- 自動設定の判定
-local automap, mapscript = calib.check_auto_ipoe()
-
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
 
@@ -38,10 +35,6 @@ s.anonymous = true
 choice = s:option(ListValue, "wan_setup", "WAN設定")
 choice:value("dhcp_auto", "DHCP自動")
 choice:value("pppoe_ipv4", "PPPoE接続")
-if automap == 1 then
-    choice:value("ipoe_auto", "IPoE接続・自動設定")
-end
-
 choice:value("ipoe_v6plus", "v6プラス")
 choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
 choice:value("ipoe_biglobe", "IPv6オプション")
@@ -49,6 +42,25 @@ choice:value("ipoe_transix", "transix")
 choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
+
+-- automap
+local automap, mapscript = calib.check_auto_ipoe()
+if automap == 1 then
+    choice:value("ipoe_auto", "IPoE自動設定")
+    local btn = s:option(Button, "_execute", "自動設定を実行する")
+    btn.inputstyle = "apply"
+    btn.write = function(self, section)
+        if mapscript then
+            luci.http.write([[
+                <script type="text/javascript">
+                    alert("スクリプトを実行中です。設定完了後にネットワークを再起動するため、しばらくお待ちください。");
+                    window.location.href = "/";
+                </script>
+            ]])
+            luci.util.exec("sh -c 'calib.execute_command " .. mapscript .. " &'")
+        end
+    end
+end
 
 
 msg_text = s:option(DummyValue, "smg_text", "【注意】")

@@ -44,43 +44,29 @@ choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
 -- automap
-local automap, mapscript = calib.check_auto_ipoe()
+local automap, mapscript = M.check_auto_ipoe()
 if automap == 1 then
     choice:value("ipoe_auto", "IPoE自動設定")
-    local btn = s:option(Button, "_execute", "自動設定を実行する")
-    btn.inputstyle = "apply"
-    btn.write = function(self, section)
-        if mapscript then
-            luci.http.write([[
-                <script type="text/javascript">
-                    alert("スクリプトを実行中です。設定完了後にネットワークを再起動するため、しばらくお待ちください。");
-                    window.location.href = "/";
-                </script>
-            ]])
-            luci.util.exec("sh -c 'calib.execute_command " .. mapscript .. " &'")
-        end
-    end
 end
 
-
-msg_text = s:option(DummyValue, "smg_text", "【注意】")
-msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
-msg_text:depends("wan_setup", "bridge_mode")
-
--- 実行ボタンを追加
-local btn = s:option(Button, "_execute", "実行")
+local btn = s:option(Button, "_execute", "自動設定を実行")
 btn.inputstyle = "apply"
 btn.write = function(self, section)
     if mapscript then
         luci.http.write([[
             <script type="text/javascript">
-                alert("スクリプトを実行中です。ネットワークが再起動するため、しばらくお待ちください。");
+                alert("スクリプトを実行中です。設定完了後にネットワークを再起動するため、しばらくお待ちください。");
                 window.location.href = "/";
             </script>
         ]])
-        luci.util.exec("calib.execute_command(" .. mapscript .. ") &")
+        luci.util.exec("sh -c 'calib.execute_command " .. mapscript .. " &'")
     end
 end
+btn:depends("wan_setup", "ipoe_auto")
+
+msg_text = s:option(DummyValue, "smg_text", "【注意】")
+msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
+msg_text:depends("wan_setup", "bridge_mode")
 
 
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示

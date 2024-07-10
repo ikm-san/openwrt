@@ -474,14 +474,15 @@ end
 
 -- オートマップ判定
 function M.check_auto_ipoe()
-    local mapscript = uci:get("ca_setup", "getmap", "mapscript")
+    local mapscript = uci:get("ca_setup", "getmap", "mapscript") 
+    local current_autoipoe = uci:get("ca_setup", "getmap", "autoipoe") or "0"    
     local automap = 0
 
     if mapscript then
         automap = 1
     end
 
-    return automap, mapscript
+    return automap, mapscript, current_autoipoe
 end
 
 -- map初期化ルーチン

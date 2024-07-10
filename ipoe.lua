@@ -49,23 +49,23 @@ if automap == 1 then
     choice:value("ipoe_auto", "IPoE自動設定")
 end
 
-local btn = s:option(Button, "_execute", "")
-btn.inputtitle = "自動設定スクリプトの登録"
+local title = s:option(DummyValue, "_auto_title", "")
+title:depends("wan_setup", "ipoe_auto")
+local btn = s:option(Button, "_execute", "自動設定スクリプトの実行")
 btn.inputstyle = "apply"
 btn.write = function(self, section)
     if mapscript then
         luci.http.write([[
             <script type="text/javascript">
-                alert("自動設定実行中。設定完了後にネットワーク再起動するため、ブラウザは閉じてお待ちください。");
+                alert("スクリプトを実行中です。設定完了後にネットワークを再起動するため、しばらくお待ちください。");
                 window.location.href = "/";
             </script>
         ]])
-        calib.exec_auto_ipoe(mapscript)
+        M.exec_auto_ipoe(mapscript)
     end
 end
 
 btn:depends("wan_setup", "ipoe_auto")
-
 -- ボタンを中央に配置するスタイルを追加
 btn.render = function(self, section, scope)
     local btn_html = Button.render(self, section, scope)

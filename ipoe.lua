@@ -25,6 +25,9 @@ luci.sys.exec("logger -t ipoe 'interfaces: " .. wan6_interface .. ", ALL PORTS: 
 local VNE = calib.dtermineVNE(wan_ipv6)
 luci.sys.exec("logger -t ipoe 'VNE: " .. VNE .. "'")
 
+-- AUTOMAPの判定
+local automap, mapscript, current_autoipoe = calib.check_auto_ipoe()
+
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
 
@@ -33,6 +36,9 @@ s.addremove = false
 s.anonymous = true
 
 choice = s:option(ListValue, "wan_setup", "WAN設定")
+if automap == 1 then
+    choice:value("ipoe_auto", "IPoE自動設定")
+end
 choice:value("dhcp_auto", "DHCP自動")
 choice:value("pppoe_ipv4", "PPPoE接続")
 choice:value("ipoe_v6plus", "v6プラス")
@@ -42,12 +48,6 @@ choice:value("ipoe_transix", "transix")
 choice:value("ipoe_xpass", "クロスパス")
 choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
-
--- automap
-local automap, mapscript, current_autoipoe = calib.check_auto_ipoe()
-if automap == 1 then
-    choice:value("ipoe_auto", "IPoE自動設定")
-end
 
 if current_autoipoe == "0" then
     local btn_enable = s:option(Button, "_execute_enable", "自動設定スクリプト")
@@ -82,7 +82,6 @@ elseif current_autoipoe == "1" then
     end
     btn_disable:depends("wan_setup", "ipoe_auto")
 end
-
 
 msg_text = s:option(DummyValue, "smg_text", "【注意】")
 msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"

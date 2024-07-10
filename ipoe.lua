@@ -5,6 +5,8 @@ local json = require("luci.jsonc")
 local ubus = require "ubus"
 local calib = require "calib" 
 
+local M = {}
+
 -- ログ記録用 CLIからlogreadで確認可能です
 luci.sys.exec("logger -t ipoe 'Starting Japanese IPoE Auto Config for LUCI'")
 

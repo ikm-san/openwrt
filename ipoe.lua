@@ -49,8 +49,8 @@ if automap == 1 then
     choice:value("ipoe_auto", "IPoE自動設定")
 end
 
-local btn = s:option(Button, "_execute", "IPoE自動判定")
-btn.inputtitle = "自動設定スクリプトのスケジュール登録と初回実行"
+local btn = s:option(Button, "_execute", "自動設定スクリプト")
+btn.inputtitle = "スケジュール登録と初回実行"
 btn.inputstyle = "apply"
 btn.write = function(self, section)
     if mapscript then

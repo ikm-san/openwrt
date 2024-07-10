@@ -49,9 +49,8 @@ if automap == 1 then
     choice:value("ipoe_auto", "IPoE自動設定")
 end
 
-local title = s:option(DummyValue, "_auto_title", "")
-title:depends("wan_setup", "ipoe_auto")
-local btn = s:option(Button, "_execute", "自動設定スクリプトの実行")
+local btn = s:option(Button, "_execute", "")
+btn.inputtitle = "自動設定スクリプトの実行"
 btn.inputstyle = "apply"
 btn.write = function(self, section)
     if mapscript then

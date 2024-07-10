@@ -44,12 +44,10 @@ choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
 -- automap
-local automap, mapscript = calib.check_auto_ipoe()
+local automap, mapscript, current_autoipoe = calib.check_auto_ipoe()
 if automap == 1 then
     choice:value("ipoe_auto", "IPoE自動設定")
 end
-
-local current_autoipoe = calib.get_current_autoipoe()
 
 if current_autoipoe == "0" then
     local btn_enable = s:option(Button, "_execute_enable", "自動設定スクリプト")

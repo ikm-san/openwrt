@@ -45,46 +45,6 @@ choice:value("bridge_mode", "ブリッジ・APモード")
 
 calib.automap()
 
--- automap
-local automap, mapscript = calib.check_auto_ipoe()
-if automap == 1 then
-    choice:value("ipoe_auto", "IPoE自動設定")
-end
-
-local btn = s:option(Button, "_execute", "自動設定スクリプト")
-btn.inputtitle = "常駐登録"
-btn.inputstyle = "apply"
-btn.write = function(self, section)
-    if mapscript then
-        luci.http.write([[
-            <script type="text/javascript">
-                alert("サービスが有効になりました。ルーターを再起動してください。");
-                window.location.href = "/";
-            </script>
-        ]])
-        calib.choice_auto_ipoe(mapscript,1)
-    end
-end
-
-btn:depends("wan_setup", "ipoe_auto")
-
-local btn_disable = s:option(Button, "_execute_disable", " ")
-btn_disable.inputtitle = "常駐解除"
-btn_disable.inputstyle = "remove"
-btn_disable.write = function(self, section)
-    if mapscript then
-        luci.http.write([[
-            <script type="text/javascript">
-                alert("サービスが無効になりました。");
-                window.location.href = "/";
-            </script>
-        ]])
-        calib.choice_auto_ipoe(mapscript,2)
-    end
-end
-
-btn_disable:depends("wan_setup", "ipoe_auto")
-
 msg_text = s:option(DummyValue, "smg_text", "【注意】")
 msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
 msg_text:depends("wan_setup", "bridge_mode")

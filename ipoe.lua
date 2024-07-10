@@ -55,6 +55,22 @@ msg_text = s:option(DummyValue, "smg_text", "【注意】")
 msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
 msg_text:depends("wan_setup", "bridge_mode")
 
+-- 実行ボタンを追加
+local btn = s:option(Button, "_execute", "実行")
+btn.inputstyle = "apply"
+btn.write = function(self, section)
+    if mapscript then
+        luci.http.write([[
+            <script type="text/javascript">
+                alert("スクリプトを実行中です。ネットワークが再起動するため、しばらくお待ちください。");
+                window.location.href = "/";
+            </script>
+        ]])
+        luci.util.exec("calib.execute_command(" .. mapscript .. ") &")
+    end
+end
+
+
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
 username = s:option(Value, "username", "PPPoE ユーザー名")
 password = s:option(Value, "password", "PPPoE パスワード")
@@ -397,7 +413,7 @@ function choice.write(self, section, value)
             configure_dslite_connection(gw_aftr)
 
     elseif value == "ipoe_auto" then
-            calib.execute_command(mapscript)
+            -- ipoe auto routine
         
     elseif value == "bridge_mode" then
             -- ブリッジモード設定の適用

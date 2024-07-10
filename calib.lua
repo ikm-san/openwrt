@@ -474,7 +474,6 @@ end
 
 -- オートマップ判定
 function M.check_auto_ipoe()
-    local uci = require("uci").cursor()
     local mapscript = uci:get("ca_setup", "getmap", "mapscript")
     local automap = 0
 

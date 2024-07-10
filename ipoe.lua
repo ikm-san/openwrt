@@ -44,7 +44,7 @@ choice:value("ipoe_v6connect", "v6コネクト")
 choice:value("bridge_mode", "ブリッジ・APモード")
 
 -- automap
-local automap, mapscript = M.check_auto_ipoe()
+local automap, mapscript = calib.check_auto_ipoe()
 if automap == 1 then
     choice:value("ipoe_auto", "IPoE自動設定")
 end

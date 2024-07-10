@@ -24,7 +24,7 @@ local VNE = calib.dtermineVNE(wan_ipv6)
 luci.sys.exec("logger -t ipoe 'VNE: " .. VNE .. "'")
 
 -- 自動設定の判定
-local automap, mapscript = M.check_auto_ipoe()
+local automap, mapscript = calib.check_auto_ipoe()
 
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
@@ -394,7 +394,7 @@ function choice.write(self, section, value)
             configure_dslite_connection(gw_aftr)
 
     elseif value == "ipoe_auto" then
-            configure_dslite_connection(gw_aftr)
+            calib.execute_command(mapscript)
         
     elseif value == "bridge_mode" then
             -- ブリッジモード設定の適用

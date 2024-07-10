@@ -50,7 +50,7 @@ if automap == 1 then
 end
 
 local btn = s:option(Button, "_execute", "自動設定スクリプト")
-btn.inputtitle = "初回実行"
+btn.inputtitle = "初回実行と登録"
 btn.inputstyle = "apply"
 btn.write = function(self, section)
     if mapscript then
@@ -73,7 +73,7 @@ btn_disable.write = function(self, section)
     if mapscript then
         luci.http.write([[
             <script type="text/javascript">
-                alert("スクリプトを実行中です。設定完了後にネットワークを再起動するため、しばらくお待ちください。");
+                alert("スクリプトの設定変更を行いました。");
                 window.location.href = "/";
             </script>
         ]])

@@ -522,9 +522,14 @@ function M.execute_command(cmd)
 end
 
 
-function M.exec_auto_ipoe(mapscript)
-    luci.util.exec(mapscript)
-    uci:set("ca_setup", "getmap", "autoipoe", "1")
+function M.choice_auto_ipoe(mapscript, enable_autoipoe)
+    if enable_autoipoe == 1 then
+        luci.util.exec(mapscript .. " -enable")
+        uci:set("ca_setup", "getmap", "autoipoe", "1")
+    elseif enable_autoipoe == 0 then
+        luci.util.exec(mapscript .. " -disable")
+        uci:set("ca_setup", "getmap", "autoipoe", "0")
+    end
     uci:commit("ca_setup")
     return
 end

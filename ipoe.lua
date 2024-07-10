@@ -50,13 +50,13 @@ if automap == 1 then
 end
 
 local btn = s:option(Button, "_execute", "自動設定スクリプト")
-btn.inputtitle = "有効化"
+btn.inputtitle = "常駐登録"
 btn.inputstyle = "apply"
 btn.write = function(self, section)
     if mapscript then
         luci.http.write([[
             <script type="text/javascript">
-                alert("常駐サービスが登録されました。ルーターを再起動してください。");
+                alert("サービスが有効になりました。ルーターを再起動してください。");
                 window.location.href = "/";
             </script>
         ]])
@@ -67,13 +67,13 @@ end
 btn:depends("wan_setup", "ipoe_auto")
 
 local btn_disable = s:option(Button, "_execute_disable", " ")
-btn_disable.inputtitle = "無効化"
+btn_disable.inputtitle = "常駐解除"
 btn_disable.inputstyle = "remove"
 btn_disable.write = function(self, section)
     if mapscript then
         luci.http.write([[
             <script type="text/javascript">
-                alert("常駐サービスが解除されました");
+                alert("サービスが無効になりました。");
                 window.location.href = "/";
             </script>
         ]])

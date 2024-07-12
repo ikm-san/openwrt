@@ -221,7 +221,7 @@ function configure_mape_connection(peeraddr, ipv4_prefix, ipv4_prefixlen, ipv6_p
     uci:set("network", "wan6", "proto", "dhcpv6")
     uci:set("network", "wan6", "reqaddress", "try")
     uci:set("network", "wan6", "reqprefix", "auto")
-    ipv6_fixlen == 64 and uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "/" .. ipv6_fixlen)
+    if ipv6_fixlen == 64 then uci:set("network", "wan6", "ip6prefix", ipv6_56 .. "/" .. ipv6_fixlen) end
     
     -- WANMAP settings
     uci:section("network", "interface", "wanmap", {

@@ -53,5 +53,9 @@ int rem = uloop_timeout_remaining(&g_current_trans.trans_timeout);　に変更
 とりあえずエラーがでなくなる
 make package/bbfdm/compile V=s -j1
 
+いるのかいらないのかわからない
+echo "src-link bbfdm /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/package/bbfdm" >> feeds.conf.default
+
+
 ```
 

@@ -1,4 +1,6 @@
 ```
+
+docker run -it --name oak_build_env cdfa34bfa368
 cd /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/
 
 cd /tmp

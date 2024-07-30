@@ -63,6 +63,11 @@ vi cwmp.c
 cd /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk
 make package/icwmp/compile V=s
 
+ls -l /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/bin/packages/arm_cortex-a7_neon-vfpv4/base/
+ssh root@192.168.10.1
+opkg install /tmp/icwmp_9.8.4_arm_cortex-a7_neon-vfpv4.ipk
+
+scp root@192.168.10.1:/tmp/icwmp_9.8.4_arm_cortex-a7_neon-vfpv4.ipk /home/user/
 
 
 ```

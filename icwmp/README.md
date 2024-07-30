@@ -75,6 +75,12 @@ docker cp 736c0280a1a6:/home/openwrt/downloads/LinksysRouter/working/qca-network
 opkg update
 opkg install mxml
 
+scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/bin/packages/arm_cortex-a7_neon-vfpv4/base/bbf_configmngr_1.9.13_arm_cortex-a7_neon-vfpv4.ipk root@192.168.10.1:/tmp/
+scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/bin/packages/arm_cortex-a7_neon-vfpv4/base/bbfdmd_1.9.13_arm_cortex-a7_neon-vfpv4.ipk root@192.168.10.1:/tmp/
+scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/bin/packages/arm_cortex-a7_neon-vfpv4/base/libbbfdm-api1.0_1.9.13_arm_cortex-a7_neon-vfpv4.ipk root@192.168.10.1:/tmp/
+scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/bin/packages/arm_cortex-a7_neon-vfpv4/base/libbbfdm_1.9.13_arm_cortex-a7_neon-vfpv4.ipk root@192.168.10.1:/tmp/
+
+
 
 ```
 

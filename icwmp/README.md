@@ -72,6 +72,8 @@ opkg install /tmp/icwmp_9.8.4_arm_cortex-a7_neon-vfpv4.ipk
 dockerからファイルの取り出し
 docker cp 736c0280a1a6:/home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/bin/packages/arm_cortex-a7_neon-vfpv4/base/icwmp_9.8.4_arm_cortex-a7_neon-vfpv4.ipk /mnt/c/temp/
 
+opkg update
+opkg install mxml
 
 
 ```

@@ -39,3 +39,19 @@ make package/icwmp/compile V=s -j1
 
 
 ```
+
+
+```
+vi /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/build_dir/target-arm/bbfdm-1.9.13/libbbfdm/dmtree/tr181/deviceinfo.c
+410行目
+json_object_object_add(obj, "FaultCode", json_object_new_uint64(fault_code));を
+json_object_object_add(obj, "FaultCode", json_object_new_int((int)fault_code));に変更
+
+vi /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/build_dir/target-arm/bbfdm-1.9.13/bbfdmd/ubus/get_helper.c
+int64_t rem = uloop_timeout_remaining64(&g_current_trans.trans_timeout);　を
+int rem = uloop_timeout_remaining(&g_current_trans.trans_timeout);　に変更
+とりあえずエラーがでなくなる
+make package/bbfdm/compile V=s -j1
+
+```
+

@@ -56,6 +56,14 @@ make package/bbfdm/compile V=s -j1
 いるのかいらないのかわからない
 echo "src-link bbfdm /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/package/bbfdm" >> feeds.conf.default
 
+ソースコードの修正
+cd /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/build_dir/target-arm/icwmp-9.8.4/src
+vi cwmp.c
+#include <sys/stat.h> // 追加
+cd /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk
+make package/icwmp/compile V=s
+
+
 
 ```
 

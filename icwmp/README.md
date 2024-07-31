@@ -80,7 +80,10 @@ scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_q
 scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/bin/packages/arm_cortex-a7_neon-vfpv4/base/libbbfdm-api1.0_1.9.13_arm_cortex-a7_neon-vfpv4.ipk root@192.168.10.1:/tmp/
 scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/bin/packages/arm_cortex-a7_neon-vfpv4/base/libbbfdm_1.9.13_arm_cortex-a7_neon-vfpv4.ipk root@192.168.10.1:/tmp/
 
-
-
 ```
 
+required config settings
+```
+https://dev.iopsys.eu/bbf/icwmp/-/blob/devel/docs/api/uci/cwmp.md?ref_type=heads
+```
+‘‘‘

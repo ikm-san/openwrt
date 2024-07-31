@@ -87,4 +87,7 @@ required config settings
 https://dev.iopsys.eu/bbf/icwmp/-/blob/devel/docs/api/uci/cwmp.md?ref_type=heads
 https://dev.iopsys.eu/bbf/bbfdm/-/blob/devel/docs/api/uci/bbfdm.md?ref_type=heads
 ```
-‘‘‘
+https
+```
+https://dev.iopsys.eu/bbf/icwmp/-/blob/devel/docs/guide/https_config.md
+```

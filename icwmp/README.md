@@ -84,6 +84,7 @@ scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_q
 
 required config settings
 ```
+wget -O /etc/config/cwmp https://raw.githubusercontent.com/ikm-san/openwrt/main/icwmp/cwmp_config
 https://dev.iopsys.eu/bbf/icwmp/-/blob/devel/docs/api/uci/cwmp.md?ref_type=heads
 https://dev.iopsys.eu/bbf/bbfdm/-/blob/devel/docs/api/uci/bbfdm.md?ref_type=heads
 ```

@@ -87,6 +87,10 @@ opkg install bbf_configmngr_1.9.13_arm_cortex-a7_neon-vfpv4.ipk
 opkg install bbfdmd_1.9.13_arm_cortex-a7_neon-vfpv4.ipk
 opkg install libwolfssl
 
+mkdir -p /etc/bbfdm/json/
+wget -O /etc/bbfdm/json/CWMPManagementServer.json https://raw.githubusercontent.com/ikm-san/openwrt/main/icwmp/CWMPManagementServer.json
+
+
 ```
 
 required config settings

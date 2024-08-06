@@ -1,0 +1,12 @@
+#!/bin/sh
+
+uci -q batch <<-EOT
+        delete firewall.cwmp
+        set firewall.cwmp=include
+        set firewall.cwmp.path=/etc/firewall.cwmp
+        set firewall.cwmp.reload=1
+        commit firewall
+EOT
+
+exit 0
+

@@ -1,0 +1,41 @@
+#!/bin/sh
+
+. /lib/functions.sh
+# Copy defaults by the factory to the cwmp UCI user section.
+config_load cwmp
+
+# Get Manufacturer OUI.
+config_get oui cpe manufacturer_oui ""
+if [ -z "${oui}" ]; then
+	oui=$(db -q get device.deviceinfo.ManufacturerOUI)
+fi
+
+oui=$(echo "${oui}" | tr 'a-f' 'A-F')
+
+# Get system serial number.
+config_get serial cpe serial_number ""
+if [ -z "${serial}" ]; then
+	serial=$(db -q get device.deviceinfo.SerialNumber)
+fi
+
+# Get userid values
+config_get acs_userid acs userid ""
+config_get cpe_userid cpe userid ""
+
+# Only set if they are empty
+if [ -z "${acs_userid}" ]; then
+    uci -q set cwmp.acs.userid="${oui}-${serial}"
+fi
+
+if [ -z "${cpe_userid}" ]; then
+    uci -q set cwmp.cpe.userid="${oui}-${serial}"
+fi
+
+# Fix the cwmp.cpe.enable parameter
+# set default to 1 if not defined
+config_get enable_cwmp cpe enable ""
+if [ -z "${enable_cwmp}" ]; then
+    uci -q set cwmp.cpe.enable="1"
+fi
+
+# No need for commit here, it is done by uci_apply_defaults().

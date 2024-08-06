@@ -1,0 +1,36 @@
+{
+	"json_plugin_version": 1,
+	"Device.CWMPManagementServer.": {
+		"type": "object",
+		"version": "2.15",
+		"protocols": [
+			"usp"
+		],
+		"access": false,
+		"array": false,
+		"dependency": "file:/etc/config/cwmp",
+		"EnableCWMP": {
+			"type": "boolean",
+			"version": "2.15",
+			"read": true,
+			"write": true,
+			"protocols": [
+				"usp"
+			],
+			"mapping": [
+				{
+					"type": "uci",
+					"uci": {
+						"file": "cwmp",
+						"section": {
+							"name": "cpe"
+						},
+						"option": {
+							"name": "enable"
+						}
+					}
+				}
+			]
+		}
+	}
+}

@@ -80,6 +80,13 @@ scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_q
 scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/bin/packages/arm_cortex-a7_neon-vfpv4/base/libbbfdm-api1.0_1.9.13_arm_cortex-a7_neon-vfpv4.ipk root@192.168.10.1:/tmp/
 scp /home/openwrt/downloads/LinksysRouter/working/qca-networking-2022-spf-12-2_qca_oem-r12.2.r4_00015.0/qsdk/bin/packages/arm_cortex-a7_neon-vfpv4/base/libbbfdm_1.9.13_arm_cortex-a7_neon-vfpv4.ipk root@192.168.10.1:/tmp/
 
+opkg install libbbfdm-api1.0_1.9.13_arm_cortex-a7_neon-vfpv4.ipk
+opkg install libbbfdm_1.9.13_arm_cortex-a7_neon-vfpv4.ipk
+opkg install bbf_configmngr_1.9.13_arm_cortex-a7_neon-vfpv4.ipk
+opkg install bbf_configmngr_1.9.13_arm_cortex-a7_neon-vfpv4.ipk
+opkg install bbfdmd_1.9.13_arm_cortex-a7_neon-vfpv4.ipk
+opkg install libwolfssl
+
 ```
 
 required config settings
@@ -91,4 +98,15 @@ https://dev.iopsys.eu/bbf/bbfdm/-/blob/devel/docs/api/uci/bbfdm.md?ref_type=head
 https
 ```
 https://dev.iopsys.eu/bbf/icwmp/-/blob/devel/docs/guide/https_config.md
+```
+
+error
+```
+root@OpenWrt:/tmp# opkg install icwmp_9.8.4_arm_cortex-a7_neon-vfpv4.ipk
+Installing icwmp (9.8.4) to root...
+Configuring icwmp.
+//usr/lib/opkg/info/icwmp.postinst: /etc/uci-defaults/85-cwmp-set-userid: line 10: db: not found
+//usr/lib/opkg/info/icwmp.postinst: /etc/uci-defaults/85-cwmp-set-userid: line 18: db: not found
+//usr/lib/opkg/info/icwmp.postinst: /etc/uci-defaults/95-set-random-inform-time: line 14: arithmetic syntax error
+
 ```

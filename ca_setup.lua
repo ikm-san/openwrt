@@ -8,7 +8,7 @@ function index()
     entry({"admin", "ca_setup", "ipoe"}, cbi("ca_setup/ipoe"), _("Internet接続設定"), 10)
 
     -- WiFi設定タブ
-    if nixio.fs.access("/etc/config/wireless") then
+    if nixio.fs.access("/usr/lib/lua/luci/model/cbi/ca_setup/wireless.lua") then
         entry({"admin", "ca_setup", "wireless"}, cbi("ca_setup/wireless"), _("WiFi接続設定"), 20)
     end
     

@@ -98,10 +98,12 @@ wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubuserco
 
 ## map.sh for iptables / OpenWrt ver.19.07（QSDK含む) 以降
 OpenWrt 19.07ではiptablesによってファイアウォールが制御されています。またmap.shスクリプト内の記述にエラーがあるためそのままでは動きません。  
-下記のファイルに差し替えて、再起動するとmap-eバーチャルインターフェース経由の通信が開通するはずです。
+下記のファイルに差し替えて、OpenWrtルーターを再起動するとmap-eが正常に使えるようになります。
 ```    
 wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/map.sh/map.sh1907k　　 
 ```
+また、ポート数はv6プラスは240個、OCNバーチャルコネクトは1024個という制限があります。v6プラスは本当に少ないので、利用人数が１名でも全ポートを使い切ってダウン状態になる可能性があります。
+少しでも遅らせるためにはスクリプト中盤のiptablesの--connlimit-uptoの数値をすこし上げると改善するかもしれませんが、つながりにくくなる副作用もあります。
 
 ## おわりに
 すべてのVNEでの検証はできておりませんので、動作報告や不具合報告はGitHubかXでご連絡いただけると嬉しいです。  

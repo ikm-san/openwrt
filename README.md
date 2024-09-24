@@ -1,8 +1,8 @@
 # IPoE IPv4 over IPv6接続設定スクリプト
 OpenWrtでv6プラス、OCNバーチャルコネクトといった日本のNTT IPoE接続(IPv4 over IPv6)を実現するためのスクリプトです。  
 インストール後、Luci管理画面にCA接続設定というメニューが追加されるためブラウザから設定可能です。  
-NTTフレッツのプロバイダではないau光、eo光、nuro光、そのほか電力系やケーブルテレビ系列等のプロバイダでは手前にホームゲートウェイが設置されてい場合がおおいので、OpenWrtルーターはDHCP自動で良い環境が多く、以下のIPoEの特別な設定は不要です。 
-※ Linksys Velop WRT Pro 7(QSDK 19.07)専用版は近日公開します。
+NTTフレッツのプロバイダではないau光、eo光、nuro光、そのほか電力系やケーブルテレビ系列等のプロバイダでは手前にホームゲートウェイが設置されているため、OpenWrtルーターはNTT向けの特別な設定は必要なく、DHCP自動のままで動きます。 
+※ Linksys Velop WRT Pro 7(QSDK 19.07)専用スクリプトは近日公開します。
 
 ■ IPoE設定（NTTフレッツ NGN網）
 * v6プラス
@@ -68,7 +68,7 @@ wget -O /etc/config/ca_setup https://raw.githubusercontent.com/ikm-san/openwrt/m
 wget -O /usr/lib/lua/luci/controller/ca_setup.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/ca_setup.lua  
 wget -O /usr/lib/lua/calib.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/calib.lua  
 wget -O /usr/lib/lua/luci/model/cbi/ca_setup/ipoe.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/ipoe.lua  
-wget -O /usr/lib/lua/luci/model/cbi/ca_setup/wireless.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/wireless.lua  
+wget -O /usr/lib/lua/luci/model/cbi/ca_setup/wireless.lua https://raw.githubusercontent.com/ikm-san/openwrt/main/wireless.lua
 rm -rf /tmp/luci-*  
 /etc/init.d/uhttpd restart  
 ```
@@ -82,30 +82,25 @@ Luciの画面を表示した状態で接続環境を変更するとブラウザ�
 
 ## 動作検証に使用したハードウェア
 以下のモデルにて動作検証をしています。
-* Linksys Velop WRT Pro7 (LN6001-JP / MBE70)
+* Linksys Velop WRT Pro7 (MBE70 / LN6001-JP) ※別途専用スクリプト用意しました
 * Linksys WHW03v2
 * Linksys E8450-JP
   
 ## Luciからインストールできるopkgファイル形式
 ターミナルではなくLuci管理画面からインストールしたい方向けの[opkgファイル](https://github.com/ikm-san/openwrt/raw/main/opkg/luci-app-jpoe_1.0_all.ipk)。  
 
-## よりスムーズに動くMAP-Eインターフェース用map.shスクリプト
+## map.sh for nftables / OpenWrt ver 23以降
 最新のOpenWrtでは差し替え不要でそのままでもmap-eが動作しますが、パケット詰まりが発生しやすく、通称ニチバンベンチ等でひっかかる現象が発生する場合があります。  
-以下のfakemanhk氏とsite_u氏によってv6プラス仕様にカスタマイズされた下記map.shスクリプトに差し替えると、ニチバンベンチもスムーズにクリアします。
+以下のfakemanhk氏とsite_u氏によってv6プラス仕様にカスタマイズされたnftablesを利用する下記map.shスクリプトに差し替えると、ニチバンベンチもスムーズにクリアします。
 ```
 wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map.sh.new
 ```
-※こちらはnftablesではなくiptablesを使うOpenWrt 19.07では動作しません、firewallの仕様が違うためmap-e通信が動かなくなりますので19.07では導入しないでください。
 
-## MAP-Eインターフェースが何故か通信できない？(19.07)
+## map.sh for iptables / OpenWrt ver.19.07（QSDK含む) 以降
 OpenWrt 19.07ではiptablesによってファイアウォールが制御されています。またmap.shスクリプト内の記述にエラーがあるためそのままでは動きません。  
-map.sh内の下記２か所の修正を行い、ネットワークサービスを再起動するとmap-eバーチャルインターフェース経由の通信が開通します。
+下記のファイルに差し替えて、再起動するとmap-eバーチャルインターフェース経由の通信が開通するはずです。
 ```    
-# uncomment for legacy MAP0 mode  
-export LEGACY=1  
- 
-# json_add_boolean connlimit_ports 1  
-json_add_string connlimit_ports "1"   
+wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/map.sh/map.sh1907k　　 
 ```
 
 ## おわりに

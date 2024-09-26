@@ -152,7 +152,7 @@ units=$(eval "echo \$RULE_${k}_PORTSETS" | wc -w)
 portsets=$(eval "echo \$RULE_${k}_PORTSETS")
 
 # ICMP/UDP/TCP portset balancing
-if [ "$units" -lt 64 ]; then
+if [ "$units" -lt 63 ]; then
     icmp_portset_count=1
     udp_portset_first_count=2
     udp_portset_second_count=1

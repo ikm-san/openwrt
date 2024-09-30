@@ -38,11 +38,8 @@ s.anonymous = true
 
 choice = s:option(ListValue, "wan_setup", "WAN設定")
 
--- Check if the WAN interface is NOT pppoe-wan
-if wan_interface ~= "pppoe-wan" then
-    if automap == 1 then
+if automap == 1 then
     choice:value("ipoe_auto", "IPoE自動設定")
-    end
 end
 
 choice:value("dhcp_auto", "DHCP自動")

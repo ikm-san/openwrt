@@ -1,11 +1,12 @@
 # IPoE IPv4 over IPv6接続設定スクリプト
 OpenWrtでv6プラス、OCNバーチャルコネクトといった日本のNTT IPoE接続(IPv4 over IPv6)を実現するためのスクリプトです。  
 インストール後、Luci管理画面にCA接続設定というメニューが追加されるためブラウザから設定可能です。  
-NTTフレッツのプロバイダではないau光、eo光、nuro光、そのほか電力系やケーブルテレビ系列等のプロバイダでは手前にホームゲートウェイが設置されているため、OpenWrtルーターはNTT向けのややこしい設定は不要です。DHCP自動のままで動きます。 
-※ Linksys Velop WRT Pro 7(QSDK 19.07)専用スクリプトは近日公開します。
+NTTフレッツのプロバイダではないau光、eo光、nuro光、そのほか電力系やケーブルテレビ系列等のプロバイダでは手前にホームゲートウェイが設置されているため、OpenWrtルーターはNTT向けのややこしい設定は不要です。DHCP自動のままで動きます。  
+※ Linksys Velop WRT Pro 7(QSDK 19.07)専用スクリプトは近日公開します。  
+
 ![ipoe_ntt_1](https://github.com/user-attachments/assets/77ee0cf2-4be2-4bfb-9f78-2eb65786b6c8)
 
-
+  
 ## 対応するWAN接続設定リスト
 ■ IPoE設定（NTTフレッツ NGN網）
 * v6プラス

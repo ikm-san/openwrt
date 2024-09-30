@@ -37,15 +37,12 @@ s.addremove = false
 s.anonymous = true
 
 choice = s:option(ListValue, "wan_setup", "WAN設定")
+
 -- Check if the WAN interface is NOT pppoe-wan
 if wan_interface ~= "pppoe-wan" then
     if automap == 1 then
     choice:value("ipoe_auto", "IPoE自動設定")
     end
-    -- Proceed with the automatic configuration
-else
-    luci.sys.exec("logger -t ipoe 'PPPoE WAN detected. Skipping auto IPoE configuration.'")
-    return
 end
 
 choice:value("dhcp_auto", "DHCP自動")

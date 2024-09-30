@@ -42,7 +42,7 @@ end
 
 choice:value("dhcp_auto", "DHCP自動")
 choice:value("pppoe_ipv4", "PPPoE接続")
-choice:value("ipoe_mix", "IPoE/PPPoE MIX接続")
+choice:value("ipoe_mix", "IPoE/PPPoE同時接続")
 choice:value("ipoe_v6plus", "v6プラス")
 choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
 choice:value("ipoe_biglobe", "IPv6オプション")
@@ -89,9 +89,9 @@ msg_text = s:option(DummyValue, "smg_text", "【注意】")
 msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
 msg_text:depends("wan_setup", "bridge_mode")
 
-msg_text = s:option(DummyValue, "smg_text", "【NTT回線専用】")
-msg_text.default = "IPv6はIPoE、IPv4はPPPoEで設定します。同時接続に強く通信が安定します。"
-msg_text:depends("wan_setup", "ipoe_mix")
+msg_text2 = s:option(DummyValue, "smg_text", "【NTT回線専用】")
+msg_text2.default = "IPv6はIPoE、IPv4はPPPoEで設定します。パケ詰まりに強く通信が安定します。"
+msg_text2:depends("wan_setup", "ipoe_mix")
 
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
 username = s:option(Value, "username", "PPPoE ユーザー名")

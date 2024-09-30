@@ -478,6 +478,12 @@ function M.check_auto_ipoe()
     local current_autoipoe = uci:get("ca_setup", "getmap", "autoipoe") or "0"    
     local automap = 0
 
+    local wan_interface = M.get_wan_interface_name()
+    if wan_interface == "pppoe-wan" then
+        luci.sys.exec("logger -t ipoe 'PPPoE WAN detected. Skipping auto IPoE configuration.'")
+        return automap, mapscript, current_autoipoe
+    end
+    
     if mapscript then
         automap = 1
     end

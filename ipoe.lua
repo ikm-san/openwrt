@@ -89,7 +89,7 @@ msg_text = s:option(DummyValue, "smg_text", "【注意】")
 msg_text.default = "元に戻したい場合はハードウェアリセットで初期化してください。"
 msg_text:depends("wan_setup", "bridge_mode")
 
-msg_text2 = s:option(DummyValue, "smg_text", "【NTT回線専用】")
+msg_text2 = s:option(DummyValue, "smg_text2", "【NTT回線専用】")
 msg_text2.default = "IPv6はIPoE、IPv4はPPPoEで設定します。パケ詰まりに強く通信が安定します。"
 msg_text2:depends("wan_setup", "ipoe_mix")
 

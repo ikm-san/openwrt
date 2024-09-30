@@ -500,6 +500,7 @@ function M.init_map_routine(wan_ipv6, VNE)
     end
 
     local mapscript = uci:get("ca_setup", "getmap", "mapscript")
+    local wan_interface = M.get_wan_interface_name()
 
    if not mapscript or wan_interface == "pppoe-wan" then 
         local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.find_ipv4_prefix(wan_ipv6)

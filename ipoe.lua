@@ -98,11 +98,11 @@ username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
-username = s:option(Value, "username", "PPPoE ユーザー名")
-password = s:option(Value, "password", "PPPoE パスワード")
+username = s:option(Value, "username2", "PPPoE ユーザー名")
+password = s:option(Value, "password2", "PPPoE パスワード")
 password.password = true
-username:depends("wan_setup", "ipoe_mix")
-password:depends("wan_setup", "ipoe_mix")
+username2:depends("wan_setup", "ipoe_mix")
+password2:depends("wan_setup", "ipoe_mix")
 
 -- mapデータのフォーム表示用
 local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = calib.init_map_routine(wan_ipv6, VNE)
@@ -372,8 +372,8 @@ function choice.write(self, section, value)
         clean_wan_configuration()
          uci:section("network", "interface", "wan", {
             proto = "pppoe",
-            username = username:formvalue(section),
-            password = password:formvalue(section),
+            username = username2:formvalue(section),
+            password = password2:formvalue(section),
         })
 
               

@@ -90,7 +90,7 @@ msg_text.default = "元に戻したい場合はハードウェアリセットで
 msg_text:depends("wan_setup", "bridge_mode")
 
 msg_text2 = s:option(DummyValue, "smg_text2", "【NTT回線専用】")
-msg_text2.default = "IPv6はIPoE、IPv4はPPPoEで設定します。パケ詰まりに強く通信が安定します。"
+msg_text2.default = "IPv6はIPoE、IPv4はPPPoEで接続するため、パケット詰まりに強く通信が安定します。"
 msg_text2:depends("wan_setup", "ipoe_mix")
 
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示

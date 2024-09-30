@@ -42,6 +42,7 @@ end
 
 choice:value("dhcp_auto", "DHCP自動")
 choice:value("pppoe_ipv4", "PPPoE接続")
+choice:value("ipoe_mix", "IPoE & PPPoE同時接続")
 choice:value("ipoe_v6plus", "v6プラス")
 choice:value("ipoe_ocnvirtualconnect", "OCNバーチャルコネクト")
 choice:value("ipoe_biglobe", "IPv6オプション")
@@ -95,6 +96,13 @@ password = s:option(Value, "password", "PPPoE パスワード")
 password.password = true
 username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
+
+-- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
+username = s:option(Value, "username", "PPPoE ユーザー名")
+password = s:option(Value, "password", "PPPoE パスワード")
+password.password = true
+username:depends("wan_setup", "ipoe_mix")
+password:depends("wan_setup", "ipoe_mix")
 
 -- mapデータのフォーム表示用
 local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = calib.init_map_routine(wan_ipv6, VNE)
@@ -359,6 +367,23 @@ function choice.write(self, section, value)
         uci:set("network", "wan6", "auto", "0")     
         uci:set_list("firewall", "@zone[1]", "network", {"wan"})     
 
+    elseif value == "ipoe_mix" then        
+        -- PPPoE設定を適用、IPv6はIPoE有効化
+        clean_wan_configuration()
+         uci:section("network", "interface", "wan", {
+            proto = "pppoe",
+            username = username:formvalue(section),
+            password = password:formvalue(section),
+        })
+
+              
+        -- WAN settings
+        uci:set("network", "wan", "auto", "1")
+        uci:set("network", "wan6", "auto", "1")
+        uci:set("network", "wan6", "reqaddress", "try")
+        uci:set("network", "wan6", "reqprefix", "auto")
+        uci:set_list("firewall", "@zone[1]", "network", {"wan","wan6"})  
+        
     elseif value == "dhcp_auto" then
         -- DHCP自動であるべきなので、関係ないWAN設定の確認と削除、DHCP自動に戻す設定動作
         apply_dhcp_configuration()

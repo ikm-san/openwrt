@@ -98,9 +98,9 @@ username:depends("wan_setup", "pppoe_ipv4")
 password:depends("wan_setup", "pppoe_ipv4")
 
 -- PPPoEユーザー名とパスワード入力フォームの追加及び、選択された場合のみ、ユーザー名とパスワード欄を表示
-username = s:option(Value, "username2", "PPPoE ユーザー名")
-password = s:option(Value, "password2", "PPPoE パスワード")
-password.password = true
+username2 = s:option(Value, "username", "PPPoE ユーザー名")
+password2 = s:option(Value, "password", "PPPoE パスワード")
+password2.password = true
 username2:depends("wan_setup", "ipoe_mix")
 password2:depends("wan_setup", "ipoe_mix")
 

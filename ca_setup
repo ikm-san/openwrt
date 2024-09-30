@@ -21,6 +21,7 @@ config ipoe
     option wan_setup 'ipoe_auto'
     option wan_setup 'bridge_mode'
     option wan_setup 'dhcp_auto'
+    option wan_setup 'ipoe_mix'
     option wan_setup 'dummy'
 
 config ds-lite 'ipoe_transix'

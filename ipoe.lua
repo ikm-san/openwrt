@@ -65,6 +65,9 @@ if current_autoipoe == "0" then
                     window.location.href = "/";
                 </script>
             ]])
+            if wan_interface == "pppoe-wan" then 
+                clean_wan_configuration()
+            end
             calib.choice_auto_ipoe(mapscript, 1)
         end
     end
@@ -292,6 +295,8 @@ local function clean_wan_configuration()
         delete_config("network", "wan6", "reqaddress")
         delete_config("network", "wan6", "reqprefix")
         delete_config("network", "wan6", "ip6prefix")
+        delete_config("network", "wan", "username")
+        delete_config("network", "wan", "password")
         delete_config("network", "map6ra")
         delete_config("network", "wanmap")
         delete_config("network", "dslite")

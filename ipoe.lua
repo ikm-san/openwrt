@@ -39,9 +39,9 @@ s.anonymous = true
 
 choice = s:option(ListValue, "wan_setup", "WAN設定")
 
--- if automap == 1 and wan_type ~= "pppoe" then
---     choice:value("ipoe_auto", "IPoE自動設定")
--- end
+if automap == 1 and wan_type ~= "pppoe" then
+     choice:value("ipoe_auto", "IPoE自動設定")
+end
 
 choice:value("dhcp_auto", "DHCP自動")
 choice:value("pppoe_ipv4", "PPPoE接続")

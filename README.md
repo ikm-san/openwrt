@@ -100,17 +100,16 @@ Luciの画面を表示した状態で接続環境を変更するとブラウザ�
 wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/site-u2023/map-e/main/map.sh.new
 ```
 
-## map.sh for iptables / OpenWrt ver.19.07（QSDK含む) 以降
-OpenWrt 19.07ではiptablesによってファイアウォールが制御されています。またmap.shスクリプト内の記述にエラーがあるためそのままでは動きません。  
-下記のファイルに差し替えて、OpenWrtルーターを再起動するとmap-eが正常に使えるようになります。
+## map.sh for Velop WRT Pro 7 / QSDK 19.07
+Linksys Velop WRT Pro 7用にカスタマイズしたmap.shです。オートセットアップを利用された方はすでに導入済みです。
 ```    
-wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/map.sh/map.sh1907k　　 
+wget --no-check-certificate -O /lib/netifd/proto/map.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/map.sh/map.sh1907o　　 
 ```
-map-eが採用されている背景として、そもそもにポート数を節約して複数エンドユーザーで1つのIPv4アドレスをシェアする側面もあります。まさにライドシェア。結果としてポート数はv6プラスは240個、OCNバーチャルコネクトは1024個という厳しい制限があります。ds-liteも1024個のようです。  
-v6プラスは240個と本当に割り当てポート数が少ないので、利用人数が１名でも全ポートを使い切ってダウン状態が発生する可能性があります。 そのため、法人向けの固定IPサービスはmap-eでもポート制限が緩和されています。   
+map-eはそもそもにポート数を節約して複数エンドユーザーで1つのIPv4アドレスをシェアする側面があります。まさにライドシェア状態。  
+利用可能なポート数はv6プラスは240個、OCNバーチャルコネクトは1024個という厳しい制限があります。ds-liteは細かな設定不要ですが1024個提供されているようです。    
+v6プラスは240個と本当に割り当てポート数が少ないので、少人数でも全ポートを使い切ってダウン状態が発生する可能性があります。 そのため、法人向けのmap-e固定IPサービスはもっとたくさんのポートが利用可能です。   
 PPPoE接続ではそのようなポート制限がないため、IPv6だけIPoEで接続し、IPv4はPPPoEが使える環境ならPPPoEで接続するのがベストかもしれません。  
-このIPoEとPPPoEの混成環境は非常に安定します。GoogleやYouTubeをはじめ外資大手サイトはIPv6対応のためIPv6でつながりますし、既存のIPv4サイトもそのうちIPv6へと移行しますので、これが正解な気もします。  
-余談ですが、「IPoEだから高速」・「IPv6だから高速」といった安易なキャッチコピーは正しくありません。NTT回線以外はホームゲートウェイがPPPoE接続していたりしますがスピードでますし、IPv4とIPv6は郵便番号でいうところの桁が違うぐらいの話です。ただIPv4とIPv6とそれぞれエンドユーザーが別々に利用すると２回線分のコストになるため、IPv4通信をIPv6回線に紛れ込ませて１回線で済ませたいのが本音でしょうね。
+既存のIPv4サイトもそのうちIPv6へと移行しますので、これが正解な気もします。  
 
 ## おわりに
 すべてのVNEでの検証はできておりませんので、動作報告や不具合報告はGitHubかXでご連絡いただけると嬉しいです。  

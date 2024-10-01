@@ -282,7 +282,7 @@ local function clean_wan_configuration()
     end
 
     -- map, dslite, map6ra設定が存在するかチェック
-    local mapExists = uci:get("network", "wanmap") or uci:get("network", "map6ra") or uci:get("network", "dslite")
+    local mapExists = uci:get("network", "wanmap") or uci:get("network", "map6ra") or uci:get("network", "dslite") or uci:get("network", "wan", "password")
 
     if mapExists then
         -- 存在する場合、指定された設定を削除
@@ -328,7 +328,7 @@ local function apply_dhcp_configuration()
     end
 
     -- map, dslite, map6ra設定が存在するかチェック
-    local mapExists = uci:get("network", "wanmap") or uci:get("network", "map6ra") or uci:get("network", "dslite")
+    local mapExists = uci:get("network", "wanmap") or uci:get("network", "map6ra") or uci:get("network", "dslite") or uci:get("network", "wan", "password")
 
     if mapExists then
         -- 存在する場合、指定された設定を削除
@@ -342,6 +342,8 @@ local function apply_dhcp_configuration()
         delete_config("network", "map6ra")
         delete_config("network", "wanmap")
         delete_config("network", "dslite")
+        delete_config("network", "wan", "username")
+        delete_config("network", "wan", "password")
         delete_config("firewall", "@zone[1]", "network", {"wanmap", "map6ra"})
     
         -- DHCP関連設定の適用

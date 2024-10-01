@@ -156,7 +156,7 @@ if [ "$units" -lt 63 ]; then
     icmp_portset_count=1
     udp_portset_first_count=2
     udp_portset_second_count=1
-    first_tcp_portset_count=10
+    first_tcp_portset_count=9
 else
     icmp_portset_count=1
     udp_portset_first_count=6
@@ -191,7 +191,7 @@ done\
 tcp_portsets_rest=$(echo $portsets | awk -v udp_count="$(($udp_portset_first_count + $udp_portset_second_count))" -v first_count="$first_tcp_portset_count" '{for(i=udp_count+first_count+2;i<=NF;i++) print $i}')
 for portset in $tcp_portsets_rest; do
     # iptables -t nat -A POSTROUTING -p tcp -o map-wanmap -m connlimit --connlimit-daddr --connlimit-above 24 --connlimit-mask 0 -j SNAT --to $(eval "echo \$RULE_${k}_IPV4ADDR"):$portset
-    iptables -t nat -A POSTROUTING -p tcp -o map-wanmap -m connlimit --connlimit-daddr --connlimit-upto 48 --connlimit-mask 0 -j SNAT --to $(eval "echo \$RULE_${k}_IPV4ADDR"):$portset
+    iptables -t nat -A POSTROUTING -p tcp -o map-wanmap -m connlimit --connlimit-daddr --connlimit-upto 32 --connlimit-mask 0 -j SNAT --to $(eval "echo \$RULE_${k}_IPV4ADDR"):$portset
 done
 
 iptables -I FORWARD -o map-wanmap -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu

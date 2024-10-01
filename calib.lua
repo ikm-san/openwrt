@@ -499,18 +499,19 @@ function M.init_map_routine(wan_ipv6, VNE)
         return 
     end
 
-    local mapscript = uci:get("ca_setup", "getmap", "mapscript")
-    local wan_interface = M.get_wan_interface_name()
-
-   if not mapscript or wan_interface == "pppoe-wan" then 
-        local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.find_ipv4_prefix(wan_ipv6)
-        return ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr
-    end
-
-    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.get_map_rule(mode, mapscript)
-    if not ipv4_prefix then
-        ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.find_ipv4_prefix(wan_ipv6)
-    end
+    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.find_ipv4_prefix(wan_ipv6)
+    
+    -- local mapscript = uci:get("ca_setup", "getmap", "mapscript")
+    -- local wan_interface = M.get_wan_interface_name()
+    -- if not mapscript or wan_interface == "pppoe-wan" then 
+    --    local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.find_ipv4_prefix(wan_ipv6)
+    --    return ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr
+    -- end
+    --
+    -- local ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.get_map_rule(mode, mapscript)
+    -- if not ipv4_prefix then
+    --    ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr = M.find_ipv4_prefix(wan_ipv6)
+    -- end
     return ipv4_prefix, ipv4_prefixlen, ipv6_prefix, ipv6_prefixlen, ealen, psidlen, offset, ipv6_56, ipv6_fixlen, peeraddr
 end
 

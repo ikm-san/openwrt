@@ -28,6 +28,7 @@ luci.sys.exec("logger -t ipoe 'VNE: " .. VNE .. "'")
 
 -- AUTOMAPの判定
 local automap, mapscript, current_autoipoe = calib.check_auto_ipoe()
+local wan_type = uci:get("network", "wan", "proto")
 
 -- WAN設定選択リスト --
 m = Map("ca_setup", "WAN接続設定", "下記のリストより選んでください。IPoE接続の場合は、ONUに直接つないでから実行してください。")
@@ -38,7 +39,7 @@ s.anonymous = true
 
 choice = s:option(ListValue, "wan_setup", "WAN設定")
 
-if automap == 1 then
+if automap == 1 and wan_type ~= "pppoe" then
     choice:value("ipoe_auto", "IPoE自動設定")
 end
 
@@ -65,10 +66,6 @@ if current_autoipoe == "0" then
                     window.location.href = "/";
                 </script>
             ]])
-            local wan_type = uci:get("network", "wan", "proto")
-            if wan_type == "pppoe" then 
-                clean_wan_configuration()
-            end
             calib.choice_auto_ipoe(mapscript, 1)
         end
     end

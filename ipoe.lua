@@ -65,7 +65,8 @@ if current_autoipoe == "0" then
                     window.location.href = "/";
                 </script>
             ]])
-            if wan_interface == "pppoe-wan" then 
+            local wan_type = uci:get("network", "wan", "proto")
+            if wan_type == "pppoe" then 
                 clean_wan_configuration()
             end
             calib.choice_auto_ipoe(mapscript, 1)

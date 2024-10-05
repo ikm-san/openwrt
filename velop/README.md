@@ -16,8 +16,9 @@ v6プラスやOCNバーチャルコネクトといったIPv4 over IPv6接続を�
 curl -sS -o /tmp/adb_setup.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/adb/adb_setup.sh && sh /tmp/adb_setup.sh -v
 ```
 
+***
 
-# コマンド集
+# 関連コマンド集
 
 ## Win
 ```

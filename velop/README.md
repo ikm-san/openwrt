@@ -13,7 +13,7 @@ v6プラスやOCNバーチャルコネクトといったIPv4 over IPv6接続を�
 ## adblock導入
 ブラウザの広告表示を９割近くブロックします。導入後はスマホ等のすべての接続デバイスで効果を発揮します。  
 ```
-
+curl -sS -o /tmp/adb_setup.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/adb/adb_setup.sh && sh /tmp/adb_setup.sh -v
 ```
 
 

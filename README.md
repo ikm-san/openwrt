@@ -111,8 +111,8 @@ v6プラスは240個と比較的割り当てポート数が少ないので、少
 PPPoE接続ではそのようなポート制限がないため、IPv6だけIPoEで接続し、IPv4はPPPoEが使える環境ならPPPoEで接続するのが実は現状ベストかもしれません。  
 既存のIPv4サイトもそのうちIPv6へと移行しますので、移行期の処置としてはIPoE/PPPoEミックスが正解な気もします。
 
-## adblock導入
-ブラウザの広告表示を９割近くブロックします。導入後はスマホ等のすべての接続デバイスで効果を発揮します。  
+## 広告ブロック導入スクリプト
+ブラウザの広告表示を９割近くブロックします。adblock導入後はスマホ等のすべての接続デバイスで効果を発揮します。  
 ```
 curl -sS -o /tmp/adb_setup.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/adb/adb_setup.sh && sh /tmp/adb_setup.sh -v
 ```

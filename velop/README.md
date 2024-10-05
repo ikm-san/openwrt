@@ -10,7 +10,7 @@ v6プラスやOCNバーチャルコネクトといったIPv4 over IPv6接続を�
 ※NTTフレッツ回線でONUに直接ルーターをつないでIPoE接続する場合のみ必要な作業です。ひかり電話ホームゲートウェイが手前にある場合やその他の回線では導入不要です。  
 ※セットアップ中に「無効なルールを受信しました」等のエラーが出て上手くいかない場合は、ONUとルーターの電源を切って2~3分待ってからオンに戻して再度実行してみてください。  
 
-## adblock導入
+## 広告ブロック導入スクリプト
 ブラウザの広告表示を９割近くブロックします。導入後はスマホ等のすべての接続デバイスで効果を発揮します。  
 ```
 curl -sS -o /tmp/adb_setup.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/adb/adb_setup.sh && sh /tmp/adb_setup.sh -v

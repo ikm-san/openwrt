@@ -12,7 +12,7 @@ v6プラスやOCNバーチャルコネクトといったIPv4 over IPv6接続を�
 
 ## 広告ブロック導入スクリプト
 ブラウザの広告表示を９割近くブロックします。adblock導入後はスマホ等のすべての接続デバイスで効果を発揮します。  
-ビジネスや教育の現場で集中したい場合や、子供に見せたくないゲーム・マンガ広告を極力グレーアウトします。
+ビジネスや教育の現場で集中したい／させたい場合や、子供に見せたくないゲーム・マンガ広告を極力グレーアウトします。
 ```
 curl -sS -o /tmp/adb_setup.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/adb/adb_setup.sh && sh /tmp/adb_setup.sh -v
 ```

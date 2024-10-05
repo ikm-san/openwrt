@@ -18,9 +18,7 @@ curl -sS -o /tmp/adb_setup.sh https://raw.githubusercontent.com/ikm-san/openwrt/
 ```
 
 ***
-
-
-  
+# 
 # 関連コマンド集
 スクリプト導入時に必要なコマンドは以下のとおりです。
 

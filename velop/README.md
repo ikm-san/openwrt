@@ -11,7 +11,7 @@ v6プラスやOCNバーチャルコネクトといったIPv4 over IPv6接続を�
 ※セットアップ中に「無効なルールを受信しました」等のエラーが出て上手くいかない場合は、ONUとルーターの電源を切って2~3分待ってからオンに戻して再度実行してみてください。  
 
 ## 広告ブロック導入スクリプト
-ブラウザの広告表示を９割近くブロックします。導入後はスマホ等のすべての接続デバイスで効果を発揮します。  
+ブラウザの広告表示を９割近くブロックします。adblock導入後はスマホ等のすべての接続デバイスで効果を発揮します。  
 ```
 curl -sS -o /tmp/adb_setup.sh https://raw.githubusercontent.com/ikm-san/openwrt/main/adb/adb_setup.sh && sh /tmp/adb_setup.sh -v
 ```

@@ -45,6 +45,10 @@ SSHログインできたら、#スクリプトへ進みます。
 ```
 Clear-Content .ssh\known_hosts -Force  
 ```
+何故かそれでもはいれないとき
+```
+Add-Content "$HOME\.ssh\config" "`nHost 192.168.10.1`n    HostKeyAlgorithms +ssh-rsa"
+```
 #Mac
 ```
 ssh-keygen -R 192.168.10.1  

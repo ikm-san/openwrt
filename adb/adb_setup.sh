@@ -90,6 +90,17 @@ uci set adblock.global.adb_forcedns='1'
 uci commit dhcp
 /etc/init.d/dnsmasq restart
 
+# Define the cron job command
+cron_job="50 3 * * 1 /etc/init.d/adblock reload"
+
+# Check if the cron job already exists in the crontab
+if crontab -l | grep -Fq "$cron_job"; then
+    echo "Cron job already exists. No changes made."
+else
+    # If the cron job does not exist, add it
+    (crontab -l 2>/dev/null; echo "$cron_job") | crontab -
+    echo "Cron job added to refresh Adblock every Monday at 3:50 AM."
+fi
 
 echo "Adblock DNS filtering with TOFU enabled for LAN using $ipv4_address (IPv4) and $ipv6_address (IPv6)."
 echo "The automatic configuration of Adblock is complete. It will take a few minutes after a restart for the custom filter to start working." && echo "Adblockの自動設定が完了しました。カスタムフィルタの動作反映まで再起動後、数分かかります。"
